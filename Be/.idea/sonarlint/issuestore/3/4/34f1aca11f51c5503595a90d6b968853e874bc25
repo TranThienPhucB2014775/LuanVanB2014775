@@ -1,0 +1,6 @@
+
+	java:S101"MRename this class name to match the regular expression '^[A-Z][a-zA-Z0-9]*$'.(··Ù8–ŸŒ™…2J$641eec2f-bd78-44db-8d19-3ebadc341948
+š	java:S120"ZRename this package name to match the regular expression '^[a-z_]+(\.[a-z_][a-z0-9_]*)*$'.(óœ±‹ıÿÿÿÿJ$38f385cc-583d-49a2-ac0d-da8a76b96c66
+v	java:S116"URename this field "secure_url" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(’õ‰Õşÿÿÿÿ8 ÎŒ™…2
+P
+java:S1068".Remove this unused "secure_url" private field.(’õ‰Õşÿÿÿÿ8¢ÎŒ™…2

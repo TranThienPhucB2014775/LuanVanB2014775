@@ -1,0 +1,11 @@
+
+“	java:S117L"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(Ø´À…8ğÆ§…2J$43674fe3-09bc-47f2-8b70-00911cf0d308
+w
+java:S3740P"/Provide the parametrized type for this generic.(»øÛÂúÿÿÿÿ8¬±ß½…2J$4fd738e8-244c-4875-ac2d-580d0cd872c8
+r
+java:S3740a"/Provide the parametrized type for this generic.(ÚÛ¸8Ğ‚Ç¾…2J$e5db6bce-649f-4eef-9db8-3a3c40b37632
+z
+java:S18548"7Remove this useless assignment to local variable "jwt".(èÀò´8öÆ§…2J$8b7e8e23-b597-46ff-9ebf-7346c804cc6a
+k
+java:S14818"(Remove this unused "jwt" local variable.(èÀò´8öÆ§…2J$fe214814-9496-4921-8e0d-6bd8092e1f24
+m	java:S106Y"+Replace this use of System.out by a logger.(ÍÎÉ 8æ‚Ç¾…2J$77e18e82-4aca-45f6-a596-f3539e15c9bd

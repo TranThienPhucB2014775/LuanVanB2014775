@@ -1,0 +1,7 @@
+
+­
+java:S1488!"eImmediately return this expression instead of assigning it to the temporary variable "userResponses".(ğé±›úÿÿÿÿ8Çş¥…2J$16bca873-496e-4e1c-aba6-39c363328bad
+}
+java:S1118":Add a private constructor to hide the implicit public one.(ÜĞÖ8³§ˆÚƒ2J$18d39584-0688-47b3-a380-eb3446e2173f
+½
+java:S6204/"zReplace this usage of 'Stream.collect(Collectors.toList())' with 'Stream.toList()' and ensure that the list is unmodified.(ª™¨¹8áş¥…2J$ea6b232d-a381-4f21-9ae9-49dbdeeaa9dc

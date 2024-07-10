@@ -1,0 +1,6 @@
+
+	java:S101"MRename this class name to match the regular expression '^[A-Z][a-zA-Z0-9]*$'.(Ë‚çÏ8êºˆ™…2J$260228b0-b834-43c3-847a-9e000ed685a0
+š	java:S120"ZRename this package name to match the regular expression '^[a-z_]+(\.[a-z_][a-z0-9_]*)*$'.(óœ±‹ıÿÿÿÿJ$a106afd4-f3de-468c-9050-40d0c1e6840c
+p	java:S116"TRename this field "public_id" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(µ›8¡€Š™…2
+J
+java:S1068"-Remove this unused "public_id" private field.(µ›8¡€Š™…2

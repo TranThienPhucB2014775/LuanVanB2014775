@@ -1,0 +1,17 @@
+
+”	java:S101"MRename this class name to match the regular expression '^[A-Z][a-zA-Z0-9]*$'.(œ¯‘’øÿÿÿÿ8¿ıü™…2J$01bbe80c-775e-4a25-844e-efd736696ef5
+“	java:S117."QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ÖßŞº8ìßä£…2J$3939f10f-7ca4-4c90-9923-6a03e5b458c8
+i
+java:S1452;"&Remove usage of generic wildcard type.(úàÃ’8ùßä£…2J$80f39494-cd5a-4ea8-b142-1f563cbdacf9
+Œ
+java:S1128"DRemove this unused import 'com.media.dto.Response.GetImageResponse'.(¨ıÿÿÿÿÿ8Óıóš…2J$669d0fbe-6308-45a8-bfef-b3531f7db7d1
+ˆ
+java:S1128"@Remove this unused import 'org.springframework.http.HttpStatus'.(íŸ¤Šúÿÿÿÿ8Óıóš…2J$d91dae79-fb6c-4bfa-a64d-ab592824e918
+Œ
+java:S1128"DRemove this unused import 'org.springframework.http.ResponseEntity'.(¶¯ø¦úÿÿÿÿ8Óıóš…2J$2a8099c2-bbd0-4e02-bd39-e407af5b7a48
+
+java:S1128"FRemove this unused import 'org.springframework.stereotype.Controller'.(øŠ—Öùÿÿÿÿ8Óıóš…2J$c6879444-3761-420c-8270-2dee2e0d0674
+x
+java:S1128"0Remove this unused import 'java.io.IOException'.(ªº»Úıÿÿÿÿ8Óıóš…2J$54d198dc-51a5-45b8-b78e-0af801cd53c5
+r
+java:S1128"*Remove this unused import 'java.util.Map'.(¼è½Òşÿÿÿÿ8Óıóš…2J$24bb106f-5008-4b04-9dfc-14a73715b96c

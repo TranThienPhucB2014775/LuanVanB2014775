@@ -1,0 +1,6 @@
+
+u	java:S116"[Rename this field "PUBLIC_ENDPOINTS" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(¼£˜½úÿÿÿÿ
+X
+java:S6813"BRemove this field injection and use constructor injection instead.(êæÄŞ
+h
+java:S3305"RInject this field value directly into "filterChain", the only method that uses it.(’„Ñ
