@@ -2,9 +2,10 @@ spring:
   application:
     name: "identity-service"
   datasource:
-    url: "jdbc:mysql://localhost:3306/identity"
+    url: "jdbc:postgresql://localhost:5432/luanvan"
     username: root
     password: root
+    driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
       ddl-auto: update

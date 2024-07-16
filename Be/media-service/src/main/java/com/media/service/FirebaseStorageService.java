@@ -82,9 +82,8 @@ public class FirebaseStorageService {
         }
     }
 
-    public UpdateImageResponse updateImage(MultipartFile multipartFile) {
+    public UpdateImageResponse updateImage(MultipartFile multipartFile, String fileName) {
         try {
-            String fileName = multipartFile.getOriginalFilename();
             File file = this.convertToFile(multipartFile, fileName);
             String URL = this.uploadFile(file, fileName);
             file.delete();

@@ -19,7 +19,7 @@ public class ProfileMapper {
             UserResponse userResponse, ProfileResponse profileResponse) {
         userResponse.setCity(profileResponse.getCity());
         userResponse.setAddress(profileResponse.getAddress());
-        userResponse.setUrlImgAvatar(profileResponse.getUrlImgAvatar());
+        userResponse.setImgAvatar(profileResponse.getImgAvatar());
         return userResponse;
     }
 
@@ -27,6 +27,7 @@ public class ProfileMapper {
             UserResponse userResponse, ProfileCreationResponse profileResponse) {
         userResponse.setCity(profileResponse.getCity());
         userResponse.setAddress(profileResponse.getAddress());
+        userResponse.setImgAvatar(profileResponse.getImgAvatar());
         return userResponse;
     }
 }

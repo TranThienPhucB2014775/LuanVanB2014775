@@ -1,7 +1,5 @@
 package com.identity.dto.Response;
 
-import java.time.LocalDate;
-
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -13,4 +11,5 @@ public class ProfileCreationResponse {
     String profileId;
     String city;
     String address;
+    String imgAvatar;
 }

@@ -16,7 +16,8 @@ public class ProfileMapper {
         profileResponse.setProfileId(profile.getId());
         profileResponse.setAddress(profile.getAddress());
         profileResponse.setCity(profile.getCity());
-        profileResponse.setUrlImgAvatar(profile.getUrlImgAvatar());
+        profileResponse.setImgAvatar("https://firebasestorage.googleapis.com/v0/b/luanvan-428507.appspot.com/o/"
+                + profile.getImgAvatar() + "?alt=media");
         return profileResponse;
     }
 

@@ -42,17 +42,15 @@ public class UserController {
                         .build());
     }
 
-    @GetMapping("/list-user")
+    @GetMapping
     ApiResponse<List<UserResponse>> getAllUser(@RequestHeader(value = "Authorization") String token) {
         return ApiResponse.<List<UserResponse>>builder()
                 .result(userService.getAllUser(token))
                 .build();
     }
 
-    @GetMapping
-    ApiResponse<UserResponse> getUser(
-            @RequestHeader(value = "Authorization", defaultValue = "") String token
-    ) {
+    @GetMapping("/me")
+    ApiResponse<UserResponse> getUser(@RequestHeader(value = "Authorization", defaultValue = "") String token) {
         return ApiResponse.<UserResponse>builder()
                 .result(userService.getUser(token.replace("Bearer ", "")))
                 .build();

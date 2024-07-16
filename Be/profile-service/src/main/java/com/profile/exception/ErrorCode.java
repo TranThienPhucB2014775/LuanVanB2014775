@@ -17,7 +17,8 @@ public enum ErrorCode {
     UNAUTHENTICATED(6, "Unauthenticated", HttpStatus.UNAUTHORIZED),
     INVALID_DOB(7, "Your age must be at least {min}", HttpStatus.BAD_REQUEST),
     PROFILE_NOT_FOUND(8, "Profile not found", HttpStatus.BAD_REQUEST),
-    MEDIA_SERVICE_ERROR(9, "Media service error", HttpStatus.BAD_REQUEST);;
+    MEDIA_SERVICE_ERROR(9, "Media service error", HttpStatus.BAD_REQUEST);
+    ;
 
     ErrorCode(int code, String message, HttpStatusCode statusCode) {
         this.code = code;

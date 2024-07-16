@@ -1,35 +1,31 @@
 package com.profile.service;
 
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.UUID;
 
-import com.profile.dto.ApiResponse;
-import com.profile.dto.Response.MediaReposne;
-import com.profile.dto.Response.UpdateAndCreateAvatarResponse;
-import com.profile.dto.Response.UserResponse;
-import com.profile.service.client.MediaClientService;
-import feign.FeignException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.profile.config.CustomJwtDecoder;
 import com.profile.dto.Request.ProfileCreationRequest;
 import com.profile.dto.Request.ProfileUpdateRequest;
 import com.profile.dto.Response.ProfileResponse;
+import com.profile.dto.Response.UpdateAndCreateAvatarResponse;
 import com.profile.entity.Profile;
 import com.profile.exception.AppException;
 import com.profile.exception.ErrorCode;
 import com.profile.mapper.ProfileMapper;
 import com.profile.repository.ProfileRepository;
+import com.profile.service.client.MediaClientService;
 import com.profile.service.client.UserClientService;
 
+import feign.FeignException;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @RequiredArgsConstructor
@@ -42,9 +38,10 @@ public class ProfileService {
     UserClientService userClientService;
     MediaClientService mediaClientService;
 
-
     public ProfileResponse createProfile(ProfileCreationRequest profileRequest) {
         Profile profile = ProfileMapper.ProfileCreationRequestToProfile(profileRequest);
+        profile.setImgAvatar("default_Avatar.png");
+
         try {
             return ProfileMapper.ProfileToProfileResponse(profileRepository.save(profile));
         } catch (DataIntegrityViolationException exception) {
@@ -73,34 +70,22 @@ public class ProfileService {
                 .toList();
     }
 
-    public UpdateAndCreateAvatarResponse createAndUpdateAvatar(MultipartFile file, String ProfileId) {
+    public UpdateAndCreateAvatarResponse UpdateAvatar(MultipartFile file, String ProfileId) {
         try {
-
-            Profile profile = profileRepository.findById(ProfileId).orElseThrow(() -> new AppException(ErrorCode.PROFILE_NOT_FOUND));
-            Map mediaReposneApiResponse;
-            if (profile.getUrlImgAvatar() != null) {
-                mediaReposneApiResponse = mediaClientService.createProfile(file);
-            } else {
-
-                int index = profile.getUrlImgAvatar().indexOf("profile_images");
-                if (index != -1) {
-                    String path = profile.getUrlImgAvatar().substring(index);
-
-                    System.out.println(path);
-
-                    mediaReposneApiResponse = mediaClientService.updateProfile(file, profile.getUrlImgAvatar());
-                } else {
-                    throw new AppException(ErrorCode.MEDIA_SERVICE_ERROR);
-                }
+            Profile profile = profileRepository
+                    .findById(ProfileId)
+                    .orElseThrow(() -> new AppException(ErrorCode.PROFILE_NOT_FOUND));
+            if (profile.getImgAvatar().equals("default_Avatar.png")) {
+                String fileName = UUID.randomUUID().toString().concat(file.getOriginalFilename());
+                mediaClientService.updateProfile(file, fileName);
+                profile.setImgAvatar(fileName);
+                profileRepository.save(profile);
             }
+            mediaClientService.updateProfile(file, profile.getImgAvatar());
 
-            Map result = (Map) mediaReposneApiResponse.get("result");
-            log.info(result.get("secure_url").toString());
-            profile.setUrlImgAvatar(result.get("secure_url").toString());
-
-            profileRepository.save(profile);
-
-            return UpdateAndCreateAvatarResponse.builder().message("Create avatar successfully").build();
+            return UpdateAndCreateAvatarResponse.builder()
+                    .message("Update avatar successfully")
+                    .build();
         } catch (FeignException e) {
             log.info(e.getMessage());
             throw new AppException(ErrorCode.MEDIA_SERVICE_ERROR);
@@ -108,6 +93,5 @@ public class ProfileService {
             log.info(e.getMessage());
             throw new AppException(ErrorCode.UNCATEGORIZED_EXCEPTION);
         }
-
     }
 }

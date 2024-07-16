@@ -7,16 +7,17 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
-import com.identity.dto.Response.UpdateAndCreateAvatarResponse;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.identity.config.CustomJwtDecoder;
 import com.identity.constant.PredefinedRole;
 import com.identity.dto.Request.ProfileCreationRequest;
 import com.identity.dto.Request.UserCreateRequest;
 import com.identity.dto.Response.ProfileResponse;
+import com.identity.dto.Response.UpdateAndCreateAvatarResponse;
 import com.identity.dto.Response.UserResponse;
 import com.identity.entity.Role;
 import com.identity.entity.User;
@@ -33,7 +34,6 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @RequiredArgsConstructor
@@ -135,17 +135,19 @@ public class UserService {
         return scopes.contains("ROLE_ADMIN");
     }
 
-    public UpdateAndCreateAvatarResponse createAvatar(MultipartFile file, String email, String token) {
+    public UpdateAndCreateAvatarResponse UpdateAvatar(MultipartFile file, String token) {
+        String email = customJwtDecoder.decode(token).getSubject();
+
         var user = userRepository.findByEmail(email).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+        log.info("Create avatar for user: " + user.getProfileId());
         try {
-            profileClientService.createImage(file, user.getProfileId(), token);
+            profileClientService.createImage(file, user.getProfileId(), "Bearer " + token);
             return UpdateAndCreateAvatarResponse.builder()
-                    .message("Avatar has been created")
+                    .message("Avatar has been updated")
                     .build();
         } catch (FeignException e) {
             log.error("Error when create avatar: ", e);
             throw new AppException(ErrorCode.PROFILE_SERVICE_ERROR);
         }
-
     }
 }

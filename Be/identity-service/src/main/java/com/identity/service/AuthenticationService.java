@@ -5,26 +5,26 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 
-import com.identity.constant.PredefinedRole;
-import com.identity.dto.Request.*;
-import com.identity.entity.Role;
-import com.identity.service.client.OutboundIdentityClientService;
-import com.identity.service.client.OutboundUserClientService;
-import com.identity.service.client.ProfileClientService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import com.identity.constant.PredefinedRole;
+import com.identity.dto.Request.*;
 import com.identity.dto.Response.AuthenticationResponse;
 import com.identity.dto.Response.IntrospectResponse;
 import com.identity.entity.InvalidatedToken;
+import com.identity.entity.Role;
 import com.identity.entity.User;
 import com.identity.exception.AppException;
 import com.identity.exception.ErrorCode;
 import com.identity.repository.InvalidatedTokenRepository;
 import com.identity.repository.UserRepository;
+import com.identity.service.client.OutboundIdentityClientService;
+import com.identity.service.client.OutboundUserClientService;
+import com.identity.service.client.ProfileClientService;
 import com.nimbusds.jose.*;
 import com.nimbusds.jose.crypto.MACSigner;
 import com.nimbusds.jose.crypto.MACVerifier;
@@ -110,33 +110,24 @@ public class AuthenticationService {
 
         log.info("USER INFO {}", userInfo);
 
-        var user = userRepository
-                .findByEmail(userInfo.getEmail())
-                .orElseGet(() -> {
+        var user = userRepository.findByEmail(userInfo.getEmail()).orElseGet(() -> {
+            var profileCreation = profileClientService.createProfile(
+                    ProfileCreationRequest.builder().city("").address("").build());
 
-                    var profileCreation = profileClientService.createProfile(
-                            ProfileCreationRequest.builder()
-                                    .city("")
-                                    .address("")
-                                    .build());
-
-                            return userRepository.save(User.builder()
-                                    .email(userInfo.getEmail())
-                                    .username(userInfo.getName())
-                                    .roles(roleSet)
-                                    .profileId(profileCreation.getResult().getProfileId())
-                                    .build());
-                        }
-                );
+            return userRepository.save(User.builder()
+                    .email(userInfo.getEmail())
+                    .username(userInfo.getName())
+                    .roles(roleSet)
+                    .profileId(profileCreation.getResult().getProfileId())
+                    .build());
+        });
 
         Date date =
                 new Date(Instant.now().plus(VALID_DURATION, ChronoUnit.SECONDS).toEpochMilli());
 
         var token = generateToken(user, date);
 
-        return AuthenticationResponse.builder()
-                .token(token)
-                .build();
+        return AuthenticationResponse.builder().token(token).build();
     }
 
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
@@ -249,11 +240,11 @@ public class AuthenticationService {
 
         Date expiryTime = (isRefresh)
                 ? new Date(signedJWT
-                .getJWTClaimsSet()
-                .getIssueTime()
-                .toInstant()
-                .plus(REFRESHABLE_DURATION, ChronoUnit.SECONDS)
-                .toEpochMilli())
+                        .getJWTClaimsSet()
+                        .getIssueTime()
+                        .toInstant()
+                        .plus(REFRESHABLE_DURATION, ChronoUnit.SECONDS)
+                        .toEpochMilli())
                 : signedJWT.getJWTClaimsSet().getExpirationTime();
 
         var verified = signedJWT.verify(verifier);

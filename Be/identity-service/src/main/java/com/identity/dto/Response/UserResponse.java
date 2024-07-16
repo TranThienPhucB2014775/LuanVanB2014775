@@ -1,6 +1,5 @@
 package com.identity.dto.Response;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import lombok.*;
@@ -19,6 +18,6 @@ public class UserResponse {
     String city;
     String address;
     LocalDateTime createdDate;
-    String urlImgAvatar;
+    String imgAvatar;
     //    Set<RoleResponse> roles;
 }

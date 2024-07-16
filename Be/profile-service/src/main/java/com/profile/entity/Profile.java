@@ -1,7 +1,5 @@
 package com.profile.entity;
 
-import java.time.LocalDate;
-
 import jakarta.persistence.*;
 
 import lombok.*;
@@ -25,5 +23,5 @@ public class Profile extends BaseEntity {
 
     String city;
     String address;
-    String urlImgAvatar;
+    String ImgAvatar;
 }

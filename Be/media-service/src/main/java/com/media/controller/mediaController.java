@@ -33,7 +33,9 @@ public class mediaController {
     private final ImageService imageService;
 
     @PostMapping
-    public ApiResponse<CreateImageResponse> createImage(@RequestParam("image") MultipartFile file) {
+    public ApiResponse<CreateImageResponse> createImage(
+            @RequestParam("image") MultipartFile file
+    ) {
         return ApiResponse.<CreateImageResponse>builder()
                 .result(FirebaseStorageService.upload(file))
                 .build();
@@ -41,11 +43,12 @@ public class mediaController {
 
     @PutMapping
     public ApiResponse<UpdateImageResponse> updateImage(
-            @RequestParam("image") MultipartFile file
+            @RequestParam("image") MultipartFile file,
+            @RequestParam("fileName") String fileName
     ) {
         try {
             return ApiResponse.<UpdateImageResponse>builder()
-                    .result(FirebaseStorageService.updateImage(file))
+                    .result(FirebaseStorageService.updateImage(file, fileName))
                     .build();
         } catch (Exception e) {
             throw new AppException(ErrorCode.CLOUDINARY_EXCEPTION);
