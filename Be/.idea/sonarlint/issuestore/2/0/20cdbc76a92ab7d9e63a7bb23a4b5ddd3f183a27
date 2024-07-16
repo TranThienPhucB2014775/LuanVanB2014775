@@ -1,7 +1,0 @@
-
-‹
-java:S3655b"HCall "user.isPresent()" or "!user.isEmpty()" before accessing the value.(þÑ··8ýÒ§¦…2J$1afa95bf-94c0-486b-ad5f-34f7828fc222
-ž
-java:S2159X"VRemove this call to "equals"; comparisons between unrelated types always return false.(ßÉ¦Ìÿÿÿÿÿ8…Ó§¦…2J$30ddb623-0820-4d29-87ba-e203cad631b5
-Š
-java:S6201„"FReplace this instanceof check and cast with 'instanceof String string'(—¨ëô8ˆÓ§¦…2J$4fe7a23c-a73c-4867-b037-1b5391b356b5

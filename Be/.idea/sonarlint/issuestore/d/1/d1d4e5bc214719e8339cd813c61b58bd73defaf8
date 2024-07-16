@@ -1,5 +1,0 @@
-
-š	java:S120"ZRename this package name to match the regular expression '^[a-z_]+(\.[a-z_][a-z0-9_]*)*$'.(óœ±‹ıÿÿÿÿJ$78f5269c-1967-4640-87f8-c4873bba62b1
-œ	java:S116"URename this field "secure_url" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(’õ‰Õşÿÿÿÿ8½ÍÓ™…2J$cf262de1-06d3-4e1c-87d5-a013372a3de4
-†
-java:S1128"CRemove this unused import 'org.springframework.stereotype.Service'.(¼º¡Ú8Ëúš…2J$10db563e-3d0e-42ba-b321-98d3a5038bbf

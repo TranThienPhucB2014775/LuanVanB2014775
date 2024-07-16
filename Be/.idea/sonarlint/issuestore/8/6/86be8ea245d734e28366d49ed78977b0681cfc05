@@ -1,7 +1,0 @@
-
-E
-java:S5411Y"(Use a primitive boolean expression here.(–×ß8ÍŸşƒ2
-	java:S112x"FDefine and throw a dedicated exception instead of using a generic one.(Ò‚Òéüÿÿÿÿ8ñÊôıƒ2J$76b0b530-6f99-4edb-ab10-da2f2f3a81c7
-—	java:S1163"URename this field "SIGNER_KEY" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ëü§™8ôÊôıƒ2J$131a17f4-ab5d-4545-a861-b3fe36bd4b62
-›	java:S1167"YRename this field "VALID_DURATION" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ˆçï˜8ôÊôıƒ2J$e9ad3356-b485-4ae5-aef2-8f43bcd71715
-¡	java:S116;"_Rename this field "REFRESHABLE_DURATION" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(µĞ²8ôÊôıƒ2J$481e4464-42dd-403e-bc66-755837e33423
