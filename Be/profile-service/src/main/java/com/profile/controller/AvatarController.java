@@ -22,9 +22,10 @@ public class AvatarController {
 
     @PutMapping
     public ApiResponse<?> updateAvatar(
-            @RequestParam("image") MultipartFile file, @RequestParam("profileId") String profileId) {
+            @RequestHeader(value = "Authorization", defaultValue = "") String token,
+            @RequestParam("image") MultipartFile file) {
         return ApiResponse.builder()
-                .result(profileService.UpdateAvatar(file, profileId))
+                .result(profileService.UpdateAvatar(file, token.replace("Bearer ", "")))
                 .build();
     }
 

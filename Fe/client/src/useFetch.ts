@@ -1,26 +1,25 @@
-import {useState} from "react";
+import { useState } from "react";
 
 export function useFetch<T>(fetchFn: (data: any) => Promise<T>) {
+	const [isFetching, setIsFetching] = useState(false);
+	const [error, setError] = useState("");
 
-    const [isFetching, setIsFetching] = useState(false)
-    const [error, setError] = useState("")
+	async function fetch(data: any) {
+		setIsFetching(true);
+		try {
+			const res = await fetchFn(data);
+			setIsFetching((prevState) => !prevState);
+			return res;
+		} catch (error) {
+			setError("Lỗi không xác định");
+		}
 
-    async function fetch(data: any) {
-        setIsFetching(true);
-        try {
-            const res = await fetchFn(data);
-            setIsFetching(prevState => !prevState);
-            return res;
-        } catch (error) {
-            setError("Lỗi không xác định");
-        }
+		setIsFetching(false);
+	}
 
-        setIsFetching(false);
-    }
-
-    return {
-        isFetching,
-        error,
-        fetch,
-    }
+	return {
+		isFetching,
+		error,
+		fetch,
+	};
 }

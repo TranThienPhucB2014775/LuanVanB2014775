@@ -10,8 +10,8 @@ import lombok.ToString;
 @Setter
 @ToString
 public class UserCreateRequest {
-    @Size(min = 4, message = "USERNAME_INVALID")
-    String username;
+    @Size(min = 6,max = 50, message = "USERNAME_INVALID")
+    String userName;
 
     @Size(min = 8, message = "Email_INVALID")
     String email;

@@ -42,12 +42,12 @@ public class UserController {
                         .build());
     }
 
-    @GetMapping
-    ApiResponse<List<UserResponse>> getAllUser(@RequestHeader(value = "Authorization") String token) {
-        return ApiResponse.<List<UserResponse>>builder()
-                .result(userService.getAllUser(token))
-                .build();
-    }
+//    @GetMapping
+//    ApiResponse<List<UserResponse>> getAllUser(@RequestHeader(value = "Authorization") String token) {
+//        return ApiResponse.<List<UserResponse>>builder()
+//                .result(userService.getAllUser(token))
+//                .build();
+//    }
 
     @GetMapping("/me")
     ApiResponse<UserResponse> getUser(@RequestHeader(value = "Authorization", defaultValue = "") String token) {

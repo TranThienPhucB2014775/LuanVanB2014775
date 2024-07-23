@@ -41,7 +41,7 @@ public class FirebaseStorageService {
     private String uploadFile(File file, String fileName) throws IOException {
         BlobId blobId = BlobId.of(bucketName, fileName);
         BlobInfo blobInfo = BlobInfo.newBuilder(blobId).setContentType("media").build();
-        InputStream inputStream = ImageService.class.getClassLoader().getResourceAsStream(privateKey); // change the file name with your one
+        InputStream inputStream = ImageService.class.getClassLoader().getResourceAsStream(privateKey);
         Credentials credentials = GoogleCredentials.fromStream(inputStream);
         Storage storage = StorageOptions.newBuilder().setCredentials(credentials).build().getService();
         var res = storage.create(blobInfo, Files.readAllBytes(file.toPath()));
@@ -52,7 +52,6 @@ public class FirebaseStorageService {
                 "?alt=media"
         );
     }
-
 
     private File convertToFile(MultipartFile multipartFile, String fileName) throws IOException {
         File tempFile = new File(fileName);

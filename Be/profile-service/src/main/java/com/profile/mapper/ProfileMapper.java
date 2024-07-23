@@ -13,24 +13,29 @@ public class ProfileMapper {
 
     public static ProfileResponse ProfileToProfileResponse(Profile profile) {
         ProfileResponse profileResponse = new ProfileResponse();
+        profileResponse.setUserName(profile.getUserName());
         profileResponse.setProfileId(profile.getId());
         profileResponse.setAddress(profile.getAddress());
         profileResponse.setCity(profile.getCity());
         profileResponse.setImgAvatar("https://firebasestorage.googleapis.com/v0/b/luanvan-428507.appspot.com/o/"
                 + profile.getImgAvatar() + "?alt=media");
+        profileResponse.setFacebook(profile.getFacebook());
+        profileResponse.setPhoneNumber(profile.getPhoneNumber());
         return profileResponse;
     }
 
     public static Profile ProfileCreationRequestToProfile(ProfileCreationRequest profileRequest) {
         Profile profile = new Profile();
+        profile.setUserId(profileRequest.getUserId());
         profile.setAddress(profileRequest.getAddress());
         profile.setCity(profileRequest.getCity());
+        profile.setUserName(profileRequest.getUserName());
         return profile;
     }
 
     public static Profile ProfileUpdateRequestToProfile(ProfileUpdateRequest profileRequest) {
         Profile profile = new Profile();
-        profile.setId(profileRequest.getProfileId());
+//        profile.setId(profileRequest.getProfileId());
         profile.setAddress(profileRequest.getAddress());
         profile.setCity(profileRequest.getCity());
         return profile;

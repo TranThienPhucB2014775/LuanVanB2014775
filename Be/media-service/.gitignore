@@ -12,6 +12,7 @@ target/
 .settings
 .springBeans
 .sts4-cache
+media-service/src/main/resources/firebase-adminsdk.json
 
 ### IntelliJ IDEA ###
 .idea

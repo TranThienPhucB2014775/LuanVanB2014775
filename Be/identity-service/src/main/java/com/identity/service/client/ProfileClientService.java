@@ -14,11 +14,11 @@ import com.identity.dto.Response.ProfileResponse;
 
 @FeignClient(name = "profile-service")
 public interface ProfileClientService {
-    @PostMapping(value = "/profile", consumes = "application/json")
+    @PostMapping(value = "/profile/create", consumes = "application/json")
     ApiResponse<ProfileCreationResponse> createProfile(@RequestBody ProfileCreationRequest profileCreationRequest);
 
-    @GetMapping(value = "/profile/{profileId}", consumes = "application/json")
-    ApiResponse<ProfileResponse> getProfile(@PathVariable String profileId, @RequestHeader String Authorization);
+    @GetMapping(value = "/profile", consumes = "application/json")
+    ApiResponse<ProfileResponse> getProfile( @RequestHeader String Authorization);
 
     @GetMapping(value = "/profile/get-all", consumes = "application/json")
     ApiResponse<List<ProfileResponse>> getAllProfiles(@RequestHeader String Authorization);

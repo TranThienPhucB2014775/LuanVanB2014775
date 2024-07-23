@@ -109,14 +109,23 @@ public class AuthenticationService {
         roleSet.add(Role.builder().name(PredefinedRole.USER_ROLE).build());
 
         log.info("USER INFO {}", userInfo);
+        String userId = UUID.randomUUID().toString();
 
         var user = userRepository.findByEmail(userInfo.getEmail()).orElseGet(() -> {
             var profileCreation = profileClientService.createProfile(
-                    ProfileCreationRequest.builder().city("").address("").build());
+                    ProfileCreationRequest.builder()
+                            .userId(userId)
+                            .city("")
+                            .address("")
+                            .userName(userInfo.getName())
+                            .build());
+
+
+
 
             return userRepository.save(User.builder()
+                    .id(userId)
                     .email(userInfo.getEmail())
-                    .username(userInfo.getName())
                     .roles(roleSet)
                     .profileId(profileCreation.getResult().getProfileId())
                     .build());
@@ -157,7 +166,7 @@ public class AuthenticationService {
         JWSHeader header = new JWSHeader(JWSAlgorithm.HS512);
 
         JWTClaimsSet jwtClaimsSet = new JWTClaimsSet.Builder()
-                .subject(user.getEmail())
+                .subject(user.getId())
                 .issuer("b201475")
                 .issueTime(new Date())
                 .expirationTime(date)
@@ -205,10 +214,9 @@ public class AuthenticationService {
 
         invalidatedTokenRepository.save(invalidatedToken);
 
-        var email = signedJWT.getJWTClaimsSet().getSubject();
-        log.info(email);
+        var user_id = signedJWT.getJWTClaimsSet().getSubject();
 
-        var user = userRepository.findByEmail(email).orElseThrow(() -> new AppException(ErrorCode.UNAUTHENTICATED));
+        var user = userRepository.findById(user_id).orElseThrow(() -> new AppException(ErrorCode.UNAUTHENTICATED));
 
         Date date =
                 new Date(Instant.now().plus(VALID_DURATION, ChronoUnit.SECONDS).toEpochMilli());
@@ -240,11 +248,11 @@ public class AuthenticationService {
 
         Date expiryTime = (isRefresh)
                 ? new Date(signedJWT
-                        .getJWTClaimsSet()
-                        .getIssueTime()
-                        .toInstant()
-                        .plus(REFRESHABLE_DURATION, ChronoUnit.SECONDS)
-                        .toEpochMilli())
+                .getJWTClaimsSet()
+                .getIssueTime()
+                .toInstant()
+                .plus(REFRESHABLE_DURATION, ChronoUnit.SECONDS)
+                .toEpochMilli())
                 : signedJWT.getJWTClaimsSet().getExpirationTime();
 
         var verified = signedJWT.verify(verifier);

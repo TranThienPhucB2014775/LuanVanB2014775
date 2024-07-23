@@ -10,6 +10,8 @@ import lombok.ToString;
 @ToString
 @Builder
 public class ProfileCreationRequest {
+    String userId;
     String city;
     String address;
+    String userName;
 }

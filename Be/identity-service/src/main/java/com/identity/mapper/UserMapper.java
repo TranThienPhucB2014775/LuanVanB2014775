@@ -11,7 +11,6 @@ import com.identity.entity.User;
 public class UserMapper {
     public static User userCreateRequestToUser(UserCreateRequest userCreateRequest) {
         User user = new User();
-        user.setUsername(userCreateRequest.getUsername());
         user.setPassword(userCreateRequest.getPassword());
         user.setEmail(userCreateRequest.getEmail());
         return user;
@@ -21,7 +20,6 @@ public class UserMapper {
         return UserResponse.builder()
                 .id(user.getId())
                 .email(user.getEmail())
-                .username(user.getUsername())
                 .createdDate(user.getCreatedAt())
                 .Enable(user.getEnabled())
                 .build();

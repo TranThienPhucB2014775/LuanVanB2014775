@@ -12,6 +12,7 @@ public class ProfileMapper {
         return ProfileCreationRequest.builder()
                 .city(userCreateRequest.getCity())
                 .address(userCreateRequest.getAddress())
+                .userName(userCreateRequest.getUserName())
                 .build();
     }
 
@@ -28,6 +29,7 @@ public class ProfileMapper {
         userResponse.setCity(profileResponse.getCity());
         userResponse.setAddress(profileResponse.getAddress());
         userResponse.setImgAvatar(profileResponse.getImgAvatar());
+        userResponse.setUsername(profileResponse.getUserName());
         return userResponse;
     }
 }

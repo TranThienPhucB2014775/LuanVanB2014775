@@ -12,4 +12,5 @@ public class ProfileCreationResponse {
     String city;
     String address;
     String imgAvatar;
+    String userName;
 }

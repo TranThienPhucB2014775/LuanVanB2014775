@@ -4,6 +4,12 @@ spring:
   config:
     import: "optional:configserver:http://localhost:8071/"
 
+logging:
+  level:
+    org:
+      springframework:
+        cloud:
+          openfeign: DEBUG
 
 error:
   code: 2000

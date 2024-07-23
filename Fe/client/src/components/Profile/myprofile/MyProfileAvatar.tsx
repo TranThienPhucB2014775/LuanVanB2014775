@@ -14,17 +14,18 @@ export default function MyProfileAvatar({ urlImage }: { urlImage: string }) {
 
 	const { toast } = useToast();
 
-	const {
-		error,
-		isFetching,
-		fetch
-	} = useFetch<ApiResponse<string>>(
-		({ formData, sessionToken }: {
-			formData: FormData,
-			sessionToken: string
-		}) => accountApiRequest.updateImgAvatar({ formData, sessionToken }));
+	const { error, isFetching, fetch } = useFetch<ApiResponse<string>>(
+		({
+			formData,
+			sessionToken,
+		}: {
+			formData: FormData;
+			sessionToken: string;
+		}) => accountApiRequest.updateImgAvatar({ formData, sessionToken })
+	);
 
 	useEffect(() => {
+		console.log(urlImage);
 		setPreviewUrl(urlImage);
 	}, [urlImage]);
 
@@ -53,14 +54,14 @@ export default function MyProfileAvatar({ urlImage }: { urlImage: string }) {
 		if (res?.code === 200) {
 			toast({
 				title: "Thành công",
-				description: "Cập nhật ảnh đại diện thành công"
+				description: "Cập nhật ảnh đại diện thành công",
 			});
-			setImg(null)
+			setImg(null);
 		} else {
 			toast({
 				variant: "destructive",
 				title: "Thành công",
-				description: "Cập nhật ảnh đại diện thành công"
+				description: "Cập nhật ảnh đại diện thành công",
 			});
 		}
 	};
@@ -68,28 +69,33 @@ export default function MyProfileAvatar({ urlImage }: { urlImage: string }) {
 	return (
 		<div className="flex flex-col items-center space-y-5 sm:flex-row sm:space-y-0">
 			{/*{img && (<img src={img} />)}*/}
-			<img className="object-cover w-40 h-40 p-1 rounded-full ring-2 ring-indigo-300 dark:ring-indigo-500"
-				 src={previewUrl}
-				 alt="Bordered avatar" />
+			<img
+				className="object-cover w-40 h-40 p-1 rounded-full ring-2 ring-indigo-300 dark:ring-indigo-500"
+				src={previewUrl}
+				alt="Bordered avatar"
+			/>
 
 			<div className="flex flex-col space-y-5 sm:ml-8">
-				<button type="button"
-						onClick={handleButtonClick}
-						className="py-3.5 px-7 text-base font-medium text-indigo-100 focus:outline-none bg-[#202142] rounded-lg border border-indigo-200 hover:bg-indigo-900 focus:z-10 focus:ring-4 focus:ring-indigo-200 ">
+				<button
+					type="button"
+					onClick={handleButtonClick}
+					className="py-3.5 px-7 text-base font-medium text-indigo-100 focus:outline-none bg-[#202142] rounded-lg border border-indigo-200 hover:bg-indigo-900 focus:z-10 focus:ring-4 focus:ring-indigo-200 "
+				>
 					Chọn ảnh
 				</button>
-				<Input id="picture" type="file"
-					   ref={fileInputRef}
-					   className="hidden"
-					   onChange={handleFileChange}
+				<Input
+					id="picture"
+					type="file"
+					ref={fileInputRef}
+					className="hidden"
+					onChange={handleFileChange}
 				/>
-				<button type="button"
-						className="py-3.5 px-7 text-base font-medium text-indigo-900 focus:outline-none bg-white rounded-lg border border-indigo-200 hover:bg-indigo-100 hover:text-[#202142] focus:z-10 focus:ring-4 focus:ring-indigo-200 "
-						onClick={handleSaveImage}
+				<button
+					type="button"
+					className="py-3.5 px-7 text-base font-medium text-indigo-900 focus:outline-none bg-white rounded-lg border border-indigo-200 hover:bg-indigo-100 hover:text-[#202142] focus:z-10 focus:ring-4 focus:ring-indigo-200 "
+					onClick={handleSaveImage}
 				>
-					{isFetching
-						? "Đang lưu"
-						: "Lưu ảnh"}
+					{isFetching ? "Đang lưu" : "Lưu ảnh"}
 				</button>
 			</div>
 		</div>

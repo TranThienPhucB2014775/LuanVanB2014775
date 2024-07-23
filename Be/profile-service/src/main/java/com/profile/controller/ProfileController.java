@@ -26,19 +26,20 @@ public class ProfileController {
 
     ProfileService profileService;
 
-    @PostMapping
+    @PostMapping("/create")
     ApiResponse<ProfileResponse> createProfile(@Valid @RequestBody ProfileCreationRequest profileCreationRequest) {
+        log.info("Creating profile for user: {}", profileCreationRequest);
         return ApiResponse.<ProfileResponse>builder()
                 .code(0)
                 .result(profileService.createProfile(profileCreationRequest))
                 .build();
     }
 
-    @GetMapping("{id}")
-    ApiResponse<ProfileResponse> getProfile(@PathVariable String id) {
+    @GetMapping
+    ApiResponse<ProfileResponse> getProfile(@RequestHeader(value = "Authorization", defaultValue = "") String token) {
         return ApiResponse.<ProfileResponse>builder()
                 .code(0)
-                .result(profileService.getProfile(id))
+                .result(profileService.getProfile(token.replace("Bearer ", "")))
                 .build();
     }
 
@@ -46,7 +47,6 @@ public class ProfileController {
     ApiResponse<ProfileResponse> updateProfile(
             @Valid @RequestBody ProfileUpdateRequest profileUpdateRequest,
             @RequestHeader(value = "Authorization", defaultValue = "") String token) {
-        log.info("2" + token);
         return ApiResponse.<ProfileResponse>builder()
                 .code(0)
                 .result(profileService.updateProfile(profileUpdateRequest, token.replace("Bearer ", "")))

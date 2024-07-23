@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="ffe5a70c-3a53-4f50-9e00-8959b859e4f7" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/dataSources.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/jarRepositories.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/media-service/src/main/resources/firebase-adminsdk.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/config-service/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/config-service/src/main/resources/application.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/identity-service/src/main/java/com/identity/controller/AvatarController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/identity-service/src/main/java/com/identity/controller/UserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/identity-service/src/main/java/com/identity/controller/UserController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/identity-service/src/main/java/com/identity/dto/Request/ProfileCreationRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/identity-service/src/main/java/com/identity/dto/Request/ProfileCreationRequest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/identity-service/src/main/java/com/identity/dto/Request/UserCreateRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/identity-service/src/main/java/com/identity/dto/Request/UserCreateRequest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/identity-service/src/main/java/com/identity/dto/Response/ProfileCreationResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/identity-service/src/main/java/com/identity/dto/Response/ProfileCreationResponse.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/identity-service/src/main/java/com/identity/entity/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/identity-service/src/main/java/com/identity/entity/User.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/identity-service/src/main/java/com/identity/mapper/ProfileMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/identity-service/src/main/java/com/identity/mapper/ProfileMapper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/identity-service/src/main/java/com/identity/mapper/UserMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/identity-service/src/main/java/com/identity/mapper/UserMapper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/identity-service/src/main/java/com/identity/repository/UserRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/identity-service/src/main/java/com/identity/repository/UserRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/identity-service/src/main/java/com/identity/service/AuthenticationService.java" beforeDir="false" afterPath="$PROJECT_DIR$/identity-service/src/main/java/com/identity/service/AuthenticationService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/identity-service/src/main/java/com/identity/service/UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/identity-service/src/main/java/com/identity/service/UserService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/identity-service/src/main/java/com/identity/service/client/ProfileClientService.java" beforeDir="false" afterPath="$PROJECT_DIR$/identity-service/src/main/java/com/identity/service/client/ProfileClientService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/identity-service/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/identity-service/src/main/resources/application.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/media-service/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/media-service/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/media-service/src/main/java/com/media/service/FirebaseStorageService.java" beforeDir="false" afterPath="$PROJECT_DIR$/media-service/src/main/java/com/media/service/FirebaseStorageService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/media-service/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/media-service/src/main/resources/application.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/profile-service/src/main/java/com/profile/audit/AuditAwareImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/profile-service/src/main/java/com/profile/audit/AuditAwareImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/profile-service/src/main/java/com/profile/config/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/profile-service/src/main/java/com/profile/config/SecurityConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/profile-service/src/main/java/com/profile/controller/AvatarController.java" beforeDir="false" afterPath="$PROJECT_DIR$/profile-service/src/main/java/com/profile/controller/AvatarController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/profile-service/src/main/java/com/profile/controller/ProfileController.java" beforeDir="false" afterPath="$PROJECT_DIR$/profile-service/src/main/java/com/profile/controller/ProfileController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/profile-service/src/main/java/com/profile/dto/Request/ProfileCreationRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/profile-service/src/main/java/com/profile/dto/Request/ProfileCreationRequest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/profile-service/src/main/java/com/profile/dto/Request/ProfileUpdateRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/profile-service/src/main/java/com/profile/dto/Request/ProfileUpdateRequest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/profile-service/src/main/java/com/profile/dto/Response/ProfileResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/profile-service/src/main/java/com/profile/dto/Response/ProfileResponse.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/profile-service/src/main/java/com/profile/entity/Profile.java" beforeDir="false" afterPath="$PROJECT_DIR$/profile-service/src/main/java/com/profile/entity/Profile.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/profile-service/src/main/java/com/profile/mapper/ProfileMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/profile-service/src/main/java/com/profile/mapper/ProfileMapper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/profile-service/src/main/java/com/profile/repository/ProfileRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/profile-service/src/main/java/com/profile/repository/ProfileRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/profile-service/src/main/java/com/profile/service/ProfileService.java" beforeDir="false" afterPath="$PROJECT_DIR$/profile-service/src/main/java/com/profile/service/ProfileService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/profile-service/src/main/java/com/profile/service/client/MediaClientService.java" beforeDir="false" afterPath="$PROJECT_DIR$/profile-service/src/main/java/com/profile/service/client/MediaClientService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/profile-service/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/profile-service/src/main/resources/application.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Fe/client/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../Fe/client/.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Fe/client/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/../Fe/client/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Fe/client/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/../Fe/client/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Fe/client/src/apiRequests/account.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../Fe/client/src/apiRequests/account.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Fe/client/src/app/(Auth)/authenticate/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../Fe/client/src/app/(Auth)/authenticate/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Fe/client/src/app/(Auth)/register/form-register.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../Fe/client/src/app/(Auth)/register/form-register.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Fe/client/src/app/contact/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../Fe/client/src/app/contact/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Fe/client/src/components/Profile/myprofile/MyProfile.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../Fe/client/src/components/Profile/myprofile/MyProfile.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Fe/client/src/components/Profile/myprofile/MyProfileAvatar.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../Fe/client/src/components/Profile/myprofile/MyProfileAvatar.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Fe/client/src/components/ui/form.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../Fe/client/src/components/ui/form.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Fe/client/src/dto/request/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../Fe/client/src/dto/request/index.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Fe/client/src/dto/request/registerRequest.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../Fe/client/src/dto/request/registerRequest.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Fe/client/src/useFetch.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../Fe/client/src/useFetch.ts" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="KubernetesApiPersistence">{}</component>
+  <component name="KubernetesApiProvider">{
+  &quot;isMigrated&quot;: true
+}</component>
+  <component name="ProjectColorInfo">{
+  &quot;customColor&quot;: &quot;&quot;,
+  &quot;associatedIndex&quot;: 8
+}</component>
+  <component name="ProjectId" id="2jSw6ThFPcIzwMZ62MIG3wmf6V2" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RequestMappingsPanelOrder0&quot;: &quot;0&quot;,
+    &quot;RequestMappingsPanelOrder1&quot;: &quot;1&quot;,
+    &quot;RequestMappingsPanelWidth0&quot;: &quot;75&quot;,
+    &quot;RequestMappingsPanelWidth1&quot;: &quot;75&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;Spring Boot.ApiGatewayApplication.executor&quot;: &quot;Run&quot;,
+    &quot;Spring Boot.ConfigServiceApplication.executor&quot;: &quot;Run&quot;,
+    &quot;Spring Boot.EurukaServiceApplication.executor&quot;: &quot;Run&quot;,
+    &quot;Spring Boot.IdentityServiceApplication.executor&quot;: &quot;Run&quot;,
+    &quot;Spring Boot.MediaServiceApplication.executor&quot;: &quot;Run&quot;,
+    &quot;Spring Boot.ProfileServiceApplication.executor&quot;: &quot;Run&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;run.configurations.included.in.services&quot;: &quot;true&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;com.github.weisj.darkmode.DarkModeConfigurable&quot;
+  }
+}</component>
+  <component name="ReactorSettings">
+    <option name="notificationShown" value="true" />
+  </component>
+  <component name="RunDashboard">
+    <option name="configurationTypes">
+      <set>
+        <option value="MavenRunConfiguration" />
+        <option value="SpringBootApplicationConfigurationType" />
+      </set>
+    </option>
+  </component>
+  <component name="RunManager" selected="Spring Boot.ProfileServiceApplication">
+    <configuration name="ApiGatewayApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="api-gateway" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.gateway.ApiGatewayApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ConfigServiceApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="config-service" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.config.ConfigServiceApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="EurukaServiceApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="euruka-service" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.euruka.EurukaServiceApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="IdentityServiceApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="identity-service" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.identity.IdentityServiceApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="MediaServiceApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="media-service" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.media.MediaServiceApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ProfileServiceApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="profile-service" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.profile.ProfileServiceApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <list>
+      <item itemvalue="Spring Boot.ApiGatewayApplication" />
+      <item itemvalue="Spring Boot.ProfileServiceApplication" />
+      <item itemvalue="Spring Boot.ConfigServiceApplication" />
+      <item itemvalue="Spring Boot.EurukaServiceApplication" />
+      <item itemvalue="Spring Boot.IdentityServiceApplication" />
+      <item itemvalue="Spring Boot.MediaServiceApplication" />
+    </list>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-9f38398b9061-39b83d9b5494-intellij.indexing.shared.core-IU-241.18034.62" />
+        <option value="bundled-js-predefined-1d06a55b98c1-0b3e54e931b4-JavaScript-IU-241.18034.62" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="ffe5a70c-3a53-4f50-9e00-8959b859e4f7" name="Changes" comment="" />
+      <created>1721393610515</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1721393610515</updated>
+      <workItem from="1721393611607" duration="7014000" />
+      <workItem from="1721443774216" duration="9888000" />
+      <workItem from="1721475676310" duration="2749000" />
+      <workItem from="1721488511165" duration="304000" />
+      <workItem from="1721528543671" duration="1536000" />
+      <workItem from="1721534331003" duration="2775000" />
+      <workItem from="1721545396341" duration="3617000" />
+      <workItem from="1721558251943" duration="10115000" />
+      <workItem from="1721614831791" duration="6603000" />
+      <workItem from="1721706728938" duration="2005000" />
+      <workItem from="1721708837441" duration="141000" />
+      <workItem from="1721714860489" duration="433000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+</project>

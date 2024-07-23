@@ -2,10 +2,7 @@ package com.identity.service;
 
 import static com.identity.mapper.UserMapper.addProfileToUserResponse;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -53,13 +50,21 @@ public class UserService {
         HashSet<Role> roles = new HashSet<>();
         roleRepository.findById(PredefinedRole.USER_ROLE).ifPresent(roles::add);
 
+        String userId = UUID.randomUUID().toString();
+        log.info("Create user with id: {}", userId);
+        user.setId(userId);
+
         user.setRoles(roles);
         user.setPassword(passwordEncoder.encode(request.getPassword()));
-        log.info("Create user: {}", user);
+
 
         ProfileCreationRequest profileCreationRequest =
                 ProfileMapper.userCreateRequestToProfileCreationRequest(request);
 
+        profileCreationRequest.setUserId(userId);
+        log.info("Create profile with user id: {}", profileCreationRequest);
+        log.info("Create profile with user id: {}", request.getUserName());
+    try {
         var profileCreation = profileClientService.createProfile(profileCreationRequest);
 
         user.setProfileId(profileCreation.getResult().getProfileId());
@@ -70,6 +75,11 @@ public class UserService {
         ProfileMapper.profileCreationResponseOnUserResponse(userResponse, profileCreation.getResult());
 
         return userResponse;
+    }catch (FeignException e){
+        log.info("Error: {}", e.getMessage());
+        throw new AppException(ErrorCode.PROFILE_SERVICE_ERROR);
+    }
+
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -83,7 +93,6 @@ public class UserService {
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public void deleteUser(String userEmail) {
-        log.info("Delete user: ", userEmail);
         Optional<User> user = userRepository.findByEmail(userEmail);
         if (user.get().getRoles().equals("ROLE_ADMIN")) {
             throw new AppException(ErrorCode.CANNOT_DELETE_ADMIN);
@@ -103,13 +112,11 @@ public class UserService {
         var jwt = customJwtDecoder.decode(token);
 
         var user = userRepository
-                .findByEmail(jwt.getSubject())
+                .findById(jwt.getSubject())
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
 
-        log.info("Get user: " + user.getProfileId());
-
         try {
-            var profileResponse = profileClientService.getProfile(user.getProfileId(), "Bearer " + token);
+            var profileResponse = profileClientService.getProfile("Bearer " + token);
             UserResponse userResponse = UserMapper.userToUserResponse(user);
 
             ProfileMapper.profileResponseOnUserResponse(userResponse, profileResponse.getResult());
@@ -133,21 +140,5 @@ public class UserService {
             throw new AppException(ErrorCode.UNCATEGORIZED_EXCEPTION);
         }
         return scopes.contains("ROLE_ADMIN");
-    }
-
-    public UpdateAndCreateAvatarResponse UpdateAvatar(MultipartFile file, String token) {
-        String email = customJwtDecoder.decode(token).getSubject();
-
-        var user = userRepository.findByEmail(email).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
-        log.info("Create avatar for user: " + user.getProfileId());
-        try {
-            profileClientService.createImage(file, user.getProfileId(), "Bearer " + token);
-            return UpdateAndCreateAvatarResponse.builder()
-                    .message("Avatar has been updated")
-                    .build();
-        } catch (FeignException e) {
-            log.error("Error when create avatar: ", e);
-            throw new AppException(ErrorCode.PROFILE_SERVICE_ERROR);
-        }
     }
 }
