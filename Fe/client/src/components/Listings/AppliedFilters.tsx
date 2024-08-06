@@ -17,7 +17,7 @@ function AppliedFilters({
 	setSizes: any;
 }) {
 	return (
-		<div className="AppliedFilters w-full px-[21px] box-border">
+		<div className="AppliedFilters w-full px-20 box-border">
 			<div className="AppliedFilters ">
 				<span className="text-black text-sm font-medium font-['Inter'] leading-normal">
 					Applied Filters:

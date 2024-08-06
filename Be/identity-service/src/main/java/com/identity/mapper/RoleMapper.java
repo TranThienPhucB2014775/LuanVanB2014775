@@ -12,7 +12,7 @@ public class RoleMapper {
         Set<RoleResponse> RoleResponse = roles.stream()
                 .map(role -> new RoleResponse(
                         role.getDescription(),
-                        role.getName(),
+                        role.getName().toString(),
                         PermissionMapper.permissionToPermissionResponse(role.getPermissions())))
                 .collect(Collectors.toSet());
 

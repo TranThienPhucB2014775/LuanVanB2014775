@@ -4,6 +4,7 @@ import java.text.ParseException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -11,7 +12,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
-import com.identity.constant.PredefinedRole;
+import com.identity.constant.Roles;
 import com.identity.dto.Request.*;
 import com.identity.dto.Response.AuthenticationResponse;
 import com.identity.dto.Response.IntrospectResponse;
@@ -106,22 +107,17 @@ public class AuthenticationService {
         var userInfo = outboundUserClientService.getUserInfo("json", response.getAccessToken());
 
         Set<Role> roleSet = new HashSet<>();
-        roleSet.add(Role.builder().name(PredefinedRole.USER_ROLE).build());
+        roleSet.add(Role.builder().name(Roles.TENANT.toString()).build());
 
-        log.info("USER INFO {}", userInfo);
         String userId = UUID.randomUUID().toString();
 
         var user = userRepository.findByEmail(userInfo.getEmail()).orElseGet(() -> {
-            var profileCreation = profileClientService.createProfile(
-                    ProfileCreationRequest.builder()
-                            .userId(userId)
-                            .city("")
-                            .address("")
-                            .userName(userInfo.getName())
-                            .build());
-
-
-
+            var profileCreation = profileClientService.createProfile(ProfileCreationRequest.builder()
+                    .userId(userId)
+                    .city("")
+                    .address("")
+                    .userName(userInfo.getName())
+                    .build());
 
             return userRepository.save(User.builder()
                     .id(userId)
@@ -153,6 +149,43 @@ public class AuthenticationService {
         if (!authenticated) throw new AppException(ErrorCode.UNAUTHENTICATED);
 
         if (!user.getEnabled()) throw new AppException(ErrorCode.USER_LOCKED);
+
+        var token = generateToken(user, date);
+
+        return AuthenticationResponse.builder()
+                .token(token)
+                .expiration(date.getTime() / 100)
+                .build();
+    }
+
+    public AuthenticationResponse authenticateAdmin(AuthenticationRequest request) {
+        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
+        var user = userRepository
+                .findByEmail(request.getEmail())
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+
+        AtomicReference<Boolean> isAdmin = new AtomicReference<>(false);
+
+        user.getRoles().stream().forEach(role -> {
+            isAdmin.set(role.getName().equals(Roles.ADMIN.toString()));
+        });
+        log.info("USER ROLES {}", isAdmin.get());
+
+        if (!isAdmin.get()) {
+            throw new AppException(ErrorCode.UNAUTHORIZED);
+        }
+
+        Date date =
+                new Date(Instant.now().plus(VALID_DURATION, ChronoUnit.SECONDS).toEpochMilli());
+
+        boolean authenticated = passwordEncoder.matches(request.getPassword(), user.getPassword());
+
+        if (!authenticated) throw new AppException(ErrorCode.UNAUTHENTICATED);
+
+        if (!user.getEnabled()) throw new AppException(ErrorCode.USER_LOCKED);
+
+        if (!user.getRoles().stream().anyMatch(role -> role.getName().equals(Roles.ADMIN.toString())))
+            throw new AppException(ErrorCode.UNAUTHORIZED);
 
         var token = generateToken(user, date);
 
@@ -248,11 +281,11 @@ public class AuthenticationService {
 
         Date expiryTime = (isRefresh)
                 ? new Date(signedJWT
-                .getJWTClaimsSet()
-                .getIssueTime()
-                .toInstant()
-                .plus(REFRESHABLE_DURATION, ChronoUnit.SECONDS)
-                .toEpochMilli())
+                        .getJWTClaimsSet()
+                        .getIssueTime()
+                        .toInstant()
+                        .plus(REFRESHABLE_DURATION, ChronoUnit.SECONDS)
+                        .toEpochMilli())
                 : signedJWT.getJWTClaimsSet().getExpirationTime();
 
         var verified = signedJWT.verify(verifier);

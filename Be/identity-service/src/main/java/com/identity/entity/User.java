@@ -19,11 +19,12 @@ import lombok.extern.slf4j.Slf4j;
 @Table(name = "users")
 public class User extends BaseEntity {
     @Id
-//    @GeneratedValue(strategy = GenerationType.UUID)
+    //    @GeneratedValue(strategy = GenerationType.UUID)
     String id;
 
     @Column(name = "email", unique = true, columnDefinition = "VARCHAR(255) COLLATE \"default\"")
     String email;
+
     String password;
 
     @Builder.Default

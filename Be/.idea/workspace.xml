@@ -5,60 +5,151 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ffe5a70c-3a53-4f50-9e00-8959b859e4f7" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/dataSources.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/jarRepositories.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/media-service/src/main/resources/firebase-adminsdk.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/config-service/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/config-service/src/main/resources/application.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/identity-service/src/main/java/com/identity/controller/AvatarController.java" beforeDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/jsLibraryMappings.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/identity-service/src/main/java/com/event/dto/NotificationEvent.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/identity-service/src/main/java/com/identity/constant/NotificationEventType.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/identity-service/src/main/java/com/identity/constant/Roles.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/identity-service/src/main/java/com/identity/constant/UserSortBy.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/identity-service/src/main/java/com/identity/dto/Response/AllUserResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/identity-service/src/main/java/com/identity/dto/Response/ListResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/identity-service/src/main/java/com/identity/validate/RolesSubset.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/identity-service/src/main/java/com/identity/validate/RolesSubsetValidator.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/notification-service/src/main/java/com/event/dto/NotificationEvent.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/notification-service/src/main/java/com/notification/configuration/CustomJwtDecoder.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/notification-service/src/main/java/com/notification/configuration/JwtAuthenticationEntryPoint.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/notification-service/src/main/java/com/notification/configuration/SecurityConfig.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/notification-service/src/main/java/com/notification/controller/EmailController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/notification-service/src/main/java/com/notification/controller/NotificationController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/notification-service/src/main/java/com/notification/dto/ApiResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/notification-service/src/main/java/com/notification/dto/request/EmailRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/notification-service/src/main/java/com/notification/dto/request/Recipient.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/notification-service/src/main/java/com/notification/dto/request/SendEmailRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/notification-service/src/main/java/com/notification/dto/request/Sender.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/notification-service/src/main/java/com/notification/dto/response/EmailResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/notification-service/src/main/java/com/notification/exception/AppException.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/notification-service/src/main/java/com/notification/exception/ErrorCode.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/notification-service/src/main/java/com/notification/exception/GlobalExceptionHandler.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/notification-service/src/main/java/com/notification/service/EmailService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/notification-service/src/main/java/com/notification/service/client/EmailClient.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/post-service/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/post-service/.mvn/wrapper/maven-wrapper.properties" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/post-service/HELP.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/post-service/mvnw" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/post-service/mvnw.cmd" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/post-service/pom.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/post-service/post-service.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/post-service/src/main/java/com/post/PostServiceApplication.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/post-service/src/main/java/com/post/entity/AdditionalCost.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/post-service/src/main/java/com/post/entity/Apartment.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/post-service/src/main/java/com/post/entity/ApartmentType.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/post-service/src/main/java/com/post/entity/BaseEntity.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/post-service/src/main/java/com/post/entity/Bookmark.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/post-service/src/main/java/com/post/entity/Comment.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/post-service/src/main/java/com/post/entity/Image.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/post-service/src/main/java/com/post/entity/RentalPost.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/post-service/src/main/java/com/post/entity/Room.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/post-service/src/main/java/com/post/entity/RoomType.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/post-service/src/main/java/com/post/entity/SearchPost.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/post-service/src/main/java/com/post/entity/Tenant.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/post-service/src/main/resources/application.properties" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/post-service/src/main/resources/application.yml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/post-service/src/test/java/com/post/PostServiceApplicationTests.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Fe/dashboard_vite/src/page/UserDetail.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources.local.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources/87ab4907-d5f2-4149-93bc-53d245abcbad.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/87ab4907-d5f2-4149-93bc-53d245abcbad.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources/87ab4907-d5f2-4149-93bc-53d245abcbad/storage_v2/_src_/database/luanvan.7a9SHg/schema/public.abK9xQ.meta" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/87ab4907-d5f2-4149-93bc-53d245abcbad/storage_v2/_src_/database/luanvan.7a9SHg/schema/public.abK9xQ.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/api-gateway/src/main/java/com/gateway/ApiGatewayApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/api-gateway/src/main/java/com/gateway/ApiGatewayApplication.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/api-gateway/src/main/java/com/gateway/config/AuthenticationFilter.java" beforeDir="false" afterPath="$PROJECT_DIR$/api-gateway/src/main/java/com/gateway/config/AuthenticationFilter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/identity-service/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/identity-service/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/identity-service/src/main/java/com/identity/constant/PredefinedRole.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/identity-service/src/main/java/com/identity/controller/AuthController.java" beforeDir="false" afterPath="$PROJECT_DIR$/identity-service/src/main/java/com/identity/controller/AuthController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/identity-service/src/main/java/com/identity/controller/UserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/identity-service/src/main/java/com/identity/controller/UserController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/identity-service/src/main/java/com/identity/dto/Request/ProfileCreationRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/identity-service/src/main/java/com/identity/dto/Request/ProfileCreationRequest.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/identity-service/src/main/java/com/identity/dto/Request/UserCreateRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/identity-service/src/main/java/com/identity/dto/Request/UserCreateRequest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/identity-service/src/main/java/com/identity/dto/Response/ProfileCreationResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/identity-service/src/main/java/com/identity/dto/Response/ProfileCreationResponse.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/identity-service/src/main/java/com/identity/dto/Response/ProfileResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/identity-service/src/main/java/com/identity/dto/Response/ProfileResponse.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/identity-service/src/main/java/com/identity/dto/Response/UserResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/identity-service/src/main/java/com/identity/dto/Response/UserResponse.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/identity-service/src/main/java/com/identity/entity/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/identity-service/src/main/java/com/identity/entity/User.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/identity-service/src/main/java/com/identity/exception/ErrorCode.java" beforeDir="false" afterPath="$PROJECT_DIR$/identity-service/src/main/java/com/identity/exception/ErrorCode.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/identity-service/src/main/java/com/identity/exception/GlobalExceptionHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/identity-service/src/main/java/com/identity/exception/GlobalExceptionHandler.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/identity-service/src/main/java/com/identity/mapper/ProfileMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/identity-service/src/main/java/com/identity/mapper/ProfileMapper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/identity-service/src/main/java/com/identity/mapper/RoleMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/identity-service/src/main/java/com/identity/mapper/RoleMapper.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/identity-service/src/main/java/com/identity/mapper/UserMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/identity-service/src/main/java/com/identity/mapper/UserMapper.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/identity-service/src/main/java/com/identity/repository/UserRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/identity-service/src/main/java/com/identity/repository/UserRepository.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/identity-service/src/main/java/com/identity/service/AuthenticationService.java" beforeDir="false" afterPath="$PROJECT_DIR$/identity-service/src/main/java/com/identity/service/AuthenticationService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/identity-service/src/main/java/com/identity/service/UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/identity-service/src/main/java/com/identity/service/UserService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/identity-service/src/main/java/com/identity/service/client/ProfileClientService.java" beforeDir="false" afterPath="$PROJECT_DIR$/identity-service/src/main/java/com/identity/service/client/ProfileClientService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/identity-service/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/identity-service/src/main/resources/application.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/media-service/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/media-service/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/media-service/src/main/java/com/media/service/FirebaseStorageService.java" beforeDir="false" afterPath="$PROJECT_DIR$/media-service/src/main/java/com/media/service/FirebaseStorageService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/media-service/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/media-service/src/main/resources/application.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/profile-service/src/main/java/com/profile/audit/AuditAwareImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/profile-service/src/main/java/com/profile/audit/AuditAwareImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/profile-service/src/main/java/com/profile/config/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/profile-service/src/main/java/com/profile/config/SecurityConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/profile-service/src/main/java/com/profile/controller/AvatarController.java" beforeDir="false" afterPath="$PROJECT_DIR$/profile-service/src/main/java/com/profile/controller/AvatarController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/media-service-nodejs/.env" beforeDir="false" afterPath="$PROJECT_DIR$/media-service-nodejs/.env" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/media-service-nodejs/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/media-service-nodejs/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/media-service-nodejs/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/media-service-nodejs/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/media-service-nodejs/src/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/media-service-nodejs/src/index.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/media-service-nodejs/src/services/eureka.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/media-service-nodejs/src/services/eureka.service.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/media-service/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/media-service/.mvn/wrapper/maven-wrapper.properties" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/media-service/mvnw" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/media-service/mvnw.cmd" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/media-service/pom.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/media-service/src/main/java/com/media/MediaServiceApplication.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/media-service/src/main/java/com/media/config/CloudinaryConfig.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/media-service/src/main/java/com/media/config/FireBaseConfig.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/media-service/src/main/java/com/media/controller/mediaController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/media-service/src/main/java/com/media/dto/ApiResponse.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/media-service/src/main/java/com/media/dto/Response/CreateImageResponse.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/media-service/src/main/java/com/media/dto/Response/GetImageResponse.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/media-service/src/main/java/com/media/dto/Response/UpdateImageResponse.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/media-service/src/main/java/com/media/exception/AppException.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/media-service/src/main/java/com/media/exception/ErrorCode.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/media-service/src/main/java/com/media/exception/GlobalExceptionHandler.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/media-service/src/main/java/com/media/service/CloudinaryService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/media-service/src/main/java/com/media/service/FirebaseStorageService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/media-service/src/main/java/com/media/service/ImageService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/media-service/src/main/resources/application.yml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/media-service/src/test/java/com/media/MediaServiceApplicationTests.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/profile-service/src/main/java/com/profile/controller/ProfileController.java" beforeDir="false" afterPath="$PROJECT_DIR$/profile-service/src/main/java/com/profile/controller/ProfileController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/profile-service/src/main/java/com/profile/dto/Request/ProfileCreationRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/profile-service/src/main/java/com/profile/dto/Request/ProfileCreationRequest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/profile-service/src/main/java/com/profile/dto/Request/ProfileUpdateRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/profile-service/src/main/java/com/profile/dto/Request/ProfileUpdateRequest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/profile-service/src/main/java/com/profile/dto/Response/ProfileResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/profile-service/src/main/java/com/profile/dto/Response/ProfileResponse.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/profile-service/src/main/java/com/profile/entity/Profile.java" beforeDir="false" afterPath="$PROJECT_DIR$/profile-service/src/main/java/com/profile/entity/Profile.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/profile-service/src/main/java/com/profile/mapper/ProfileMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/profile-service/src/main/java/com/profile/mapper/ProfileMapper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/profile-service/src/main/java/com/profile/repository/ProfileRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/profile-service/src/main/java/com/profile/repository/ProfileRepository.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/profile-service/src/main/java/com/profile/service/ProfileService.java" beforeDir="false" afterPath="$PROJECT_DIR$/profile-service/src/main/java/com/profile/service/ProfileService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/profile-service/src/main/java/com/profile/service/client/MediaClientService.java" beforeDir="false" afterPath="$PROJECT_DIR$/profile-service/src/main/java/com/profile/service/client/MediaClientService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/profile-service/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/profile-service/src/main/resources/application.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Fe/client/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../Fe/client/.idea/vcs.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Fe/client/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/../Fe/client/package-lock.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Fe/client/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/../Fe/client/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Fe/client/src/apiRequests/account.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../Fe/client/src/apiRequests/account.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Fe/client/src/app/(Auth)/authenticate/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../Fe/client/src/app/(Auth)/authenticate/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Fe/client/src/app/(Auth)/login/form-login.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../Fe/client/src/app/(Auth)/login/form-login.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Fe/client/src/app/(Auth)/login/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../Fe/client/src/app/(Auth)/login/page.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Fe/client/src/app/(Auth)/register/form-register.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../Fe/client/src/app/(Auth)/register/form-register.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Fe/client/src/app/contact/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../Fe/client/src/app/contact/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Fe/client/src/components/Profile/myprofile/MyProfile.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../Fe/client/src/components/Profile/myprofile/MyProfile.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Fe/client/src/app/about/page.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/../Fe/client/src/app/about/page.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Fe/client/src/app/listings/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../Fe/client/src/app/listings/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Fe/client/src/app/not-found.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../Fe/client/src/app/not-found.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Fe/client/src/app/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../Fe/client/src/app/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Fe/client/src/assets/images/marker-shadow.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Fe/client/src/assets/img/Google.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Fe/client/src/assets/img/Logo.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Fe/client/src/components/Header/Header2.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../Fe/client/src/components/Header/Header2.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Fe/client/src/components/Listings/AppliedFilters.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../Fe/client/src/components/Listings/AppliedFilters.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Fe/client/src/components/Listings/List.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../Fe/client/src/components/Listings/List.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Fe/client/src/components/Listings/SideBar.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../Fe/client/src/components/Listings/SideBar.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Fe/client/src/components/Profile/myprofile/MyProfileAvatar.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../Fe/client/src/components/Profile/myprofile/MyProfileAvatar.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Fe/client/src/components/ui/form.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../Fe/client/src/components/ui/form.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Fe/client/src/dto/request/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../Fe/client/src/dto/request/index.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Fe/client/src/dto/request/registerRequest.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../Fe/client/src/dto/request/registerRequest.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Fe/client/src/useFetch.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../Fe/client/src/useFetch.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Fe/client/src/lib/errorCode.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../Fe/client/src/lib/errorCode.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Fe/client/src/lib/http.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../Fe/client/src/lib/http.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="CSS File" />
+        <option value="Enum" />
+        <option value="TypeScript File" />
+        <option value="Interface" />
+        <option value="Class" />
+      </list>
+    </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
@@ -67,6 +158,9 @@
   <component name="KubernetesApiProvider">{
   &quot;isMigrated&quot;: true
 }</component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="DEPENDENCY_CHECKER_PROBLEMS_TAB" />
+  </component>
   <component name="ProjectColorInfo">{
   &quot;customColor&quot;: &quot;&quot;,
   &quot;associatedIndex&quot;: 8
@@ -78,6 +172,11 @@
   </component>
   <component name="PropertiesComponent">{
   &quot;keyToString&quot;: {
+    &quot;Maven.euruka-service [org.apache.maven.plugins:maven-install-plugin:3.1.2:install].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.identity-service [install].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.identity-service [org.apache.maven.plugins:maven-clean-plugin:3.3.2:clean].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.identity-service [org.apache.maven.plugins:maven-install-plugin:3.1.2:install-file].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.identity-service [org.apache.maven.plugins:maven-install-plugin:3.1.2:install].executor&quot;: &quot;Run&quot;,
     &quot;RequestMappingsPanelOrder0&quot;: &quot;0&quot;,
     &quot;RequestMappingsPanelOrder1&quot;: &quot;1&quot;,
     &quot;RequestMappingsPanelWidth0&quot;: &quot;75&quot;,
@@ -89,29 +188,60 @@
     &quot;Spring Boot.EurukaServiceApplication.executor&quot;: &quot;Run&quot;,
     &quot;Spring Boot.IdentityServiceApplication.executor&quot;: &quot;Run&quot;,
     &quot;Spring Boot.MediaServiceApplication.executor&quot;: &quot;Run&quot;,
+    &quot;Spring Boot.NotificationServiceApplication.executor&quot;: &quot;Run&quot;,
+    &quot;Spring Boot.PostServiceApplication.executor&quot;: &quot;Run&quot;,
     &quot;Spring Boot.ProfileServiceApplication.executor&quot;: &quot;Run&quot;,
+    &quot;Spring Boot.SeekingRentersApplication.executor&quot;: &quot;Run&quot;,
     &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;E:/code/LuanVan/LuanVanB2014775/Be&quot;,
+    &quot;list.type.of.created.stylesheet&quot;: &quot;CSS&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
     &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
     &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;npm.dev (1).executor&quot;: &quot;Run&quot;,
+    &quot;npm.dev.executor&quot;: &quot;Run&quot;,
+    &quot;npm.devMediaService.executor&quot;: &quot;Run&quot;,
+    &quot;npm.media-service-nodejs.executor&quot;: &quot;Run&quot;,
+    &quot;npm.notification-service.executor&quot;: &quot;Run&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;,
     &quot;run.configurations.included.in.services&quot;: &quot;true&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;com.github.weisj.darkmode.DarkModeConfigurable&quot;
+    &quot;settings.editor.selected.configurable&quot;: &quot;reference.settings.ide.settings.uml&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;E:\\code\\LuanVan\\LuanVanB2014775\\Be\\notification-service\\node_modules\\typescript\\lib&quot;
   }
 }</component>
   <component name="ReactorSettings">
     <option name="notificationShown" value="true" />
   </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="E:\code\LuanVan\LuanVanB2014775\Be" />
+      <recent name="E:\code\LuanVan\LuanVanB2014775\Be\notification-service\src\main\java\com\notification" />
+      <recent name="E:\code\LuanVan\LuanVanB2014775\Be\notification-service\src\main\java\com\notification\dto" />
+      <recent name="E:\code\LuanVan\LuanVanB2014775\Be\notification-service\src\constants" />
+      <recent name="E:\code\LuanVan\LuanVanB2014775\Be\notification-service\src" />
+    </key>
+    <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="com.seekingRrenters.entity" />
+      <recent name="com.event.dto" />
+      <recent name="com.notification.controller" />
+    </key>
+  </component>
   <component name="RunDashboard">
     <option name="configurationTypes">
       <set>
-        <option value="MavenRunConfiguration" />
+        <option value="NodeJSConfigurationType" />
+        <option value="NodeJsTestRunner" />
         <option value="SpringBootApplicationConfigurationType" />
+        <option value="js.build_tools.npm" />
       </set>
     </option>
   </component>
-  <component name="RunManager" selected="Spring Boot.ProfileServiceApplication">
+  <component name="RunManager" selected="Spring Boot.PostServiceApplication">
     <configuration name="ApiGatewayApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
       <module name="api-gateway" />
       <option name="SPRING_BOOT_MAIN_CLASS" value="com.gateway.ApiGatewayApplication" />
@@ -140,9 +270,22 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="MediaServiceApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
-      <module name="media-service" />
-      <option name="SPRING_BOOT_MAIN_CLASS" value="com.media.MediaServiceApplication" />
+    <configuration name="NotificationServiceApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="notification-service" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.notification.NotificationServiceApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="PostServiceApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" temporary="true" nameIsGenerated="true">
+      <module name="post-service" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.post.PostServiceApplication" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.post.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -154,14 +297,32 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="media-service-nodejs" type="js.build_tools.npm" temporary="true">
+      <package-json value="$PROJECT_DIR$/media-service-nodejs/package.json" />
+      <command value="run" />
+      <scripts>
+        <script value="dev" />
+      </scripts>
+      <node-interpreter value="project" />
+      <envs />
+      <method v="2" />
+    </configuration>
     <list>
+      <item itemvalue="npm.media-service-nodejs" />
+      <item itemvalue="Spring Boot.NotificationServiceApplication" />
       <item itemvalue="Spring Boot.ApiGatewayApplication" />
       <item itemvalue="Spring Boot.ProfileServiceApplication" />
       <item itemvalue="Spring Boot.ConfigServiceApplication" />
       <item itemvalue="Spring Boot.EurukaServiceApplication" />
       <item itemvalue="Spring Boot.IdentityServiceApplication" />
-      <item itemvalue="Spring Boot.MediaServiceApplication" />
+      <item itemvalue="Spring Boot.PostServiceApplication" />
     </list>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Spring Boot.PostServiceApplication" />
+        <item itemvalue="npm.media-service-nodejs" />
+      </list>
+    </recent_temporary>
   </component>
   <component name="SharedIndexes">
     <attachedChunks>
@@ -190,11 +351,39 @@
       <workItem from="1721614831791" duration="6603000" />
       <workItem from="1721706728938" duration="2005000" />
       <workItem from="1721708837441" duration="141000" />
-      <workItem from="1721714860489" duration="433000" />
+      <workItem from="1721714860489" duration="792000" />
+      <workItem from="1721720709097" duration="3431000" />
+      <workItem from="1721804744316" duration="306000" />
+      <workItem from="1721878312720" duration="11263000" />
+      <workItem from="1721904048486" duration="5208000" />
+      <workItem from="1721973134171" duration="10000000" />
+      <workItem from="1722078119636" duration="1944000" />
+      <workItem from="1722136605519" duration="16780000" />
+      <workItem from="1722235493455" duration="4761000" />
+      <workItem from="1722310818396" duration="4891000" />
+      <workItem from="1722403723682" duration="6997000" />
+      <workItem from="1722492889150" duration="197000" />
+      <workItem from="1722493096341" duration="74000" />
+      <workItem from="1722493177857" duration="10344000" />
+      <workItem from="1722519192337" duration="1297000" />
+      <workItem from="1722520504398" duration="441000" />
+      <workItem from="1722520965114" duration="8726000" />
+      <workItem from="1722571891141" duration="22539000" />
+      <workItem from="1722613588644" duration="597000" />
+      <workItem from="1722654838837" duration="8177000" />
+      <workItem from="1722684793198" duration="5790000" />
+      <workItem from="1722745103822" duration="7307000" />
+      <workItem from="1722842194306" duration="5385000" />
+      <workItem from="1722861626745" duration="7506000" />
+      <workItem from="1722915877757" duration="351000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
   </component>
 </project>

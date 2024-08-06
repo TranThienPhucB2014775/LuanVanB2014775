@@ -70,6 +70,11 @@ public class ProfileService {
                 profileRepository.findByUserId(jwt.getSubject()).orElseThrow(() -> new AppException(ErrorCode.PROFILE_NOT_FOUND)));
     }
 
+    public ProfileResponse getProfileByUserId(String userId) {
+        return ProfileMapper.ProfileToProfileResponse(
+                profileRepository.findByUserId(userId).orElseThrow(() -> new AppException(ErrorCode.PROFILE_NOT_FOUND)));
+    }
+
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public List<ProfileResponse> getAllProfiles() {
 

@@ -1,12 +1,12 @@
 import { Eureka } from 'eureka-js-client'
 
-export const eurekaClient = new Eureka({
+export const eurekaClient =(port: number) => new Eureka({
   instance: {
     app: 'media-service',
     hostName: 'localhost',
     ipAddr: '127.0.0.1',
     port: {
-      $: 3001,
+      $: port,
       '@enabled': true
     },
     vipAddress: 'media-service',

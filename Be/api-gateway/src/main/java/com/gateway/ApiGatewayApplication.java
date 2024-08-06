@@ -24,10 +24,16 @@ public class ApiGatewayApplication {
                         .uri("lb://IDENTITY-SERVICE"))
                 .route(p -> p.path("/api/v1/profile/**")
                         .filters(f -> f.rewritePath("/api/v1/profile/(?<segment>.*)", "/${segment}"))
-                        .uri("lb://PROFILE-SERVICE")
-                ).route(p -> p.path("/api/v1/media/**")
+                        .uri("lb://PROFILE-SERVICE"))
+                .route(p -> p.path("/api/v1/media/**")
                         .filters(f -> f.rewritePath("/api/v1/media/(?<segment>.*)", "/${segment}"))
                         .uri("lb://MEDIA-SERVICE"))
+                .route(p -> p.path("/api/v1/notification/**")
+                        .filters(f -> f.rewritePath("/api/v1/notification/(?<segment>.*)", "/${segment}"))
+                        .uri("lb://NOTIFICATION-SERVICE"))
+                .route(p -> p.path("/api/v1/post/**")
+                        .filters(f -> f.rewritePath("/api/v1/post/(?<segment>.*)", "/${segment}"))
+                        .uri("lb://POST-SERVICE"))
                 .build();
     }
 }

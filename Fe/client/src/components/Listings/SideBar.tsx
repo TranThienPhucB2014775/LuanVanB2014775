@@ -21,7 +21,7 @@ function SideBar({
 	setSizes: any;
 }) {
 	return (
-		<div className="FilterSidebar lg:w-[248px] w-full lg:h-[828px] lg:pl-4 lg:pr-3 pt-6 pb-8 rounded-md border border-Neutral-B100 flex-col justify-start items-center gap-6 lg:inline-flex lg:ml-[15px] px-5">
+		<div className="FilterSidebar lg:w-[300px] w-full lg:h-[828px] lg:pr-3 pt-6 pb-8 rounded-md border border-Neutral-B100 flex-col justify-start items-center gap-6 lg:inline-flex px-5">
 			<div className="lg:w-[216px] w-full">
 				<div className="Categories w-full flex-col justify-center items-start inline-flex ">
 					<div className="Categories text-Neutral-N900 ct-text-primary mb-[16px]">

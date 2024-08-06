@@ -18,10 +18,13 @@ public interface ProfileClientService {
     ApiResponse<ProfileCreationResponse> createProfile(@RequestBody ProfileCreationRequest profileCreationRequest);
 
     @GetMapping(value = "/profile", consumes = "application/json")
-    ApiResponse<ProfileResponse> getProfile( @RequestHeader String Authorization);
+    ApiResponse<ProfileResponse> getProfile(@RequestHeader String Authorization);
 
     @GetMapping(value = "/profile/get-all", consumes = "application/json")
     ApiResponse<List<ProfileResponse>> getAllProfiles(@RequestHeader String Authorization);
+
+    @GetMapping(value = "/profile/{userId}", consumes = "application/json")
+    ApiResponse<ProfileResponse> getProfileByUserId(@PathVariable String userId, @RequestHeader String Authorization);
 
     @PutMapping(value = "/avatar", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     ApiResponse<?> createImage(

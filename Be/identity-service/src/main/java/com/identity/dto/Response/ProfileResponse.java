@@ -12,4 +12,7 @@ public class ProfileResponse {
     String city;
     String address;
     String imgAvatar;
+    String userName;
+    String facebook;
+    String phoneNumber;
 }

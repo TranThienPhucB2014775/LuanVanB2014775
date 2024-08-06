@@ -6,6 +6,7 @@ import { useFetch } from "@/useFetch";
 import { ApiResponse } from "@/dto/ApiResponse";
 import accountApiRequest from "@/apiRequests/account";
 import { useToast } from "@/components/ui/use-toast";
+import { mediaLink } from "@/constants/media";
 
 export default function MyProfileAvatar({ urlImage }: { urlImage: string }) {
 	const [img, setImg] = useState<File | null>(null);
@@ -26,7 +27,7 @@ export default function MyProfileAvatar({ urlImage }: { urlImage: string }) {
 
 	useEffect(() => {
 		console.log(urlImage);
-		setPreviewUrl(urlImage);
+		setPreviewUrl(`${mediaLink}/${urlImage}`);
 	}, [urlImage]);
 
 	const handleButtonClick = () => {

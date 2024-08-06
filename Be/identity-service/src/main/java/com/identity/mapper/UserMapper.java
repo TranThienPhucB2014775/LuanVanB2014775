@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.identity.dto.Request.UserCreateRequest;
+import com.identity.dto.Response.AllUserResponse;
 import com.identity.dto.Response.ProfileResponse;
 import com.identity.dto.Response.UserResponse;
 import com.identity.entity.User;
@@ -22,6 +23,17 @@ public class UserMapper {
                 .email(user.getEmail())
                 .createdDate(user.getCreatedAt())
                 .Enable(user.getEnabled())
+                .Role(user.getRoles().stream().findFirst().get().getName())
+                .build();
+    }
+
+    public static AllUserResponse userToAllUserResponse(User user) {
+        return AllUserResponse.builder()
+                .id(user.getId())
+                .email(user.getEmail())
+                .createdDate(user.getCreatedAt())
+                .Enable(user.getEnabled())
+                .Role(user.getRoles().stream().findFirst().get().getName())
                 .build();
     }
 

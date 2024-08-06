@@ -1,0 +1,22 @@
+spring:
+  application:
+    name: "notification-service"
+  kafka:
+    bootstrap-servers: localhost:9094
+    consumer:
+      group-id: notification-group
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: "*"
+  config:
+    import: "optional:configserver:http://localhost:8071/"
+
+error:
+  code: 3000
+
+notification:
+  email:
+    brevo-url: https://api.brevo.com
+    brevo-apikey: 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

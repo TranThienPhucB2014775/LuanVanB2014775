@@ -15,7 +15,7 @@ import { loginResponse } from "@/dto/response";
 import { useFetch } from "@/useFetch";
 import { loginRequest } from "@/dto/request";
 import { ApiResponse } from "@/dto/ApiResponse";
-import {remove} from "@jridgewell/set-array";
+import { remove } from "@jridgewell/set-array";
 
 const navItems = [
 	{
@@ -48,16 +48,16 @@ function Header() {
 	const pathName = usePathname();
 
 	async function handleLogout() {
-        const token = localStorage.getItem("token") || "";
-        await authApiRequest.logoutFromNextClientToNextServer(token)
-        localStorage.removeItem("token");
-        setUser("");
+		const token = localStorage.getItem("token") || "";
+		await authApiRequest.logoutFromNextClientToNextServer(token);
+		localStorage.removeItem("token");
+		setUser("");
 	}
 
 	return (
 		<header className="flex flex-wrap sm:justify-start sm:flex-nowrap w-full bg-white text-sm py-4">
 			<nav
-				className="max-w-ct-max-width w-full mx-auto px-4 flex flex-wrap basis-full items-center justify-between"
+				className="max-w-ct-max-width w-full mx-auto px-3 flex flex-wrap basis-full items-center justify-between"
 				aria-label="Global"
 			>
 				<Link href="/">
@@ -146,8 +146,8 @@ function Header() {
 							</Link>
 						</>
 					)}
-					<div className="w-full max-w-48 hidden lg:flex items-center ">
-						<Input type="email" placeholder="Email" />
+					<div className="w-full max-w-48 hidden lg:flex items-center gap-2">
+						<Input type="email" placeholder="Tìm kiếm..." />
 						<Button type="submit">Tìm</Button>
 					</div>
 				</div>
@@ -170,7 +170,11 @@ function Header() {
 							</Link>
 						))}
 						<div className="w-full max-w-48 items-center flex md:hidden">
-							<Input type="email" placeholder="Email" />
+							<Input
+								type="email"
+								placeholder="Tìm kiếm.."
+								className="ml-2"
+							/>
 							<Button type="submit">Tìm</Button>
 						</div>
 					</div>

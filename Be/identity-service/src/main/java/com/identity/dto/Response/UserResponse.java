@@ -19,5 +19,8 @@ public class UserResponse {
     String address;
     LocalDateTime createdDate;
     String imgAvatar;
+    String facebook;
+    String phoneNumber;
+    String Role;
     //    Set<RoleResponse> roles;
 }

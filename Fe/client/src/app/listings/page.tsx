@@ -117,8 +117,8 @@ function Page() {
 	);
 
 	return (
-		<div className="max-w-ct-max-width my-[32px] w-full mx-auto">
-			<div className="mx-[15px] flex flex-col lg:flex-row">
+		<div className="max-w-ct-max-width my-[32px] w-full container">
+			<div className="flex flex-col lg:flex-row">
 				<SideBar
 					Categories={categories}
 					sizes={sizes}

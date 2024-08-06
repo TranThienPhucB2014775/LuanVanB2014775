@@ -64,6 +64,7 @@ export default function FormLogin() {
 					router.refresh();
 				}
 			} else {
+				console.log(res);
 				const desc: string =
 					res?.code === USER_NOT_EXIST_CODE
 						? "Tài khoản không tồn tại"

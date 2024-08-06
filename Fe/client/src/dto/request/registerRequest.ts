@@ -19,6 +19,7 @@ export const registerRequest = z
 			.max(20),
 		city: z.string().optional(),
 		address: z.string().optional(),
+		role: z.enum(["LANDLORD", "TENANT"]).optional(),
 	})
 	.strict()
 	.superRefine(({ ...data }, ctx) => {

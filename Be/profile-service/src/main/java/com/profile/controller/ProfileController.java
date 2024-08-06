@@ -43,6 +43,14 @@ public class ProfileController {
                 .build();
     }
 
+    @GetMapping("/{userId}")
+    ApiResponse<ProfileResponse> getProfileByUserId(@PathVariable String userId) {
+        return ApiResponse.<ProfileResponse>builder()
+                .code(0)
+                .result(profileService.getProfileByUserId(userId))
+                .build();
+    }
+
     @PostMapping("/update")
     ApiResponse<ProfileResponse> updateProfile(
             @Valid @RequestBody ProfileUpdateRequest profileUpdateRequest,

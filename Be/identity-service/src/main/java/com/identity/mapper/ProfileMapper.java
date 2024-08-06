@@ -21,6 +21,9 @@ public class ProfileMapper {
         userResponse.setCity(profileResponse.getCity());
         userResponse.setAddress(profileResponse.getAddress());
         userResponse.setImgAvatar(profileResponse.getImgAvatar());
+        userResponse.setUsername(profileResponse.getUserName());
+        userResponse.setFacebook(profileResponse.getFacebook());
+        userResponse.setPhoneNumber(profileResponse.getPhoneNumber());
         return userResponse;
     }
 

@@ -2,6 +2,9 @@ package com.identity.controller;
 
 import java.text.ParseException;
 
+import com.event.dto.NotificationEvent;
+import com.identity.constant.NotificationEventType;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import com.identity.dto.ApiResponse;
@@ -38,6 +41,13 @@ public class AuthController {
     public ApiResponse<AuthenticationResponse> login(@RequestBody AuthenticationRequest authenticationRequest) {
         log.info("Login authentication request: {}", authenticationRequest);
         var result = authenticationService.authenticate(authenticationRequest);
+        return ApiResponse.<AuthenticationResponse>builder().result(result).build();
+    }
+
+    @PostMapping("/token/admin")
+    public ApiResponse<AuthenticationResponse> loginAdmin(@RequestBody AuthenticationRequest authenticationRequest) {
+        log.info("Login authentication request: {}", authenticationRequest);
+        var result = authenticationService.authenticateAdmin(authenticationRequest);
         return ApiResponse.<AuthenticationResponse>builder().result(result).build();
     }
 

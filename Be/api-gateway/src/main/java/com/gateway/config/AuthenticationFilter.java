@@ -45,6 +45,7 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
             "/profile/swagger-ui/.*",
             "/profile/actuator/.*",
             "/media/.*",
+            "/notification/.*",
     };
 
     @Value("${app.api-prefix}")

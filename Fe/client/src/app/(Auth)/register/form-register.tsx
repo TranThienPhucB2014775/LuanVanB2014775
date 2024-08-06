@@ -23,6 +23,7 @@ import { registerResponse } from "@/dto/response";
 import { useToast } from "@/components/ui/use-toast";
 import { redirect } from "next/dist/server/api-utils";
 import { useRouter } from "next/navigation";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
 export default function FormRegister() {
 	const form = useForm<z.infer<typeof registerRequest>>({
@@ -34,6 +35,7 @@ export default function FormRegister() {
 			confirmPassword: "",
 			city: "",
 			address: "",
+			role: "TENANT",
 		},
 	});
 
@@ -45,6 +47,7 @@ export default function FormRegister() {
 	const router = useRouter();
 
 	async function onSubmit(values: z.infer<typeof registerRequest>) {
+		console.log(values);
 		const res = await fetch(values);
 		console.log(res?.code);
 		if (res?.code === 0) {
@@ -72,6 +75,40 @@ export default function FormRegister() {
 	return (
 		<Form {...form}>
 			<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
+				<FormField
+					control={form.control}
+					name="role"
+					render={({ field }) => (
+						<FormItem className="space-y-3">
+							<FormLabel>Bạn là?</FormLabel>
+							<FormControl>
+								<RadioGroup
+									onValueChange={field.onChange}
+									defaultValue={field.value}
+									className="flex flex-col space-y-1"
+								>
+									<FormItem className="flex items-center space-x-3 space-y-0">
+										<FormControl>
+											<RadioGroupItem value="LANDLORD" />
+										</FormControl>
+										<FormLabel className="font-normal">
+											Người cho thuê
+										</FormLabel>
+									</FormItem>
+									<FormItem className="flex items-center space-x-3 space-y-0">
+										<FormControl>
+											<RadioGroupItem value="TENANT" />
+										</FormControl>
+										<FormLabel className="font-normal">
+											Người thuê
+										</FormLabel>
+									</FormItem>
+								</RadioGroup>
+							</FormControl>
+							<FormMessage />
+						</FormItem>
+					)}
+				/>
 				<FormField
 					control={form.control}
 					name="email"
@@ -174,7 +211,7 @@ export default function FormRegister() {
 					name="address"
 					render={({ field }) => (
 						<FormItem>
-							<FormLabel>Thành phố, Tỉnh thành</FormLabel>
+							<FormLabel>Địa chỉ</FormLabel>
 							<FormControl>
 								<Input
 									placeholder="Hãy nhập địa chỉ của bạn"
