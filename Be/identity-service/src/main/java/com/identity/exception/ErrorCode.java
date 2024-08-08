@@ -12,7 +12,7 @@ public enum ErrorCode {
     AUTHORIZATION_DENIED(9998, "Authorization denied", HttpStatus.FORBIDDEN),
     INVALID_KEY(1, "Uncategorized error", HttpStatus.BAD_REQUEST),
     EMAIL_INVALID(2, "Email Invalid", HttpStatus.BAD_REQUEST),
-    ROLE_INVALID(3, "Username must be at least {min} characters", HttpStatus.UNPROCESSABLE_ENTITY),
+    ROLE_INVALID(3, "Role Invalid", HttpStatus.BAD_REQUEST),
     INVALID_PASSWORD(4, "Password must be at least {min} characters", HttpStatus.UNPROCESSABLE_ENTITY),
     USER_NOT_EXISTED(5, "User not existed", HttpStatus.NOT_FOUND),
     UNAUTHENTICATED(6, "Unauthenticated", HttpStatus.UNAUTHORIZED),

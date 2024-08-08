@@ -20,7 +20,7 @@ import java.util.UUID;
 public class SearchPost extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    UUID postId;
+    UUID searchPostId;
 
     UUID userId;
 

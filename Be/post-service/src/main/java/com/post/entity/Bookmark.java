@@ -1,9 +1,6 @@
 package com.post.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Index;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
@@ -19,8 +16,7 @@ import java.util.UUID;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Slf4j
 @Table(
-        name = "rental_posts",
-        indexes = {@Index(name = "rental_posts_user_id_index", columnList = "user_id")}
+        name = "book_marks"
 )
 
 public class Bookmark {
@@ -31,6 +27,7 @@ public class Bookmark {
     @Id
     UUID userId;
 
-    @Id
-    UUID rentalPostId;
+    @ManyToOne
+    @JoinColumn(name = "rental_post_id")
+    RentalPost rentalPost;
 }

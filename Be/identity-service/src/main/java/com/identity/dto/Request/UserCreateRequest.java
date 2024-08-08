@@ -34,6 +34,6 @@ public class UserCreateRequest {
     @NotNull
     @RolesSubset(
             anyOf = {Roles.LANDLORD, Roles.TENANT},
-            message = "INVALID_ROLE")
-    Roles role;
+            message = "ROLE_INVALID")
+    String role;
 }

@@ -1,9 +1,8 @@
-package com.notification.configuration;
-
+package com.property.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.notification.dto.ApiResponse;
-import com.notification.exception.ErrorCode;
+import com.property.dto.ApiResponse;
+import com.property.exception.ErrorCode;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.MediaType;
@@ -24,7 +23,7 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
         ApiResponse<?> apiResponse = ApiResponse.builder()
                 .code(errorCode.getCode())
-                .message(errorCode.getMessage())
+                .result(errorCode.getMessage())
                 .build();
 
         ObjectMapper objectMapper = new ObjectMapper();

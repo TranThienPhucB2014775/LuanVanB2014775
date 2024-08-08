@@ -102,9 +102,8 @@ public class UserService {
             int pageNum, int pageSize, String sortBy, String order, String search, Boolean isEnable) {
         Sort sort = Sort.by(order.equals("asc") ? Sort.Direction.ASC : Sort.Direction.DESC, sortBy);
         Pageable pageable = PageRequest.of(pageNum, pageSize, sort);
-        Page<User> users;
 
-        users = userRepository.findByEmailContainingAndEnabled(search, isEnable, pageable);
+        Page<User> users = userRepository.findByEmailContainingAndEnabled(search, isEnable, pageable);
 
         return ListResponse.<AllUserResponse>builder()
                 .data(users.stream().map(UserMapper::userToAllUserResponse).collect(Collectors.toList()))

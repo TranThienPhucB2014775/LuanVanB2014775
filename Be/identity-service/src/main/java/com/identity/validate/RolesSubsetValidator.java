@@ -7,7 +7,7 @@ import jakarta.validation.ConstraintValidatorContext;
 
 import com.identity.constant.Roles;
 
-public class RolesSubsetValidator implements ConstraintValidator<RolesSubset, Roles> {
+public class RolesSubsetValidator implements ConstraintValidator<RolesSubset, String> {
     private Roles[] subset;
 
     @Override
@@ -16,7 +16,12 @@ public class RolesSubsetValidator implements ConstraintValidator<RolesSubset, Ro
     }
 
     @Override
-    public boolean isValid(Roles value, ConstraintValidatorContext context) {
-        return value == null || Arrays.asList(subset).contains(value);
+    public boolean isValid(String value, ConstraintValidatorContext context) {
+        try{
+            return value == null || Arrays.asList(subset).contains(value);
+        } catch (IllegalArgumentException e) {
+            return false;
+        }
+
     }
 }

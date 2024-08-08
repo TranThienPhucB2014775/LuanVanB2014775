@@ -27,24 +27,6 @@ eureka:
     serviceUrl:
       defaultZone: http://localhost:8070/eureka/
 
-management:
-  endpoints:
-    web:
-      exposure:
-        include: "*"
-  health:
-    readiness-state:
-      enabled: true
-    liveness-state:
-      enabled: true
-  endpoint:
-    health:
-      probes:
-        enabled: true
-  metrics:
-    tags:
-      application: ${spring.application.name}
-
 error:
   code: 1000
 

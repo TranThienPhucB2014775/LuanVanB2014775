@@ -46,6 +46,7 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
             "/profile/actuator/.*",
             "/media/.*",
             "/notification/.*",
+            "/property/.*"
     };
 
     @Value("${app.api-prefix}")

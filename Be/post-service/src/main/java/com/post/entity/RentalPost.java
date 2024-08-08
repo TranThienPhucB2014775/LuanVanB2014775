@@ -19,7 +19,7 @@ import java.util.UUID;
 @Slf4j
 @Table(name = "rental_posts",
         indexes = {
-                @Index(name = "rental_posts_user_id_index", columnList = "userId")
+                @Index(name = "rental_posts_user_id_index", columnList = "user_id")
         })
 public class RentalPost extends BaseEntity {
     @Id
@@ -34,4 +34,12 @@ public class RentalPost extends BaseEntity {
     @OneToMany
     @JoinColumn(name = "rental_post_id")
     Set<Image> images;
+
+    @OneToMany
+    @JoinColumn(name = "rental_post_id")
+    Set<Comment> comment;
+
+    @OneToMany
+    @JoinColumn(name = "rental_post_id")
+    Set<Bookmark> bookmark;
 }

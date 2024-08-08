@@ -30,16 +30,17 @@ public class GlobalExceptionHandler {
     @Value("${error.code}")
     private int codeError;
 
-    //    @ExceptionHandler(value = Exception.class)
-    //    ResponseEntity<ApiResponse> handlingRuntimeException(RuntimeException exception) {
-    //        log.error("Exception: ", exception.getMessage());
-    //        ApiResponse apiResponse = new ApiResponse();
-    //
-    //        apiResponse.setCode(ErrorCode.UNCATEGORIZED_EXCEPTION.getCode());
-    //        apiResponse.setResult(ErrorCode.UNCATEGORIZED_EXCEPTION.getMessage());
-    //
-    //        return ResponseEntity.badRequest().body(apiResponse);
-    //    }
+    @ExceptionHandler(value = Exception.class)
+    ResponseEntity<ApiResponse> handlingRuntimeException(RuntimeException exception) {
+        log.error("Exception: ", exception.getMessage());
+        ApiResponse apiResponse = new ApiResponse();
+
+        apiResponse.setCode(ErrorCode.UNCATEGORIZED_EXCEPTION.getCode());
+        apiResponse.setResult(ErrorCode.UNCATEGORIZED_EXCEPTION.getMessage());
+
+        return ResponseEntity.badRequest().body(apiResponse);
+    }
+
     //
     @ExceptionHandler(value = AppException.class)
     ResponseEntity<ApiResponse> handlingAppException(AppException exception) {
@@ -73,6 +74,7 @@ public class GlobalExceptionHandler {
             throw new RuntimeException(e);
         }
     }
+
     //
     @ExceptionHandler(value = DataIntegrityViolationException.class)
     ResponseEntity<ApiResponse> handlingDataIntegrityViolationException(DataIntegrityViolationException exception) {

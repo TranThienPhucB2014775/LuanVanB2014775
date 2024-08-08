@@ -15,9 +15,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Slf4j
-@Table(name = "rental_posts", indexes = {
-        @Index(name = "rental_posts_user_id_index", columnList = "user_id")
-})
+@Table(name = "comments", indexes = {})
 public class Comment {
 
     @Id
@@ -25,7 +23,7 @@ public class Comment {
     UUID commentId;
 
     @ManyToOne
-    @JoinColumn(name = "post_id", nullable = false)
+    @JoinColumn(name = "rental_post_id")
     RentalPost rentalPost;
 
     UUID userId;
