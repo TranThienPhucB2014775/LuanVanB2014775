@@ -17,9 +17,11 @@ public class ProfileMapper {
         profileResponse.setProfileId(profile.getId());
         profileResponse.setAddress(profile.getAddress());
         profileResponse.setCity(profile.getCity());
-        profileResponse.setImgAvatar(""+profile.getImgAvatar());
+        profileResponse.setImgAvatar("" + profile.getImgAvatar());
         profileResponse.setFacebook(profile.getFacebook());
         profileResponse.setPhoneNumber(profile.getPhoneNumber());
+        profileResponse.setAboutMe(profile.getAboutMe());
+        profileResponse.setZaloPhoneNumber(profile.getZaloPhoneNumber());
         return profileResponse;
     }
 
@@ -33,10 +35,14 @@ public class ProfileMapper {
     }
 
     public static Profile ProfileUpdateRequestToProfile(ProfileUpdateRequest profileRequest) {
-        Profile profile = new Profile();
-//        profile.setId(profileRequest.getProfileId());
-        profile.setAddress(profileRequest.getAddress());
-        profile.setCity(profileRequest.getCity());
-        return profile;
+
+        return Profile.builder()
+                .city(profileRequest.getCity())
+                .address(profileRequest.getAddress())
+                .facebook(profileRequest.getFacebook())
+                .phoneNumber(profileRequest.getPhoneNumber())
+                .aboutMe(profileRequest.getAboutMe())
+                .zaloPhoneNumber(profileRequest.getZaloPhoneNumber())
+                .build();
     }
 }

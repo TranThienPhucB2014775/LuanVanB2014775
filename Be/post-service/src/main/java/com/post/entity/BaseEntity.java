@@ -12,6 +12,7 @@ import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 
 @Data
@@ -23,7 +24,7 @@ public class BaseEntity {
     @CreatedDate
     @Column(updatable = false)
     @JsonIgnore
-    private LocalDateTime createdAt;
+    private Instant createdAt;
 
     @CreatedBy
     @Column(updatable = false)
@@ -33,7 +34,7 @@ public class BaseEntity {
     @LastModifiedDate
     @Column(insertable = false)
     @JsonIgnore
-    private LocalDateTime updatedAt;
+    private Instant updatedAt;
 
     @LastModifiedBy
     @Column(insertable = false)

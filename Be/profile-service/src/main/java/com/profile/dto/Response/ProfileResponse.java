@@ -15,4 +15,6 @@ public class ProfileResponse {
     String userName;
     String facebook;
     String phoneNumber;
+    String aboutMe;
+    String zaloPhoneNumber;
 }

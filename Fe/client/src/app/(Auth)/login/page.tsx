@@ -14,9 +14,6 @@ export default function Page() {
 
 	const targetUrl = `${authUrl}?redirect_uri=${callbackUrl}&response_type=code&client_id=${googleClientId}&scope=openid%20email%20profile`;
 
-	console.log(targetUrl);
-	// redirect(targetUrl);
-
 	return (
 		<div className="w-full h-[560px] bg-white ct-center">
 			<div className="w-[320px]">

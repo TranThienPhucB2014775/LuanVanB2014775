@@ -1,15 +1,20 @@
 package com.property.dto.request;
 
-import com.property.validation.ApartmentTypeSubset;
+import static com.property.constant.ApartmentTypes.*;
+
 import jakarta.validation.constraints.NotNull;
+
+import com.property.validation.ApartmentTypeSubset;
+
 import lombok.Getter;
 import lombok.Setter;
 
-import static com.property.constant.ApartmentTypes.*;
-
 @Getter
 @Setter
-public class apartmentCreationRequest {
+public class ApartmentCreationRequest {
+
+    @NotNull(message = "INVALID_VALUE")
+    String name;
 
     @NotNull(message = "INVALID_VALUE")
     String city;
@@ -24,7 +29,6 @@ public class apartmentCreationRequest {
     String description;
 
     @NotNull
-    @ApartmentTypeSubset(
-            anyOf = {APARTMENT, HOUSE, STUDIO, DORMITORY, ROOM})
+    @ApartmentTypeSubset(anyOf = {APARTMENT, HOUSE, STUDIO, DORMITORY, ROOM})
     String apartmentType;
 }

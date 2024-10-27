@@ -16,8 +16,6 @@ export async function POST(request: Request) {
 
     const expires = new Date(decoded.exp * 1000)
 
-    console.log(expires)
-
 
     return Response.json(body, {
         status: 200,

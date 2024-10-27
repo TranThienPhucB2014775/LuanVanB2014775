@@ -16,15 +16,16 @@ import java.util.UUID;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Slf4j
-@Table(name = "images")
+@Table(name = "image")
 public class Image extends BaseEntity {
 
     @Id
-    UUID imageId;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    String imageId;
 
-    String name;
+    String postId;
 
-    @ManyToOne
-    @JoinColumn(name = "rental_post_id")
-    RentalPost rentalPost;
+    String imageUrl;
+
+    String userId;
 }

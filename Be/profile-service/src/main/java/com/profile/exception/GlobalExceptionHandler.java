@@ -3,9 +3,13 @@ package com.profile.exception;
 import java.util.Map;
 import java.util.Objects;
 
+import com.nimbusds.jose.shaded.gson.JsonObject;
+import com.nimbusds.jose.shaded.gson.JsonParser;
+import feign.FeignException;
 import jakarta.validation.ConstraintViolation;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -16,6 +20,7 @@ import com.profile.dto.ApiResponse;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
 @ControllerAdvice
 @Slf4j
@@ -44,10 +49,23 @@ public class GlobalExceptionHandler {
         ApiResponse apiResponse = new ApiResponse();
 
         apiResponse.setCode(errorCode.getCode() + codeError);
-        log.error("apiResponse: ", apiResponse.getCode());
+        log.error("apiResponse: {}", apiResponse.getCode());
         apiResponse.setResult(errorCode.getMessage());
 
         return ResponseEntity.status(errorCode.getStatusCode()).body(apiResponse);
+    }
+
+    @ExceptionHandler(value = FeignException.class)
+    ResponseEntity<ApiResponse> handlingFeignException(FeignException exception) {
+
+
+        JsonObject jsonObject = JsonParser.parseString(exception.contentUTF8()).getAsJsonObject();
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(ApiResponse.builder()
+                        .code(jsonObject.get("code").getAsInt())
+                        .result(jsonObject.get("result").getAsString())
+                        .build());
     }
 
     @ExceptionHandler(value = AccessDeniedException.class)
@@ -59,6 +77,17 @@ public class GlobalExceptionHandler {
                         .code(errorCode.getCode())
                         .result(errorCode.getMessage())
                         .build());
+    }
+
+    @ExceptionHandler(value = MaxUploadSizeExceededException.class)
+    ResponseEntity<ApiResponse> handlingMaxUploadSizeExceededException(MaxUploadSizeExceededException exception) {
+        ErrorCode errorCode = ErrorCode.MAX_UPLOAD_SIZE_EXCEEDED;
+        ApiResponse apiResponse = new ApiResponse();
+
+        apiResponse.setCode(errorCode.getCode() + codeError);
+        apiResponse.setResult(errorCode.getMessage());
+
+        return ResponseEntity.status(errorCode.getStatusCode()).body(apiResponse);
     }
 
     @ExceptionHandler(value = MethodArgumentNotValidException.class)

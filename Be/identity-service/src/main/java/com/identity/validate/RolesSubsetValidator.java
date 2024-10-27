@@ -17,11 +17,16 @@ public class RolesSubsetValidator implements ConstraintValidator<RolesSubset, St
 
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
-        try{
-            return value == null || Arrays.asList(subset).contains(value);
-        } catch (IllegalArgumentException e) {
+        if (value == null) {
             return false;
         }
 
+        try {
+            Roles roles = Roles.valueOf(value.toUpperCase());
+            return Arrays.asList(subset).contains(roles);
+
+        } catch (IllegalArgumentException e) {
+            return false;
+        }
     }
 }

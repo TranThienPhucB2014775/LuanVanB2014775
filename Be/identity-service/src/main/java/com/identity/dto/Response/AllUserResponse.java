@@ -15,5 +15,6 @@ public class AllUserResponse {
     String email;
     Boolean Enable;
     String Role;
+    Boolean isVerified;
     LocalDateTime createdDate;
 }

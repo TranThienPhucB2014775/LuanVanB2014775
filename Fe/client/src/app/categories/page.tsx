@@ -101,8 +101,6 @@ function Page() {
 	}
 
 	function handleChangeArrange(arrangeName: string) {
-		console.log(arrangeName);
-		console.log(arrange);
 		if (arrangeName === "up") {
 			setArrange("down");
 		} else {

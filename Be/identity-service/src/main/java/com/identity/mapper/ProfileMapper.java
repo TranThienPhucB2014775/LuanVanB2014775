@@ -24,6 +24,8 @@ public class ProfileMapper {
         userResponse.setUsername(profileResponse.getUserName());
         userResponse.setFacebook(profileResponse.getFacebook());
         userResponse.setPhoneNumber(profileResponse.getPhoneNumber());
+        userResponse.setAboutMe(profileResponse.getAboutMe());
+        userResponse.setZaloPhoneNumber(profileResponse.getZaloPhoneNumber());
         return userResponse;
     }
 

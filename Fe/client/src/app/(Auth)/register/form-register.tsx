@@ -47,9 +47,7 @@ export default function FormRegister() {
 	const router = useRouter();
 
 	async function onSubmit(values: z.infer<typeof registerRequest>) {
-		console.log(values);
 		const res = await fetch(values);
-		console.log(res?.code);
 		if (res?.code === 0) {
 			toast({
 				variant: "destructive",

@@ -1,16 +1,21 @@
 package com.post.exception;
 
 
+import com.nimbusds.jose.shaded.gson.JsonObject;
+import com.nimbusds.jose.shaded.gson.JsonParser;
 import com.post.dto.ApiResponse;
+import feign.FeignException;
 import jakarta.validation.ConstraintViolation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
 import java.util.Map;
 import java.util.Objects;
@@ -34,6 +39,29 @@ public class GlobalExceptionHandler {
         apiResponse.setResult(ErrorCode.UNCATEGORIZED_EXCEPTION.getMessage());
 
         return ResponseEntity.badRequest().body(apiResponse);
+    }
+
+    @ExceptionHandler(value = FeignException.class)
+    ResponseEntity<ApiResponse<?>> handlingFeignException(FeignException exception) {
+
+        JsonObject jsonObject = JsonParser.parseString(exception.contentUTF8()).getAsJsonObject();
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(ApiResponse.builder()
+                        .code(jsonObject.get("code").getAsInt())
+                        .result(jsonObject.get("result").getAsString())
+                        .build());
+    }
+
+    @ExceptionHandler(value = MaxUploadSizeExceededException.class)
+    ResponseEntity<ApiResponse> handlingMaxUploadSizeExceededException(MaxUploadSizeExceededException exception) {
+        ErrorCode errorCode = ErrorCode.FILE_SIZE_LIMIT_EXCEEDED;
+
+        return ResponseEntity.status(errorCode.getStatusCode())
+                .body(ApiResponse.builder()
+                        .code(errorCode.getCode())
+                        .result(errorCode.getMessage())
+                        .build());
     }
 
     @ExceptionHandler(value = AppException.class)

@@ -1,6 +1,6 @@
 "use client";
 
-import logo from "@/assets/img/transparent_2024-05-31T06-05-03.png";
+import logo from "@/assets/images/Logo.png";
 import logout from "@/assets/icons/arrow-up-tray.png";
 import userImg from "@/assets/icons/user-circle.png";
 import React, { useEffect, useState } from "react";
@@ -32,7 +32,7 @@ function Header() {
 			if (!token) return;
 			const res = await authApiRequest.info(token);
 			if (res.code !== 401) {
-				setUser(token);
+				// setUser(token, );
 			} else {
 				// await authApiRequest.logoutFromNextClientToNextServer(token);
 			}
@@ -59,7 +59,7 @@ function Header() {
 							expiresAt: "",
 						})
 						.then((res) => {
-							console.log(res);
+
 						});
 				});
 			}
@@ -78,7 +78,6 @@ function Header() {
 	}
 
 	const pathName = usePathname();
-	console.log(pathName === "/categories");
 
 	return (
 		<>

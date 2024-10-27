@@ -13,7 +13,7 @@ function ErrorPage() {
 							Error
 						</p>
 					</div>
-					<BreadCrumbItem routeName="Error" />
+					<BreadCrumbItem value="" routeName="Error" />
 				</div>
 			</div>
 			<div className="w-full h-[400px] ct-center">

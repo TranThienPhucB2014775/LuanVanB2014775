@@ -32,7 +32,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(value = Exception.class)
     ResponseEntity<ApiResponse> handlingRuntimeException(RuntimeException exception) {
-        log.error("Exception: ", exception.getMessage());
+        log.error("Exception: {}", exception.getMessage());
         ApiResponse apiResponse = new ApiResponse();
 
         apiResponse.setCode(ErrorCode.UNCATEGORIZED_EXCEPTION.getCode());
@@ -50,6 +50,7 @@ public class GlobalExceptionHandler {
         apiResponse.setCode(errorCode.getCode() + codeError);
         apiResponse.setResult(errorCode.getMessage());
 
+        log.error("Exception: {}", exception.getMessage());
         return ResponseEntity.status(errorCode.getStatusCode()).body(apiResponse);
     }
 
@@ -65,7 +66,8 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(value = FeignException.class)
     ResponseEntity<ApiResponse> handlingFeignException(FeignException exception) {
-        log.info("FeignException: ", exception.contentUTF8());
+        log.info("FeignException: {}", exception.contentUTF8());
+        log.info("FeignException: {}", exception.toString());
         try {
             ObjectMapper mapper = new ObjectMapper();
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)

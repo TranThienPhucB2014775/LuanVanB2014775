@@ -10,7 +10,7 @@ import lombok.Setter;
 @Setter
 public class ProfileUpdateRequest {
 
-    @Size(min = 6,max = 50, message = "INVALID_USER_ID")
+    @Size(min = 6, max = 50, message = "INVALID_USER_ID")
     String userName;
 
     @Size(min = 32, message = "INVALID_USER_ID")
@@ -22,8 +22,10 @@ public class ProfileUpdateRequest {
     String facebook;
 
     @Pattern(regexp = "^\\+84[0-9]{9}$", message = "Invalid phone number")
-    private String phoneNumber;
+    String phoneNumber;
 
     @Pattern(regexp = "^\\+84[0-9]{9}$", message = "Invalid phone number")
-    private String zaloPhoneNumber;
+    String zaloPhoneNumber;
+
+    String aboutMe;
 }

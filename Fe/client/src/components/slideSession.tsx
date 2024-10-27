@@ -5,30 +5,31 @@ import { isClient } from "@/lib/http";
 import { useEffect } from "react";
 import authApiRequest from "../apiRequests/auth";
 import { infoResponse, loginResponse } from "@/dto/response";
-import { ApiResponse } from "@/dto/ApiResponse";
 
 const SlideSession = ({
 	isAuth,
 	token,
 }: {
-	isAuth: Boolean;
+	isAuth: {
+		isAuth: boolean;
+		avatarUrl: string;
+	};
 	token: string;
 }) => {
-	const { setUser } = useAppContext();
+	const { setUser, setAvatar } = useAppContext();
 	const jwt = require("jsonwebtoken");
-	console.log(token);
 
 	useEffect(() => {
 		async function introspect() {
 			if (token === "") return;
-			console.log("introspect");
 
-			if (isAuth) {
-				const decoded = jwt.decode(token);
-				setUser(decoded.sub);
+			const decoded = jwt.decode(token);
+
+			if (isAuth.isAuth) {
+				setUser(decoded.sub,decoded.scope);
+				setAvatar(isAuth.avatarUrl);
 			} else {
 				await authApiRequest.logoutFromNextClientToNextServer(token);
-				console.log("error");
 			}
 		}
 
@@ -48,12 +49,11 @@ const SlideSession = ({
 							expiresAt: "",
 						})
 						.then((res) => {
-							console.log(res);
+
 							if (res.code !== 0) {
 								handleLogout();
 								localStorage.removeItem("token");
 							}
-							console.log(res);
 						});
 				});
 			}
@@ -62,11 +62,11 @@ const SlideSession = ({
 		introspect();
 
 		return () => clearInterval(interval);
-	});
+	},[]);
 
 	async function handleLogout() {
 		await authApiRequest.logoutFromNextClientToNextServer(token);
-		setUser("");
+		setUser("","");
 	}
 
 	return null;

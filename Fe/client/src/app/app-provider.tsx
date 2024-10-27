@@ -1,20 +1,28 @@
 "use client";
-import {
+import React, {
 	createContext,
 	useCallback,
 	useContext,
-	useEffect,
-	useState,
+	useState
 } from "react";
 
 const AppContext = createContext<{
 	user: string | null;
-	setUser: (user: string | null) => void;
+	setUser: (user: string | null, role: string | null) => void;
 	isAuthenticated: boolean;
+	role: string | null;
+	avatarUrl: string | null;
+	setAvatar: (avatar: string | null) => void;
 }>({
 	user: null,
-	setUser: () => {},
+	setUser: () => {
+	},
 	isAuthenticated: false,
+	role: "",
+	avatarUrl: "",
+	setAvatar: () => {
+
+	}
 });
 
 export const useAppContext = () => {
@@ -23,20 +31,38 @@ export const useAppContext = () => {
 };
 
 export default function AppProvider({
-	children,
-}: {
+										children
+									}: {
 	children: React.ReactNode;
 }) {
 	const [user, setUserState] = useState<string | null>(() => {
 		return null;
 	});
 
+	const [role, setRole] = useState<string | null>(() => {
+		return null;
+	});
+
+	const [avatarUrl, setAvatarUrl] = useState<string | null>(() => {
+		return null;
+	});
+
+	const setAvatar = useCallback(
+		(avatar: string | null) => {
+			setAvatarUrl(avatar);
+		},
+		[avatarUrl]
+	);
+
 	const isAuthenticated = Boolean(user);
 	const setUser = useCallback(
-		(user: string | null) => {
+		(user: string | null, role: string | null) => {
 			setUserState(user);
 			// localStorage.setItem("token", JSON.stringify(token));
+			setRole(role);
+			// !isAuthenticated
 		},
+
 		[setUserState]
 	);
 
@@ -51,6 +77,9 @@ export default function AppProvider({
 				user,
 				setUser,
 				isAuthenticated,
+				role,
+				avatarUrl,
+				setAvatar
 			}}
 		>
 			{children}

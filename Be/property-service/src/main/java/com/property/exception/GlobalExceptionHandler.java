@@ -1,23 +1,26 @@
 package com.property.exception;
 
+import java.util.Map;
+import java.util.Objects;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.property.dto.ApiResponse;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import feign.FeignException;
 import jakarta.validation.ConstraintViolation;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.converter.HttpMessageNotReadableException;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
-import java.util.Map;
-import java.util.Objects;
+import com.property.dto.ApiResponse;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
 @ControllerAdvice
 @Slf4j
@@ -28,25 +31,28 @@ public class GlobalExceptionHandler {
 
     @Value("${error.code}")
     private int codeError;
-
-//    @ExceptionHandler(value = Exception.class)
-//    ResponseEntity<ApiResponse> handlingRuntimeException(RuntimeException exception) {
-//        log.error("Exception: ", exception.toString());
-//        ApiResponse apiResponse = new ApiResponse();
-//
-//        apiResponse.setCode(ErrorCode.UNCATEGORIZED_EXCEPTION.getCode());
-//        apiResponse.setResult(ErrorCode.UNCATEGORIZED_EXCEPTION.getMessage());
-//
-//        return ResponseEntity.badRequest().body(apiResponse);
-//    }
+    //
+    //    @ExceptionHandler(value = Exception.class)
+    //    ResponseEntity<ApiResponse> handlingRuntimeException(RuntimeException exception) {
+    //        log.error("Exception: ", exception.toString());
+    //        ApiResponse apiResponse = new ApiResponse();
+    //
+    //        apiResponse.setCode(ErrorCode.UNCATEGORIZED_EXCEPTION.getCode());
+    //        apiResponse.setResult(ErrorCode.UNCATEGORIZED_EXCEPTION.getMessage());
+    //
+    //        return ResponseEntity.badRequest().body(apiResponse);
+    //    }
 
     //
     @ExceptionHandler(value = AppException.class)
     ResponseEntity<ApiResponse> handlingAppException(AppException exception) {
         ErrorCode errorCode = exception.getErrorCode();
         ApiResponse apiResponse = new ApiResponse();
-
-        apiResponse.setCode(errorCode.getCode() + codeError);
+        if (errorCode.getCode() < 1000) {
+            apiResponse.setCode(errorCode.getCode() + codeError);
+        } else {
+            apiResponse.setCode(errorCode.getCode());
+        }
         apiResponse.setResult(errorCode.getMessage());
 
         return ResponseEntity.status(errorCode.getStatusCode()).body(apiResponse);
@@ -61,7 +67,6 @@ public class GlobalExceptionHandler {
     //
     //        return ResponseEntity.status(ErrorCode.AUTHORIZATION_DENIED.getStatusCode()).body(apiResponse);
     //    }
-
 
     @ExceptionHandler(value = MethodArgumentNotValidException.class)
     ResponseEntity<ApiResponse> handlingValidation(MethodArgumentNotValidException exception) {
@@ -93,6 +98,29 @@ public class GlobalExceptionHandler {
                         : errorCode.getMessage());
 
         return ResponseEntity.badRequest().body(apiResponse);
+    }
+
+    @ExceptionHandler(value = FeignException.class)
+    ResponseEntity<ApiResponse<?>> handlingFeignException(FeignException exception) {
+
+        JsonObject jsonObject = JsonParser.parseString(exception.contentUTF8()).getAsJsonObject();
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(ApiResponse.builder()
+                        .code(jsonObject.get("code").getAsInt())
+                        .result(jsonObject.get("result").getAsString())
+                        .build());
+    }
+
+    @ExceptionHandler(value = MaxUploadSizeExceededException.class)
+    ResponseEntity<ApiResponse> handlingMaxUploadSizeExceededException(MaxUploadSizeExceededException exception) {
+        ErrorCode errorCode = ErrorCode.MAX_UPLOAD_SIZE_EXCEEDED;
+        ApiResponse apiResponse = new ApiResponse();
+
+        apiResponse.setCode(errorCode.getCode());
+        apiResponse.setResult(errorCode.getMessage());
+
+        return ResponseEntity.status(errorCode.getStatusCode()).body(apiResponse);
     }
 
     private String mapAttribute(String message, Map<String, Object> attributes) {

@@ -20,15 +20,14 @@ export const handleUplpadImgs = async (req: Request) => {
     maxFields: 4,
     uploadDir: UP_LOAD_TEMP_DIR,
     keepExtensions: true,
-    maxFileSize: 400 * 1024,
-    maxTotalFileSize: 400 * 1024 * 4,
-    filter: function ({ name, originalFilename, mimetype }) {
+    maxFileSize: 1024 * 1024 * 10,
+    maxTotalFileSize: 1024 * 1024 * 10 * 6,
+    filter: function({ name, originalFilename, mimetype }) {
       const valid = name === 'image' && Boolean(mimetype?.includes('image'))
 
       if (!valid) {
         form.emit('data', new Error('Invalid file type') as any)
       }
-
       return valid
     }
   })
@@ -46,26 +45,16 @@ export const handleUplpadImgs = async (req: Request) => {
       if (!Boolean(files.image)) {
         return reject(ErrorDetails.FILE_NOT_FOUND)
       }
-      const { imageNames }: any = req.query
+
+      const imageNames = (Array.isArray(req.query.imageNames) ? req.query.imageNames : [req.query.imageNames])
+        .filter((name): name is string => typeof name === 'string')
       console.log(imageNames)
 
-      const imageNamesArr: string[] = []
-
-      if (typeof imageNames === 'string') {
-        if (1 !== (files.image as File[]).length) {
-          return reject(ErrorDetails.FILE_NAME_NOT_MATCH)
-        }
-        imageNamesArr.push(imageNames)
-      } else if (typeof imageNames === 'object') {
-        if ((files.image as File[]).length !== (imageNames as string[]).length) {
-          console.log((files.image as File[]).length)
-          console.log((imageNames as File[]).length)
-          imageNamesArr.push(...(imageNames as string[]))
-          return reject(ErrorDetails.FILE_NAME_NOT_MATCH)
-        }
+      if (imageNames.length !== (files.image as File[]).length) {
+        return reject(ErrorDetails.FILE_NAME_NOT_MATCH)
       }
 
-      resolve({ files: files.image as File[], imageNames: imageNamesArr })
+      resolve({ files: files.image as File[], imageNames })
     })
   })
 }

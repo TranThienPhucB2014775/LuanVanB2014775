@@ -3,16 +3,20 @@ package com.identity.service;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import com.event.dto.NotificationEvent;
+import com.event.dto.ReportCreationEvent;
+import com.identity.dto.Request.UserReportRequest;
+import com.identity.repository.UserVerificationRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.event.dto.NotificationEvent;
 import com.identity.config.CustomJwtDecoder;
 import com.identity.dto.Request.ProfileCreationRequest;
 import com.identity.dto.Request.UserCreateRequest;
@@ -46,9 +50,10 @@ public class UserService {
     PasswordEncoder passwordEncoder;
     CustomJwtDecoder customJwtDecoder;
     ProfileClientService profileClientService;
+    UserVerificationRepository userVerificationRepository;
+    UserMapper UserMapper;
 
     KafkaTemplate<String, Object> kafkaTemplate;
-
 
     public UserResponse createUser(UserCreateRequest request) {
         User user = UserMapper.userCreateRequestToUser(request);
@@ -57,24 +62,18 @@ public class UserService {
         log.info("Create user with role: {}", request.getRole());
         roleRepository.findById(request.getRole().toString()).ifPresent(roles::add);
 
-        String userId = UUID.randomUUID().toString();
-        log.info("Create user with id: {}", userId);
-        user.setId(userId);
-
         user.setRoles(roles);
         user.setPassword(passwordEncoder.encode(request.getPassword()));
+
+        user = userRepository.save(user);
 
         ProfileCreationRequest profileCreationRequest =
                 ProfileMapper.userCreateRequestToProfileCreationRequest(request);
 
-        profileCreationRequest.setUserId(userId);
-        log.info("Create profile with user id: {}", profileCreationRequest);
-        log.info("Create profile with user id: {}", request.getUserName());
+        profileCreationRequest.setUserId(user.getId());
+
         try {
             var profileCreation = profileClientService.createProfile(profileCreationRequest);
-
-            user.setProfileId(profileCreation.getResult().getProfileId());
-            user = userRepository.save(user);
 
             UserResponse userResponse = UserMapper.userToUserResponse(user);
 
@@ -85,6 +84,8 @@ public class UserService {
                     .recipient(user.getEmail())
                     .subject("Welcome to US")
                     .body("Hello, " + profileCreation.getResult().getUserName())
+                    .param(Map.of("name", profileCreation.getResult().getUserName()))
+                    .templateCode("WELCOME")
                     .build();
 
             // Publish message to kafka
@@ -103,7 +104,8 @@ public class UserService {
         Sort sort = Sort.by(order.equals("asc") ? Sort.Direction.ASC : Sort.Direction.DESC, sortBy);
         Pageable pageable = PageRequest.of(pageNum, pageSize, sort);
 
-        Page<User> users = userRepository.findByEmailContainingAndEnabled(search, isEnable, pageable);
+        Page<User> users =
+                userRepository.findByEmailContainingAndEnabled(search.isEmpty() ? null : search, isEnable, pageable);
 
         return ListResponse.<AllUserResponse>builder()
                 .data(users.stream().map(UserMapper::userToAllUserResponse).collect(Collectors.toList()))
@@ -130,10 +132,14 @@ public class UserService {
     }
 
     public UserResponse getUser(String token) {
-        var jwt = customJwtDecoder.decode(token);
+
+        var authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        log.info("Authentication: {}", authentication);
+        log.info("Authentication: {}", authentication.getName());
 
         var user = userRepository
-                .findById(jwt.getSubject())
+                .findById(authentication.getName())
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
 
         try {
@@ -151,12 +157,12 @@ public class UserService {
     }
 
     //    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public UserResponse getUserByEmail(String userId, String token) {
+    public UserResponse getUserById(String userId) {
 
         var user = userRepository.findById(userId).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
 
         try {
-            var profileResponse = profileClientService.getProfileByUserId(userId, "Bearer " + token);
+            var profileResponse = profileClientService.getProfileByUserId(userId);
             UserResponse userResponse = UserMapper.userToUserResponse(user);
 
             ProfileMapper.profileResponseOnUserResponse(userResponse, profileResponse.getResult());
@@ -166,6 +172,40 @@ public class UserService {
         } catch (FeignException.Unauthorized e) {
             throw new AppException(ErrorCode.PROFILE_SERVICE_ERROR);
         }
+    }
+
+    public UserResponse getUserByEmail(String email) {
+        var user = userRepository.findByEmail(email).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+
+        try {
+            var profileResponse = profileClientService.getProfileByUserId(user.getId());
+            UserResponse userResponse = UserMapper.userToUserResponse(user);
+
+            ProfileMapper.profileResponseOnUserResponse(userResponse, profileResponse.getResult());
+            userResponse.setRole(user.getRoles().stream().findFirst().get().getName());
+            return userResponse;
+
+        } catch (FeignException.Unauthorized e) {
+            throw new AppException(ErrorCode.PROFILE_SERVICE_ERROR);
+        }
+    }
+
+    public void reportUser(UserReportRequest request) {
+
+        User user = userRepository
+                .findById(request.getUserId()).orElseThrow(
+                        () -> new AppException(ErrorCode.USER_NOT_EXISTED));
+
+        kafkaTemplate.send(
+                "create-report",
+                ReportCreationEvent.builder()
+                        .reportType("USERs")
+                        .message(request.getMessage())
+                        .itemId(request.getUserId())
+                        .userId(SecurityContextHolder.getContext().getAuthentication().getName())
+                        .build()
+        );
+
     }
 
     public boolean isAdminScope(String token) {

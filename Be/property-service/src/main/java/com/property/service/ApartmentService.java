@@ -1,31 +1,41 @@
 package com.property.service;
 
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import com.event.dto.ReportCreationEvent;
+import com.property.dto.ApiResponse;
+import com.property.dto.request.*;
+import com.property.dto.response.FeedBackResponse;
+import com.property.entity.*;
+import com.property.repository.*;
+import com.property.service.client.InteractClient;
+import org.springframework.boot.actuate.security.AuthenticationAuditListener;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Service;
+
 import com.property.config.CustomJwtDecoder;
-import com.property.dto.request.apartmentCreationRequest;
-import com.property.dto.request.apartmentDeleteAndEnableRequest;
-import com.property.dto.request.apartmentUpdateRequest;
 import com.property.dto.response.ApartmentResponse;
 import com.property.dto.response.ListResponse;
-import com.property.entity.Apartment;
-import com.property.entity.ApartmentType;
 import com.property.exception.AppException;
 import com.property.exception.ErrorCode;
 import com.property.mapper.ApartmentMapper;
-import com.property.repository.ApartmentRepository;
-import com.property.repository.ApartmentTypeRepository;
+import com.property.repository.specification.ApartmentSpecifications;
+
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.stereotype.Service;
-
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -34,30 +44,35 @@ import java.util.stream.Collectors;
 @ToString
 public class ApartmentService {
     ApartmentRepository apartmentRepository;
-    ApartmentTypeRepository apartmentTypeRepositoty;
+    ApartmentTypeRepository getAllAdditionalCost;
     CustomJwtDecoder customJwtDecoder;
+    TenantRepository tenantRepository;
+
+    InteractClient interactClient;
+
+    KafkaTemplate<String, Object> kafkaTemplate;
+    RoomTypeRepository roomTypeRepository;
+    RoomRepository roomRepository;
+    ContractRepository contractRepository;
 
     public ApartmentResponse getApartment(String apartmentId) {
 
-        return ApartmentMapper.apartmentToApartmentResponse(
-                apartmentRepository.findById(apartmentId).orElseThrow(
-                        () -> new AppException(ErrorCode.APARTMENT_NOT_FOUND)
-                )
-        );
+        return ApartmentMapper.apartmentToApartmentResponse(apartmentRepository
+                .findById(apartmentId)
+                .orElseThrow(() -> new AppException(ErrorCode.APARTMENT_NOT_FOUND)));
     }
 
-    public ApartmentResponse createApartment(apartmentCreationRequest request, String token) {
+    public ApartmentResponse createApartment(ApartmentCreationRequest request) {
 
-        ApartmentType apartmentType =
-                apartmentTypeRepositoty.findById(
-                        request.getApartmentType()).orElseThrow(() -> new AppException(ErrorCode.APARTMENT_TYPE_EXISTED));
+        ApartmentType apartmentType = getAllAdditionalCost
+                .findById(request.getApartmentType())
+                .orElseThrow(() -> new AppException(ErrorCode.APARTMENT_TYPE_EXISTED));
         log.info(apartmentType.toString());
 
-        var jwt = customJwtDecoder.decode(token);
-
+        var authentication = SecurityContextHolder.getContext().getAuthentication();
 
         Apartment apartment = ApartmentMapper.creationApartmentRequestToApartment(request);
-        apartment.setUserId(jwt.getSubject());
+        apartment.setUserId(authentication.getName());
         apartment.setApartmentType(apartmentType);
         apartment.setIsAvailable(true);
         log.info(apartmentType.toString());
@@ -67,16 +82,51 @@ public class ApartmentService {
         return ApartmentMapper.apartmentToApartmentResponse(apartment);
     }
 
-    public ApartmentResponse updateApartment(apartmentUpdateRequest request, String token) {
+    public ApiResponse<FeedBackResponse> createRating(
+            ApartmentRatingCreationRequest request,
+            String token
+    ) {
 
-        var jwt = customJwtDecoder.decode(token);
-        Apartment apartment = apartmentRepository.findById(
-                request.getApartmentId()).orElseThrow(
-                () -> new AppException(ErrorCode.APARTMENT_NOT_FOUND)
-        );
+        List<Tenant> tenants = tenantRepository.findByApartmentId(request.getApartmentId());
 
-        if (apartment.getUserId().equals(jwt.getSubject())) {
+        log.info("tenant: " + tenants.toString());
+
+        var auth = SecurityContextHolder.getContext().getAuthentication();
+
+        log.info("auth: " + auth.getName());
+
+        if (tenants.stream().noneMatch(tenant -> tenant.getTenantId().equals(auth.getName()))) {
             throw new AppException(ErrorCode.UNAUTHORIZED);
+        }
+
+        log.info("auth: " + auth.getName());
+
+        return interactClient.createRating(
+                "Bearer " + token,
+                FeedBackCreationRequest.builder()
+                        .rating(request.getRating())
+                        .feedBack(request.getFeedBack())
+                        .itemId(request.getApartmentId())
+                        .feedBackType("APARTMENT")
+                        .build()
+        );
+    }
+
+    public ApartmentResponse updateApartment(ApartmentUpdateRequest request) {
+
+        var authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        Apartment apartment = apartmentRepository
+                .findById(request.getApartmentId())
+                .orElseThrow(() -> new AppException(ErrorCode.APARTMENT_NOT_FOUND));
+
+        Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
+
+        if (authorities.stream()
+                .noneMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("ROLE_ADMIN"))) {
+            if (!apartment.getUserId().equals(authentication.getName())) {
+                throw new AppException(ErrorCode.UNAUTHORIZED);
+            }
         }
 
         apartment.setCity(request.getCity());
@@ -85,8 +135,9 @@ public class ApartmentService {
         apartment.setUtility(request.getUtility());
         apartment.setRule(request.getRule());
         if (!request.getApartmentType().equals(apartment.getApartmentType().getName())) {
-            ApartmentType apartmentType = apartmentTypeRepositoty.findById(
-                    request.getApartmentType()).orElseThrow(() -> new AppException(ErrorCode.APARTMENT_TYPE_EXISTED));
+            ApartmentType apartmentType = getAllAdditionalCost
+                    .findById(request.getApartmentType())
+                    .orElseThrow(() -> new AppException(ErrorCode.APARTMENT_TYPE_EXISTED));
             apartment.setApartmentType(apartmentType);
         }
 
@@ -95,15 +146,31 @@ public class ApartmentService {
         return ApartmentMapper.apartmentToApartmentResponse(apartment);
     }
 
-    public void deleteApartment(String request, String token) {
-        var jwt = customJwtDecoder.decode(token);
-        Apartment apartment = apartmentRepository.findById(
-                request).orElseThrow(
-                () -> new AppException(ErrorCode.APARTMENT_NOT_FOUND)
-        );
+    public void deleteApartment(String request) {
+        var authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        if (!apartment.getUserId().equals(jwt.getSubject())) {
-            throw new AppException(ErrorCode.UNAUTHORIZED);
+        Apartment apartment = apartmentRepository
+                .findById(request)
+                .orElseThrow(() -> new AppException(ErrorCode.APARTMENT_NOT_FOUND));
+
+        List<RoomType> roomTypes = roomTypeRepository.findAllByApartment(apartment);
+
+        if (!roomTypes.isEmpty()) {
+            for (RoomType roomType : roomTypes) {
+                if (roomType.getIsAvailable()) {
+                    throw new AppException(ErrorCode.ROOM_TYPE_AVAILABLE);
+                }
+            }
+        }
+
+
+        Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
+
+        if (authorities.stream()
+                .noneMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("ROLE_ADMIN"))) {
+            if (!apartment.getUserId().equals(authentication.getName())) {
+                throw new AppException(ErrorCode.UNAUTHORIZED);
+            }
         }
 
         apartment.setIsAvailable(false);
@@ -111,17 +178,22 @@ public class ApartmentService {
         apartmentRepository.save(apartment);
     }
 
-    public void enableApartment(String request, String token) {
-        var jwt = customJwtDecoder.decode(token);
-        Apartment apartment = apartmentRepository.findById(
-                request).orElseThrow(
-                () -> new AppException(ErrorCode.APARTMENT_NOT_FOUND)
-        );
+    public void enableApartment(String request) {
+        var authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        if (!apartment.getUserId().equals(jwt.getSubject())) {
-            throw new AppException(ErrorCode.UNAUTHORIZED);
+        Apartment apartment = apartmentRepository
+                .findById(request)
+                .orElseThrow(() -> new AppException(ErrorCode.APARTMENT_NOT_FOUND));
+
+        Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
+
+        if (!authorities.stream()
+                .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("ROLE_ADMIN"))) {
+            if (!apartment.getUserId().equals(authentication.getName())) {
+                log.info(authentication.getName());
+                throw new AppException(ErrorCode.UNAUTHORIZED);
+            }
         }
-
         apartment.setIsAvailable(true);
 
         apartmentRepository.save(apartment);
@@ -135,18 +207,63 @@ public class ApartmentService {
             String search,
             Boolean isAvailable,
             String city,
-            String userId
-    ) {
+            String userId,
+            String apartmentType) {
         Sort sort = Sort.by(order.equals("asc") ? Sort.Direction.ASC : Sort.Direction.DESC, sortBy);
         Pageable pageable = PageRequest.of(pageNum, pageSize, sort);
-        Page<Apartment> apartments = apartmentRepository.findAllApartments(search, isAvailable, city, userId, pageable);
 
+        var authentication = SecurityContextHolder.getContext().getAuthentication();
+        Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
+
+        if (userId.isEmpty()) {
+            if (authorities.stream()
+                    .noneMatch(
+                            grantedAuthority -> grantedAuthority.getAuthority().equals("ROLE_ADMIN"))) {
+                userId = authentication.getName();
+            }
+            log.info("1");
+        }
+
+        log.info("role: " + authorities.toString());
+        log.info("userId: " + userId);
+
+        Page<Apartment> apartments = searchApartments(search, isAvailable, city, userId, apartmentType, pageable);
 
         return ListResponse.<ApartmentResponse>builder()
                 .totalElement(apartments.getTotalElements())
                 .totalPage(apartments.getTotalPages())
                 .data(apartments.stream()
-                        .map(ApartmentMapper::apartmentToApartmentResponse).collect(Collectors.toList()))
+                        .map(ApartmentMapper::apartmentToApartmentResponse)
+                        .collect(Collectors.toList()))
                 .build();
+    }
+
+    public void reportApartment(ApartmentReportRequest request) {
+
+        Apartment apartment = apartmentRepository
+                .findById(request.getApartmentId()).orElseThrow(
+                        () -> new AppException(ErrorCode.APARTMENT_NOT_FOUND));
+
+        kafkaTemplate.send(
+                "create-report",
+                ReportCreationEvent.builder()
+                        .reportType("APARTMENT")
+                        .message(request.getMessage())
+                        .itemId(request.getApartmentId())
+                        .userId(SecurityContextHolder.getContext().getAuthentication().getName())
+                        .build()
+        );
+
+    }
+
+    Page<Apartment> searchApartments(
+            String search, Boolean isAvailable, String city, String userId, String apartmentType, Pageable pageable) {
+        Specification<Apartment> spec = Specification.where(ApartmentSpecifications.withSearch(search))
+                .and(ApartmentSpecifications.withAvailability(isAvailable))
+                .and(ApartmentSpecifications.withCity(city))
+                .and(ApartmentSpecifications.withUserId(userId))
+                .and(ApartmentSpecifications.withApartmentType(apartmentType));
+
+        return apartmentRepository.findAll(spec, pageable);
     }
 }

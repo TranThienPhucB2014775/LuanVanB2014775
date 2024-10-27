@@ -4,14 +4,16 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.UUID;
+import java.util.Set;
 
 @Setter
 @Getter
 @Builder
 public class ApartmentResponse {
     String apartmentId;
+    String userId;
 
+    String name;
     String city;
     String address;
     String rule;
@@ -19,5 +21,5 @@ public class ApartmentResponse {
     String description;
     Boolean isAvailable;
     String apartmentType;
-
+    Set<AdditionalCostResponse> additionalCostResponses;
 }

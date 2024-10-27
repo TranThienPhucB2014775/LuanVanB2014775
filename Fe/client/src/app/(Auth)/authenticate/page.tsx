@@ -14,19 +14,17 @@ const Page = () => {
 	const router = useRouter();
 
 	useState(async () => {
-		console.log(window.location.href);
+
 
 		const authCodeRegex = /code=([^&]+)/;
 		const isMatch = window.location.href.match(authCodeRegex);
-		console.log(isMatch);
 
 		if (isMatch) {
 			const authCode = isMatch[1];
 
 			const res = await authApiRequest.outbound(authCode);
 			if (res.code === 0) {
-				console.log(res?.payload?.result.token);
-				setUser(res?.payload?.result.token ?? null);
+				setUser(res?.payload?.result.token ?? null, "ROLE_TENANT");
 			}
 
 			// localStorage.setItem("token", (res?.payload as loginResponse).result.token);

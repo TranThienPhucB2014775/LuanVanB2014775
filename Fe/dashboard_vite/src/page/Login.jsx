@@ -33,7 +33,6 @@ export default function Login() {
 
   useEffect(() => {
     if (errorMessage) {
-      console.log(errorMessage);
       toast.error("Lỗi đăng nhập");
     }
   }, [errorMessage]);

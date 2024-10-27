@@ -10,9 +10,6 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.web.SecurityFilterChain;
 
-import com.property.config.CustomJwtDecoder;
-import com.property.config.JwtAuthenticationEntryPoint;
-
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
@@ -22,7 +19,11 @@ public class SecurityConfig {
             "/actuator/**",
             "/swagger-ui/**",
             "/v3/api-docs/**",
-            "/**",
+            "/additional-cost/all",
+            "/apartment/all/{pageNum}", "/apartment/{apartmentId}",
+            "/rooms/all/{pageNum}", "/rooms/{roomId}",
+            "/room-types/all/{pageNum}", "/room-types/{roomTypeId}",
+
     };
 
     private final CustomJwtDecoder customJwtDecoder;
@@ -34,8 +35,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.authorizeHttpRequests(request -> request
-                .requestMatchers(PUBLIC_ENDPOINTS)
-                .permitAll()
+                .requestMatchers(PUBLIC_ENDPOINTS).permitAll()
                 .anyRequest()
                 .authenticated());
 

@@ -15,19 +15,20 @@ import java.util.UUID;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Slf4j
-@Table(name = "comments", indexes = {})
-public class Comment {
+@Table(name = "comment", indexes = {})
+public class Comment extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    UUID commentId;
+    String commentId;
 
-    @ManyToOne
-    @JoinColumn(name = "rental_post_id")
-    RentalPost rentalPost;
+    String postId;
 
-    UUID userId;
+    String userId;
 
     String content;
+
+    String parentId;
+
     Boolean isAvailable;
 }

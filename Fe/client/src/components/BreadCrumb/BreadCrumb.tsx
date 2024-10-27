@@ -1,7 +1,8 @@
 import BreadCrumbItem from "./BreadCrumbItem";
 
-export default function BreadCrumb({ routeName }: { routeName: string }) {
-	routeName = routeName.replace(/\//g, "");
+export default function BreadCrumb({ routeName, value }: { routeName: string; value: string }) {
+	routeName === "" && (routeName = "Not Found");
+
 	return (
 		<div className="bg-Neutral-w100 w-full">
 			<div className=" py-[20px] bg:py-[42px] px-[12px] max-w-ct-max-width mx-auto ">
@@ -10,7 +11,7 @@ export default function BreadCrumb({ routeName }: { routeName: string }) {
 						{routeName}
 					</p>
 				</div>
-				<BreadCrumbItem routeName={routeName} />
+				<BreadCrumbItem routeName={routeName} value={value} />
 			</div>
 		</div>
 	);

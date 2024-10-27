@@ -1,0 +1,20 @@
+package com.property.dto.request;
+
+import com.property.constant.ReportIssueStatus;
+import com.property.validation.ReportIssueTypeSubset;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
+import lombok.Getter;
+
+@Getter
+public class ReportIssueRequest {
+
+    @Pattern(regexp = "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}", message = "UUID_INCORRECT_FORMAT")
+    String roomId;
+
+    @NotNull(message = "INVALID_VALUE")
+    String title;
+
+    @NotNull(message = "INVALID_VALUE")
+    String description;
+}

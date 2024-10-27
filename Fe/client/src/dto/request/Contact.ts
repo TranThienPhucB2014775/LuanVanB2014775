@@ -8,3 +8,4 @@ export const contactRequest = z
 		message: z.string().min(3).max(255),
 	})
 	.strict();
+

@@ -6,6 +6,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 
+import com.identity.entity.UserVerificationRequest;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -49,6 +50,7 @@ public class AuthenticationService {
     OutboundUserClientService outboundUserClientService;
     OutboundIdentityClientService outboundIdentityClientService;
     ProfileClientService profileClientService;
+    UserVerificationService userVerificationService;
 
     @NonFinal
     @Value("${jwt.signerKey}")
@@ -123,7 +125,6 @@ public class AuthenticationService {
                     .id(userId)
                     .email(userInfo.getEmail())
                     .roles(roleSet)
-                    .profileId(profileCreation.getResult().getProfileId())
                     .build());
         });
 
@@ -193,6 +194,10 @@ public class AuthenticationService {
                 .token(token)
                 .expiration(date.getTime() / 100)
                 .build();
+    }
+
+    public boolean isVerified(IsVerifiedRequest request) {
+        return userVerificationService.isVerified(request.getUserId());
     }
 
     private String generateToken(User user, Date date) {
@@ -281,11 +286,11 @@ public class AuthenticationService {
 
         Date expiryTime = (isRefresh)
                 ? new Date(signedJWT
-                        .getJWTClaimsSet()
-                        .getIssueTime()
-                        .toInstant()
-                        .plus(REFRESHABLE_DURATION, ChronoUnit.SECONDS)
-                        .toEpochMilli())
+                .getJWTClaimsSet()
+                .getIssueTime()
+                .toInstant()
+                .plus(REFRESHABLE_DURATION, ChronoUnit.SECONDS)
+                .toEpochMilli())
                 : signedJWT.getJWTClaimsSet().getExpirationTime();
 
         var verified = signedJWT.verify(verifier);

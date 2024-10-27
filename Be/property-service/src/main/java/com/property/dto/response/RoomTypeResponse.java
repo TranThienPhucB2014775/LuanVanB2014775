@@ -13,4 +13,7 @@ public class RoomTypeResponse {
     String info;
     String utility;
     String apartmentId;
+    String roomTypeId;
+    Boolean isAvailable;
+    int maxOccupancy;
 }

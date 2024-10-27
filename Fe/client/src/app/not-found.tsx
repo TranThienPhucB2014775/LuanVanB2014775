@@ -15,9 +15,7 @@ const NotFound = () => {
 							<h1 className="h2 mb-4">Page not found</h1>
 							<div className="content">
 								<p>
-									The page you are looking for might have been
-									removed, had its name changed, or is
-									temporarily unavailable.
+									Trang này không tồn tại hoặc đã bị xóa. Vui lòng kiểm tra lại URL
 								</p>
 							</div>
 							<Link href="/">

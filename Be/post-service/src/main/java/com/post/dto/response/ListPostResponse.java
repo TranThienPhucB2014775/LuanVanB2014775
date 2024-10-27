@@ -1,0 +1,19 @@
+package com.post.dto.response;
+
+import lombok.*;
+import lombok.experimental.FieldDefaults;
+
+import java.util.List;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@FieldDefaults(level = AccessLevel.PRIVATE)
+public class ListPostResponse<T> {
+    List<T> data;
+    int totalPage;
+    Long totalElement;
+    Long minPrice;
+    Long maxPrice;
+}

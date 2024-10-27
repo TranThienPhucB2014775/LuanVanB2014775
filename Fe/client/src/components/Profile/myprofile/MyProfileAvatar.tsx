@@ -1,32 +1,40 @@
 "use client";
 
-import { Input } from "@/components/ui/input";
 import React, { useEffect, useRef, useState } from "react";
+import Image from "next/image";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { useToast } from "@/components/ui/use-toast";
+import { Loader2 } from "lucide-react";
 import { useFetch } from "@/useFetch";
 import { ApiResponse } from "@/dto/ApiResponse";
 import accountApiRequest from "@/apiRequests/account";
-import { useToast } from "@/components/ui/use-toast";
 import { mediaLink } from "@/constants/media";
 
+import logo from "@/assets/images/Logo.png";
+
 export default function MyProfileAvatar({ urlImage }: { urlImage: string }) {
+
 	const [img, setImg] = useState<File | null>(null);
+
 	const [previewUrl, setPreviewUrl] = useState("");
+
 	const fileInputRef = useRef<HTMLInputElement>(null);
 
 	const { toast } = useToast();
 
 	const { error, isFetching, fetch } = useFetch<ApiResponse<string>>(
 		({
-			formData,
-			sessionToken,
-		}: {
-			formData: FormData;
-			sessionToken: string;
+			 formData,
+			 sessionToken
+		 }: {
+			formData: FormData
+			sessionToken: string
 		}) => accountApiRequest.updateImgAvatar({ formData, sessionToken })
 	);
 
 	useEffect(() => {
-		console.log(urlImage);
 		setPreviewUrl(`${mediaLink}/${urlImage}`);
 	}, [urlImage]);
 
@@ -39,7 +47,7 @@ export default function MyProfileAvatar({ urlImage }: { urlImage: string }) {
 	const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		if (event.target.files) {
 			const selectedFile = event.target.files[0];
-			setImg(event.target.files[0]);
+			setImg(selectedFile);
 			setPreviewUrl(URL.createObjectURL(selectedFile));
 		}
 	};
@@ -47,58 +55,78 @@ export default function MyProfileAvatar({ urlImage }: { urlImage: string }) {
 	const handleSaveImage = async () => {
 		if (img === null) return;
 		const formData = new FormData();
-		img && formData.append("image", img);
+		formData.append("image", img);
 		const sessionToken = localStorage.getItem("token");
 		const res = await fetch({ formData, sessionToken });
 
-		console.log(res);
-		if (res?.code === 200) {
+		if (res?.code === 0) {
 			toast({
 				title: "Thành công",
-				description: "Cập nhật ảnh đại diện thành công",
+				description: "Cập nhật ảnh đại diện thành công"
 			});
 			setImg(null);
-		} else {
+		} else if (res?.code === 2010) {
 			toast({
 				variant: "destructive",
-				title: "Thành công",
-				description: "Cập nhật ảnh đại diện thành công",
+				title: "Lỗi",
+				description: "Kích thước ảnh quá lớn"
+			});
+		}
+		{
+			toast({
+				variant: "destructive",
+				title: "Lỗi",
+				description: "Cập nhật ảnh đại diện thất bại"
 			});
 		}
 	};
 
 	return (
-		<div className="flex flex-col items-center space-y-5 sm:flex-row sm:space-y-0">
-			{/*{img && (<img src={img} />)}*/}
-			<img
-				className="object-cover w-40 h-40 p-1 rounded-full ring-2 ring-indigo-300 dark:ring-indigo-500"
-				src={previewUrl}
-				alt="Bordered avatar"
-			/>
-
-			<div className="flex flex-col space-y-5 sm:ml-8">
-				<button
-					type="button"
-					onClick={handleButtonClick}
-					className="py-3.5 px-7 text-base font-medium text-indigo-100 focus:outline-none bg-[#202142] rounded-lg border border-indigo-200 hover:bg-indigo-900 focus:z-10 focus:ring-4 focus:ring-indigo-200 "
-				>
-					Chọn ảnh
-				</button>
-				<Input
-					id="picture"
-					type="file"
-					ref={fileInputRef}
-					className="hidden"
-					onChange={handleFileChange}
-				/>
-				<button
-					type="button"
-					className="py-3.5 px-7 text-base font-medium text-indigo-900 focus:outline-none bg-white rounded-lg border border-indigo-200 hover:bg-indigo-100 hover:text-[#202142] focus:z-10 focus:ring-4 focus:ring-indigo-200 "
-					onClick={handleSaveImage}
-				>
-					{isFetching ? "Đang lưu" : "Lưu ảnh"}
-				</button>
-			</div>
-		</div>
+		<Card className="w-full max-w-md mx-auto">
+			<CardContent className="p-6">
+				<div className="flex flex-col items-center space-y-6">
+					<div className="relative w-40 h-40">
+						<Image
+							className="rounded-full ring-4 ring-primary/10"
+							src={previewUrl === "" ? logo : previewUrl}
+							alt="Avatar"
+							layout="fill"
+							objectFit="cover"
+						/>
+					</div>
+					<div className="flex flex-col w-full space-y-4">
+						<Button
+							onClick={handleButtonClick}
+							variant="outline"
+							className="w-full"
+						>
+							Chọn ảnh
+						</Button>
+						<Input
+							id="picture"
+							type="file"
+							ref={fileInputRef}
+							className="hidden"
+							onChange={handleFileChange}
+							accept="image/*"
+						/>
+						<Button
+							onClick={handleSaveImage}
+							disabled={!img || isFetching}
+							className="w-full"
+						>
+							{isFetching ? (
+								<>
+									<Loader2 className="mr-2 h-4 w-4 animate-spin" />
+									Đang lưu
+								</>
+							) : (
+								"Lưu ảnh"
+							)}
+						</Button>
+					</div>
+				</div>
+			</CardContent>
+		</Card>
 	);
 }

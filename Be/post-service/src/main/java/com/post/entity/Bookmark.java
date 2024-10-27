@@ -15,9 +15,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Slf4j
-@Table(
-        name = "book_marks"
-)
+@Table(name = "bookmark")
 
 public class Bookmark {
 
@@ -27,7 +25,7 @@ public class Bookmark {
     @Id
     UUID userId;
 
-    @ManyToOne
-    @JoinColumn(name = "rental_post_id")
-    RentalPost rentalPost;
+    String postId;
+
+    String postType;
 }

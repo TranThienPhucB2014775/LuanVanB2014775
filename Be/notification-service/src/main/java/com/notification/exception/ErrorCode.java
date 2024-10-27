@@ -1,8 +1,9 @@
 package com.notification.exception;
 
-import lombok.Getter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
+
+import lombok.Getter;
 
 @Getter
 public enum ErrorCode {
@@ -11,6 +12,7 @@ public enum ErrorCode {
     UNAUTHORIZED(9998, "You do not have permission", HttpStatus.FORBIDDEN),
     INVALID_KEY(1, "Invalid key", HttpStatus.BAD_REQUEST),
     CANNOT_SEND_EMAIL(2, "Cannot send email", HttpStatus.INTERNAL_SERVER_ERROR),
+    NOTIFICATION_NOT_FOUND(3, "Notification not found", HttpStatus.NOT_FOUND),
     ;
 
     ErrorCode(int code, String message, HttpStatusCode statusCode) {

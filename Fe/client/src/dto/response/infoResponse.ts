@@ -7,7 +7,13 @@ export type infoResponse = {
 		city: string;
 		address: string;
 		enable: boolean;
-		createdDate: Date;
+		createdDate: string;
 		imgAvatar: string;
+		phoneNumber: string;
+		role: string;
+		aboutMe: string;
+		isVerified: boolean;
+		facebook: string;
+		zaloPhoneNumber: string
 	};
 };

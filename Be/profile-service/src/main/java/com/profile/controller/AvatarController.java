@@ -21,12 +21,8 @@ public class AvatarController {
     ProfileService profileService;
 
     @PutMapping
-    public ApiResponse<?> updateAvatar(
-            @RequestHeader(value = "Authorization", defaultValue = "") String token,
-            @RequestParam("image") MultipartFile file) {
-        return ApiResponse.builder()
-                .result(profileService.UpdateAvatar(file, token.replace("Bearer ", "")))
-                .build();
+    public ApiResponse<?> updateAvatar(@RequestParam("image") MultipartFile file) {
+        return ApiResponse.builder().result(profileService.UpdateAvatar(file)).build();
     }
 
     @DeleteMapping

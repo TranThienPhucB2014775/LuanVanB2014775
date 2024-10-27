@@ -8,6 +8,7 @@ import store from "./store/index";
 import "./index.css";
 import "./styles/theme.scss";
 import "react-toastify/dist/ReactToastify.css";
+import "primereact/resources/themes/lara-light-cyan/theme.css";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <Provider store={store}>

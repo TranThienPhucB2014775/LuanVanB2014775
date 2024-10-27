@@ -12,9 +12,30 @@ spring:
         spring.json.trusted.packages: "*"
   config:
     import: "optional:configserver:http://localhost:8071/"
+  datasource:
+    url: "jdbc:postgresql://localhost:5432/notification"
+    username: postgres
+    password: root
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+eureka:
+  instance:
+    preferIpAddress: true
+  client:
+    registerWithEureka: true
+    fetchRegistry: true
+    serviceUrl:
+      defaultZone: "http://localhost:8070/eureka/"
 
 error:
-  code: 3000
+  code: 9000
 
 notification:
   email:

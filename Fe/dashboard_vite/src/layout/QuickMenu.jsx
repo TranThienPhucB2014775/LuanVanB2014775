@@ -48,7 +48,7 @@ const QuickMenu = () => {
           {NotificationList.map(function (item, index) {
             return (
               <ListGroup.Item
-                className={index === 0 ? "bg-light" : ""}
+                className={"bg-light"}
                 key={index}
               >
                 <Row>

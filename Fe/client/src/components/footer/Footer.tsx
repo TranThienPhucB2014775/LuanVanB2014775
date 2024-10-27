@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 
-import logo from "@/assets/img/transparent_2024-05-31T06-05-03.png";
+import logo from "@/assets/images/Logo.png";
 import facebook from "@/assets/icons/facebook.png";
 import instagram from "@/assets/icons/Instagram.png";
 import youtube from "@/assets/icons/Youtube.png";

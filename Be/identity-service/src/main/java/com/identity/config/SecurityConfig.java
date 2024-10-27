@@ -3,7 +3,6 @@ package com.identity.config;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -15,7 +14,9 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 public class SecurityConfig {
     private final String[] PUBLIC_ENDPOINTS = {
-        "/users/**", "/auth/token", "/auth/introspect", "/actuator/**", "/swagger-ui/**"
+            "/users/**",
+            "/auth/token", "/auth/token/admin", "/auth/introspect", "/auth/refresh",
+            "/actuator/**", "/swagger-ui/**", "/v3/api-docs/**"
     };
 
     @Autowired
@@ -24,14 +25,8 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.authorizeHttpRequests(request -> request
-                .requestMatchers(PUBLIC_ENDPOINTS)
-                .permitAll()
-//                .requestMatchers("/actuator/**")
-//                .permitAll()
-//                .requestMatchers("/swagger-ui/**")
-//                .permitAll()
-                .anyRequest()
-                .authenticated());
+                .requestMatchers(PUBLIC_ENDPOINTS).permitAll()
+                .anyRequest().authenticated());
 
         httpSecurity.oauth2ResourceServer(oauth2 -> oauth2.jwt(jwtConfigurer -> jwtConfigurer
                         .decoder(customJwtDecoder)

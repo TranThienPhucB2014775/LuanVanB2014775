@@ -13,7 +13,6 @@ export const updateProfileRequest = z
     .strict()
     .superRefine(({...data}, ctx) => {
         if (data.city !== city)
-            console.log(data.city),
                 ctx.addIssue({
                     code: "custom",
                     message: "Chỉ chấp nhận thành phố Cần Thơ",

@@ -1,6 +1,7 @@
 import envConfig from "@/config";
 import { redirect } from "next/navigation";
 import { ApiResponse } from "@/dto/ApiResponse";
+import authApiRequest from "../apiRequests/auth";
 
 const AUTHENTICATION_ERROR_STATUS = 401;
 
@@ -15,7 +16,7 @@ export function isClient(): boolean {
 let clientLogoutRequest: null | Promise<any> = null;
 
 async function request<Response>(
-	method: "GET" | "POST" | "PUT" | "DELETE" = "GET",
+	method: "GET" | "POST" | "PUT" | "DELETE" | "PATCH" = "GET",
 	url: string,
 	options?: CustomOptions | undefined
 ) {
@@ -32,8 +33,8 @@ async function request<Response>(
 		body instanceof FormData
 			? {}
 			: {
-					"Content-Type": "application/json",
-			  };
+				"Content-Type": "application/json"
+			};
 	if (isClient()) {
 		const sessionToken = localStorage.getItem("sessionToken");
 		if (sessionToken) {
@@ -55,17 +56,38 @@ async function request<Response>(
 			...options,
 			headers: {
 				...baseHeaders,
-				...options?.headers,
+				...options?.headers
 			} as any,
 			body,
-			method,
+			method
 		});
+		// try{
+		// 	console.log(await res.json());
+		// }catch (e) {
+		// 	console.log(1);
+		// 	console.log(e);
+		// }
+		// const resJson = await res.json();
+		// //@ts-ignore
+		// console.log(await res.json());
+
+		if (res.status === 204) {
+			return {
+				code: 0,
+				payload: null,
+				// @ts-ignore
+				error: null
+
+			};
+		}
 
 		const payload: Response = await res.json();
+
 		let data: ApiResponse<Response>;
 
 		if (isClient() && url !== "/api/auth/token") {
 			if (res.status === AUTHENTICATION_ERROR_STATUS) {
+				await authApiRequest.logoutFromNextClientToNextServer(localStorage.getItem("token") || "");
 				localStorage.removeItem("token");
 				redirect("/login");
 			}
@@ -77,7 +99,7 @@ async function request<Response>(
 				// @ts-ignore
 				code: payload.code,
 				payload: payload,
-				error: null,
+				error: null
 			};
 		} else {
 			data = {
@@ -85,15 +107,16 @@ async function request<Response>(
 				code: payload.code,
 				payload: null,
 				// @ts-ignore
-				error: { message: payload.result },
+				error: { message: payload.result }
 			};
 		}
 		return data;
-	} catch (e) {
+	} catch
+		(e) {
 		return {
 			code: 500,
 			payload: null,
-			error: { message: "Error Unknown" },
+			error: { message: "Error Unknown" }
 		};
 	}
 }
@@ -125,4 +148,10 @@ export const http = {
 	) {
 		return request<Response>("DELETE", url, { ...options });
 	},
+	patch<Response>(
+		url: string,
+		options?: Omit<CustomOptions, "body"> | undefined
+	) {
+		return request<Response>("PATCH", url, { ...options });
+	}
 };

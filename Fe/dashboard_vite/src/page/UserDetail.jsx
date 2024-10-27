@@ -3,7 +3,7 @@ import { Outlet, useParams } from "react-router-dom";
 
 import { Container } from "react-bootstrap";
 import PageHeading from "../components/PageHeading";
-import ProfileHeader from "../components/ProfileHeader";
+import ProfileHeader from "../components/UserDetail/ProfileHeader.jsx";
 import { getUser } from "../api/user.api";
 import useHttp from "../hooks/useHttp";
 export default function UserDetail() {

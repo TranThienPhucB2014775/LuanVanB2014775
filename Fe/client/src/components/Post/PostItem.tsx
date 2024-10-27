@@ -1,7 +1,7 @@
 import React from "react";
 import Image from "next/image";
 
-import img from "@/assets/img/1341519.jpeg";
+import img from "@/assets/images/Logo.png";
 
 function PostItem() {
 	return (

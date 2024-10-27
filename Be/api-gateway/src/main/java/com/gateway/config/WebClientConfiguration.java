@@ -2,6 +2,7 @@ package com.gateway.config;
 
 import java.util.List;
 
+import com.gateway.repository.TenantClient;
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -47,5 +48,14 @@ public class WebClientConfiguration {
                 .build();
 
         return httpServiceProxyFactory.createClient(IdentityClient.class);
+    }
+
+    @Bean
+    TenantClient tenantClient(WebClient webClient) {
+        HttpServiceProxyFactory httpServiceProxyFactory = HttpServiceProxyFactory.builderFor(
+                        WebClientAdapter.create(webClient))
+                .build();
+
+        return httpServiceProxyFactory.createClient(TenantClient.class);
     }
 }

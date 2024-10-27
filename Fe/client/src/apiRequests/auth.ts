@@ -1,7 +1,7 @@
 import {
 	loginRequest,
 	refreshTokenRequest,
-	registerRequest,
+	registerRequest
 } from "@/dto/request";
 import { infoResponse, loginResponse, registerResponse } from "@/dto/response";
 import { http } from "@/lib";
@@ -15,22 +15,27 @@ const authApiRequest = {
 
 	auth: (body: { sessionToken: string; expiresAt: string }) =>
 		http.post("/api/auth", body, {
-			baseUrl: "",
+			baseUrl: ""
 		}),
 
 	introspect: (sessionToken: string, email: string) =>
 		http.get<infoResponse>("identity/users/introspect", {
 			headers: {
-				Authorization: `Bearer ${sessionToken}`,
-			},
+				Authorization: `Bearer ${sessionToken}`
+			}
 		}),
 
 	info: (sessionToken: string) =>
 		http.get<infoResponse>(`/identity/users/me`, {
 			headers: {
-				Authorization: `Bearer ${sessionToken}`,
-			},
+				Authorization: `Bearer ${sessionToken}`
+			}
 		}),
+
+	infoById: (data: { userId: string }) =>
+		http.get<infoResponse>(`/identity/users/userId/${data.userId}`,
+			{}
+		),
 
 	refresh: (body: refreshTokenRequest) =>
 		http.post<loginResponse>("identity/auth/refresh", body),
@@ -41,8 +46,8 @@ const authApiRequest = {
 			{ token: sessionToken },
 			{
 				headers: {
-					Authorization: `Bearer ${sessionToken}`,
-				},
+					Authorization: `Bearer ${sessionToken}`
+				}
 			}
 		),
 	logoutFromNextClientToNextServer: (sessionToken: string) =>
@@ -51,16 +56,17 @@ const authApiRequest = {
 			{},
 			{
 				headers: {
-					Authorization: `Bearer ${sessionToken}`,
+					Authorization: `Bearer ${sessionToken}`
 				},
-				baseUrl: "",
+				baseUrl: ""
 			}
 		),
 	outbound: (authCode: string) =>
 		http.post<loginResponse>(
 			`/identity/auth/outbound/authentication?code=${authCode}`,
 			{}
-		),
+		)
+
 };
 
 export default authApiRequest;

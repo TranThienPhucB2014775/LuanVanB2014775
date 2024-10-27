@@ -21,8 +21,11 @@ export const getALlUsers = async ({ pageNum, params }) => {
 
 export const getUser = async ({ id }) => {
   try {
-    const { data } = await api.get(`identity/users/${id}`, {
-      headers,
+    const { data } = await api.get(`identity/users/userId/${id}`, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+      },
     });
     return data;
   } catch (error) {

@@ -1,78 +1,144 @@
 "use client";
 
-import React from "react";
-import Image from "next/image";
+import React, { useEffect, useState } from "react";
 
-import logoGoogle from "@/assets/images/Google.png";
-import { useParams, useRouter } from "next/navigation";
-import Pagination from "@/components/Pageinate";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import Posts from "@/components/user/Posts";
+import ApartmentPage from "@/components/manage/apartment/ListApartmentPage";
+import About from "@/components/user/About";
+import { authApiRequest } from "@/apiRequests";
+import { useFetch } from "@/useFetch";
+import { ApiResponse } from "@/dto/ApiResponse";
+import { infoResponse } from "@/dto/response";
+import envConfig from "@/config";
+import Link from "next/link";
+import Reviews from "@/components/feedBack/Reviews";
+import AnimatedSection from "@/components/AnimatedSection";
+import { useAppContext } from "@/app/app-provider";
+import RentalListings from "@/components/rentalPost/ListRentalPost";
 
-export default function page() {
-	const router = useRouter();
-	const { page } = useParams();
-	const { user_id } = useParams();
+const tabs = [
+	{
+		route: "posts",
+		label: "Bài đăng"
+	},
+	{
+		route: "apartments",
+		label: "Căn hộ"
+	},
+	{
+		route: "about",
+		label: "Giới thiệu"
+	},
+	{
+		route: "reviews",
+		label: "Đánh giá"
+	}
+];
 
-	const handlePageChange = ({ selected }: { selected: number }) => {
-		router.push(`/user/${user_id}/?page=${selected + 1}`);
-	};
+export default function page({ params }: { params: { user_id: string } }) {
 
+	const { error, isFetching, fetch } = useFetch<ApiResponse<infoResponse>>(
+		(data: { userId: string; sessionToken: string }) =>
+			authApiRequest.infoById({ ...data })
+	);
+
+	const [user, setUser] = useState<infoResponse | undefined>(undefined);
+
+	useEffect(() => {
+		async function getInfo() {
+			if (!params.user_id) return;
+			const res = await fetch({
+				userId: params.user_id,
+				sessionToken: localStorage.getItem("token") || ""
+			});
+			if (res?.code === 0) {
+				setUser((res?.payload as infoResponse));
+			} else if (error) {
+				console.log(error);
+			}
+		}
+
+		getInfo();
+	}, []);
+
+	const { isAuthenticated } = useAppContext();
 	return (
 		<div>
-			<main>
-				<div className="px-4 py-8 md:px-6 md:py-10 lg:py-12">
-					<div className="mx-auto w-full max-w-6xl">
-						<ul className="grid grid-cols-1 gap-16">
-							<li className="grid grid-cols-1 items-start gap-6 md:grid-cols-3 md:gap-8">
-								<a
-									tabIndex={-1}
-									href="/articles/hiking-through-the-woods"
-								>
-									<div
-										className="relative bg-gray-100"
-										style={{
-											width: "100%",
-											height: "auto",
-										}}
-									>
-										<Image
-											src={logoGoogle}
-											alt="Hiking through the woods"
-											width={3744}
-											height={2808}
-											className="object-cover"
-										/>
-									</div>
-								</a>
-								<div className="grid grid-cols-1 gap-3 md:col-span-2">
-									<h2 className="font-sans font-semibold tracking-tighter text-slate-800 text-3xl md:text-4xl">
-										<a href="/articles/hiking-through-the-woods">
-											Hiking through the woods
-										</a>
-									</h2>
-									<p className="font-serif italic tracking-tighter text-slate-500">
-										Apr 12, 2022
-									</p>
-									<p className="font-serif leading-relaxed md:text-lg md:leading-relaxed">
-										This is Rich Text, which includes both
-										external links and links to internal
-										documents. Links should be handled
-										intelligently or everything might break.
-										Don&#x27;t forget about media, too! Do
-										your best to render images using an HTML
-										Serializer. As you know hiking can be a
-										very fulfilling orem ipsum dolor…
-									</p>
-								</div>
-							</li>
-						</ul>
+			{user === undefined && isFetching && <div>Loading...</div>}
+			{user === undefined && !isFetching
+				? <div
+					className="flex flex-col items-center bg-background px-4 py-12 sm:px-6 lg:px-8">
+					<div className="mx-auto max-w-md text-center">
+						<div className="mx-auto h-12 w-12 text-primary" />
+						<h1 className="mt-4 text-3xl font-bold tracking-tight text-foreground sm:text-4xl">Người dùng
+							không được tìm thấy</h1>
+						<p className="mt-4 text-muted-foreground">
+							Chúng tôi xin lỗi, nhưng thông tin người dùng mà bạn yêu cầu không thể được tìm thấy. Vui
+							lòng kiểm tra lại URL hoặc thử lại sau.
+						</p>
+						<div className="mt-6">
+							<Link
+								href="/"
+								className="inline-flex items-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground shadow-sm transition-colors hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+								prefetch={false}
+							>
+								Về trang chủ
+							</Link>
+						</div>
 					</div>
 				</div>
-			</main>
-			<Pagination
-				handlePageClick={handlePageChange}
-				pageCount={5}
-				currentPage={page as unknown as number}
-			/>
+				: <div className="container py-10">
+					<div className="rounded-t-lg">
+						<div className=" flex items-center gap-4">
+							<Avatar className="h-16 w-16">
+								<AvatarImage
+									src={`${envConfig.NEXT_PUBLIC_API_ENDPOINT}/media/${user?.result.imgAvatar}`}
+									alt="@shadcn"
+								/>
+								<AvatarFallback>JD</AvatarFallback>
+							</Avatar>
+							<div className="grid gap-1">
+								<h1 className="text-2xl font-bold">{user?.result.username}</h1>
+								<p className="text-muted-foreground">
+									{user?.result.role === "LANDLORD" ? "Chủ trọ" : "Người thuê trọ"}
+								</p>
+							</div>
+						</div>
+					</div>
+					<Tabs defaultValue="posts" className="w-full pt-6">
+						<TabsList className="border-b bg-Neutral-w100">
+							{tabs.map(tab => {
+								if (tab.route === "apartments") {
+									if (user?.result.role === "ROLE_TENANT") return null;
+									console.log(isAuthenticated);
+									if (!isAuthenticated) {
+										console.log("authenticated");
+										return null;
+									}
+								}
+								return <TabsTrigger key={tab.route} value={tab.route}>{tab.label}</TabsTrigger>;
+							})
+							}
+
+						</TabsList>
+						<TabsContent value="posts">
+							<RentalListings userId={params.user_id} />
+						</TabsContent>
+						<TabsContent value="apartments">
+							<ApartmentPage userId={params.user_id} isManage={false} />
+						</TabsContent>
+						<AnimatedSection>
+							<TabsContent value="about">
+								<About user={user} />
+							</TabsContent>
+						</AnimatedSection>
+						<TabsContent value="reviews">
+							<Reviews itemId={params.user_id} userId={""} isView={false} />
+						</TabsContent>
+					</Tabs>
+				</div>}
 		</div>
 	);
 }

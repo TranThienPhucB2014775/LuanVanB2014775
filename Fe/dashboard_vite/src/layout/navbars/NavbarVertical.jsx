@@ -16,7 +16,8 @@ import SimpleBar from "simplebar-react";
 import "simplebar-react/dist/simplebar.min.css";
 
 // import routes file
-import { DashboardMenu } from "../../route/DashboardRoutes";
+
+import DashboardMenu from "../../route/DashboardMenu.js";
 
 // import logo from "../../assets/image/logo.png";
 

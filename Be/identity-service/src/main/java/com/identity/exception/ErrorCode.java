@@ -22,7 +22,14 @@ public enum ErrorCode {
     USER_LOCKED(100, "You account has been lock!", HttpStatus.UNAUTHORIZED),
     CANNOT_DELETE_ADMIN(10, "You cannot delete admin user", HttpStatus.BAD_REQUEST),
     MEDIA_SERVICE_ERROR(11, "Media service error", HttpStatus.BAD_REQUEST),
-    PROFILE_SERVICE_ERROR(12, "Profile service error", HttpStatus.BAD_REQUEST);
+    PROFILE_SERVICE_ERROR(12, "Profile service error", HttpStatus.BAD_REQUEST),
+    CARD_ID_INVALID(13, "Card ID Invalid", HttpStatus.BAD_REQUEST),
+    INVALID_VALUE(14, "Invalid value", HttpStatus.BAD_REQUEST),
+    USER_VERIFICATION_REQUEST_NOT_FOUND(15, "User verification request not found", HttpStatus.NOT_FOUND),
+    USER_VERIFICATION_REQUEST_ALREADY_CHECKED(16, "User verification request already checked", HttpStatus.BAD_REQUEST),
+    IMAGE_CARD_ID_NOT_FOUND(17, "Image card ID not found", HttpStatus.NOT_FOUND),
+    USER_VERIFICATION_NOT_FOUND(18, "User verification not found", HttpStatus.NOT_FOUND),
+    ;
 
     ErrorCode(int code, String message, HttpStatusCode statusCode) {
         this.code = code;

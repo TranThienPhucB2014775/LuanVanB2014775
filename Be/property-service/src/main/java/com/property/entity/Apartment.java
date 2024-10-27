@@ -1,12 +1,12 @@
 package com.property.entity;
 
+import java.util.Set;
+
 import jakarta.persistence.*;
+
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-
-import java.util.Set;
-import java.util.UUID;
 
 @Entity
 @Getter
@@ -25,6 +25,8 @@ public class Apartment extends BaseEntity {
 
     String userId;
 
+    String name;
+
     String city;
     String address;
     String rule;
@@ -36,10 +38,7 @@ public class Apartment extends BaseEntity {
     @JoinColumn(name = "apartment_id")
     Set<AdditionalCost> additionalCosts;
 
-    @OneToMany
-    @JoinColumn(name = "apartment_id")
-    Set<Room> rooms;
-
     @ManyToOne
+    @JoinColumn(name = "apartment_type_name", referencedColumnName = "name")
     ApartmentType apartmentType;
 }

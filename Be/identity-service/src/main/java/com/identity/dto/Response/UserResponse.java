@@ -21,6 +21,9 @@ public class UserResponse {
     String imgAvatar;
     String facebook;
     String phoneNumber;
-    String Role;
+    String role;
+    String aboutMe;
+    Boolean isVerified;
+    String zaloPhoneNumber;
     //    Set<RoleResponse> roles;
 }

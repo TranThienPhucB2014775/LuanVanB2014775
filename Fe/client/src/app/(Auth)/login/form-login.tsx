@@ -9,7 +9,7 @@ import {
 	FormField,
 	FormItem,
 	FormLabel,
-	FormMessage,
+	FormMessage
 } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { z } from "zod";
@@ -27,22 +27,24 @@ import { isClient } from "@/lib/http";
 import { loginRequest } from "@/dto/request";
 import { ApiResponse } from "@/dto/ApiResponse";
 import { INCORRECT_PASSWORD, USER_NOT_EXIST_CODE } from "@/lib";
+import { Loader2 } from "lucide-react";
 
 export default function FormLogin() {
 	const { error, isFetching, fetch } = useFetch<ApiResponse<loginResponse>>(
 		(data: typeof loginRequest) => authApiRequest.login(data)
 	);
+	const jwt = require("jsonwebtoken");
 
 	const { toast } = useToast();
 	const router = useRouter();
-	const { setUser } = useAppContext();
+	const { setUser, setAvatar } = useAppContext();
 
 	const form = useForm<z.infer<typeof loginRequest>>({
 		resolver: zodResolver(loginRequest),
 		defaultValues: {
 			email: "",
-			password: "",
-		},
+			password: ""
+		}
 	});
 
 	async function onSubmit(values: z.infer<typeof loginRequest>) {
@@ -53,28 +55,29 @@ export default function FormLogin() {
 				if (isClient()) {
 					await authApiRequest.auth({
 						sessionToken: res.payload.result.token,
-						expiresAt: res.payload.result.expiresAt,
+						expiresAt: res.payload.result.expiresAt
 					});
 					localStorage.setItem("token", res.payload.result.token);
 					const user = await authApiRequest.info(
 						res.payload.result.token
 					);
-					setUser(values.email);
+
+					setUser(jwt.decode(res.payload.result.token).sub, jwt.decode(res.payload.result.token).scope);
+					setAvatar(user?.payload?.result?.imgAvatar || "");
 					router.push("/");
 					router.refresh();
 				}
 			} else {
-				console.log(res);
 				const desc: string =
 					res?.code === USER_NOT_EXIST_CODE
 						? "Tài khoản không tồn tại"
 						: res?.code == INCORRECT_PASSWORD
-						? "Mật khẩu không chính xác"
-						: "Lỗi không xác định khi đăng nhập, vui lòng thử lại sau vài phút";
+							? "Mật khẩu không chính xác"
+							: "Lỗi không xác định khi đăng nhập, vui lòng thử lại sau vài phút";
 				toast({
 					variant: "destructive",
 					title: "Đăng nhập không thành công",
-					description: desc,
+					description: desc
 				});
 			}
 		}
@@ -129,7 +132,7 @@ export default function FormLogin() {
 				<ButtonCustom claesses="mt-[15px] bg-Neutral-N900">
 					<Button type="submit">
 						<span className="text-white">
-							{!isFetching ? "Đăng Nhập" : "Đang xử lý"}
+							{!isFetching ? "Đăng Nhập" : <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
 						</span>
 					</Button>
 				</ButtonCustom>

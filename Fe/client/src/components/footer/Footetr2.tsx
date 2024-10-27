@@ -1,7 +1,7 @@
 import React from "react";
 import Image from "next/image";
 
-import logo from "@/assets/img/transparent_2024-05-31T06-05-03.png";
+import logo from "@/assets/images/Logo.png";
 import Link from "next/link";
 
 function Footer() {
@@ -12,7 +12,7 @@ function Footer() {
 					<div className="max-w-3xl mx-auto">
 						<Link href="/" className="flex justify-center ">
 							<div className="flex items-center gap-[16px]">
-								<div className="inline-block border-[1px] rounded-[6px] border-solid border-Neutral-B100 h-[44px] w-[44px] ct-center bg-Neutral-N700">
+								<div className="inline-block border-[1px] rounded-[6px] border-solid border-Neutral-B100 h-[44px] w-[44px] ct-center bg-Neutral-N900">
 									<Image
 										src={logo}
 										alt="logo"
@@ -22,11 +22,11 @@ function Footer() {
 									/>
 								</div>
 								<span className="font-extrabold leading-[1.2] text-[20px] tracking-[-1px] text-Neutral-N900">
-									Ecommerce
+									RentRoomHub
 								</span>
 							</div>
 						</Link>
-						<ul className="text-lg flex items-center justify-center flex-col gap-7 md:flex-row md:gap-12 transition-all duration-500 py-6 mb-7 border-b border-gray-200">
+						<ul className="text-lg flex items-center justify-center flex-col gap-1 md:flex-row md:gap-12 transition-all duration-500 py-6 mb-7 border-b border-gray-200">
 							<li>
 								<a
 									href="#"
@@ -136,8 +136,8 @@ function Footer() {
 								</svg>
 							</a>
 						</div>
-						<span className="text-lg text-gray-500 text-center block">
-							©<a href="https://pagedone.io/">pagedone</a> 2024,
+						<span className="text-sm text-gray-500 text-center block">
+							©TranThienPhuc-B2014775 2024,
 							All rights reserved.
 						</span>
 					</div>

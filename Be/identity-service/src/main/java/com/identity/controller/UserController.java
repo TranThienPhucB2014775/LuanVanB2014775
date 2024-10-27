@@ -1,5 +1,6 @@
 package com.identity.controller;
 
+import com.identity.dto.Request.UserReportRequest;
 import jakarta.validation.Valid;
 
 import org.springframework.http.HttpStatus;
@@ -50,9 +51,17 @@ public class UserController {
     //                .result(userService.getAllUser(token))
     //                .build();
     //    }
+
+    @PostMapping("/report")
+    public ApiResponse<String> reportUser(@RequestBody @Valid UserReportRequest request) {
+
+        userService.reportUser(request);
+
+        return ApiResponse.<String>builder().result("Reported").build();
+    }
+
     @GetMapping("/all/{pageNum}")
     ApiResponse<ListResponse<AllUserResponse>> getAllUser(
-            @RequestHeader(value = "Authorization") String token,
             @PathVariable String pageNum,
             @RequestParam(defaultValue = "10", required = false) String pageSize,
             @RequestParam(defaultValue = "createdAt", required = false) String sortBy,
@@ -72,11 +81,19 @@ public class UserController {
                 .build();
     }
 
-    @GetMapping("/{id}")
-    ApiResponse<UserResponse> getUserByEmail(
-            @PathVariable String id, @RequestHeader(value = "Authorization", defaultValue = "") String token) {
+    @GetMapping("/userId/{id}")
+    ApiResponse<UserResponse> getUserById(
+            @PathVariable String id) {
         return ApiResponse.<UserResponse>builder()
-                .result(userService.getUserByEmail(id, token.replace("Bearer ", "")))
+                .result(userService.getUserById(id))
+                .build();
+    }
+
+    @GetMapping("/email/{email}")
+    ApiResponse<UserResponse> getUserByEmail(
+            @PathVariable String email) {
+        return ApiResponse.<UserResponse>builder()
+                .result(userService.getUserByEmail(email))
                 .build();
     }
 

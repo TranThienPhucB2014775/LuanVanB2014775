@@ -16,7 +16,7 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfig {
 
     private static final String[] PUBLIC_ENDPOINTS = {
-            "/profile/create",
+            "/profile/**",
             "/actuator/**",
             "/swagger-ui/**",
             "/v3/api-docs/**"
@@ -30,19 +30,8 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
-        httpSecurity.authorizeHttpRequests(request -> request
-                .requestMatchers(PUBLIC_ENDPOINTS)
+        httpSecurity.authorizeHttpRequests(request -> request.requestMatchers(PUBLIC_ENDPOINTS)
                 .permitAll()
-//                .requestMatchers("/profile/create")
-//                .permitAll()
-//                .requestMatchers("/profile/update")
-//                .authenticated()
-//                .requestMatchers("/actuator/**")
-//                .permitAll()
-//                .requestMatchers("/swagger-ui/**")
-//                .permitAll()
-//                .requestMatchers("/v3/api-docs/**")
-//                .permitAll()
                 .anyRequest()
                 .authenticated());
 

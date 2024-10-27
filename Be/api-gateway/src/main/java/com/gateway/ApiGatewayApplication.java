@@ -23,50 +23,26 @@ public class ApiGatewayApplication {
     public RouteLocator routeLocator(RouteLocatorBuilder routeLocatorBuilder) {
 
         List<ServiceDetail> serviceDetails = List.of(
-                new ServiceDetail("identity","IDENTITY-SERVICE"),
-                new ServiceDetail("profile","PROFILE-SERVICE"),
-                new ServiceDetail("media","MEDIA-SERVICE"),
-                new ServiceDetail("notification","NOTIFICATION-SERVICE"),
-                new ServiceDetail("post","POST-SERVICE"),
-                new ServiceDetail("content","CONTENT-SERVICE"),
-                new ServiceDetail("property","PROPERTY-SERVICE")
+                new ServiceDetail("identity", "IDENTITY-SERVICE"),
+                new ServiceDetail("profile", "PROFILE-SERVICE"),
+                new ServiceDetail("media", "MEDIA-SERVICE"),
+                new ServiceDetail("notification", "NOTIFICATION-SERVICE"),
+                new ServiceDetail("post", "POST-SERVICE"),
+                new ServiceDetail("content", "CONTENT-SERVICE"),
+                new ServiceDetail("property", "PROPERTY-SERVICE"),
+                new ServiceDetail("interact", "INTERACT-SERVICE"),
+                new ServiceDetail("notification", "NOTIFICATION-SERVICE"),
+                new ServiceDetail("post", "POST-SERVICE")
         );
 
         RouteLocatorBuilder.Builder builder = routeLocatorBuilder.routes();
 
         for (ServiceDetail service : serviceDetails) {
-            builder.route(p -> p.path("/api/v1/"+service.getPath() + "/**")
+            builder.route(p -> p.path("/api/v1/" + service.getPath() + "/**")
                     .filters(f -> f.rewritePath("/api/v1/" + service.getPath() + "/(?<segment>.*)", "/${segment}"))
                     .uri("lb://" + service.getServiceName()));
         }
 
         return builder.build();
-
-//        return routeLocatorBuilder
-//
-//
-//                .routes()
-//                .route(p -> p.path("/api/v1/identity/**")
-//                        .filters(f -> f.rewritePath("/api/v1/identity/(?<segment>.*)", "/${segment}"))
-//                        .uri("lb://IDENTITY-SERVICE"))
-//                .route(p -> p.path("/api/v1/profile/**")
-//                        .filters(f -> f.rewritePath("/api/v1/profile/(?<segment>.*)", "/${segment}"))
-//                        .uri("lb://PROFILE-SERVICE"))
-//                .route(p -> p.path("/api/v1/media/**")
-//                        .filters(f -> f.rewritePath("/api/v1/media/(?<segment>.*)", "/${segment}"))
-//                        .uri("lb://MEDIA-SERVICE"))
-//                .route(p -> p.path("/api/v1/notification/**")
-//                        .filters(f -> f.rewritePath("/api/v1/notification/(?<segment>.*)", "/${segment}"))
-//                        .uri("lb://NOTIFICATION-SERVICE"))
-//                .route(p -> p.path("/api/v1/post/**")
-//                        .filters(f -> f.rewritePath("/api/v1/post/(?<segment>.*)", "/${segment}"))
-//                        .uri("lb://POST-SERVICE"))
-//                .route(p -> p.path("/api/v1/content/**")
-//                        .filters(f -> f.rewritePath("/api/v1/content/(?<segment>.*)", "/${segment}"))
-//                        .uri("lb://CONTENT-SERVICE"))
-//                .route(p -> p.path("/api/v1/property/**")
-//                        .filters(f -> f.rewritePath("/api/v1/property/(?<segment>.*)", "/${segment}"))
-//                        .uri("lb://PROPERTY-SERVICE"))
-//                .build();
     }
 }

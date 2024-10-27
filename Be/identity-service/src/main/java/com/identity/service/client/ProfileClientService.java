@@ -14,6 +14,7 @@ import com.identity.dto.Response.ProfileResponse;
 
 @FeignClient(name = "profile-service")
 public interface ProfileClientService {
+
     @PostMapping(value = "/profile/create", consumes = "application/json")
     ApiResponse<ProfileCreationResponse> createProfile(@RequestBody ProfileCreationRequest profileCreationRequest);
 
@@ -24,7 +25,7 @@ public interface ProfileClientService {
     ApiResponse<List<ProfileResponse>> getAllProfiles(@RequestHeader String Authorization);
 
     @GetMapping(value = "/profile/{userId}", consumes = "application/json")
-    ApiResponse<ProfileResponse> getProfileByUserId(@PathVariable String userId, @RequestHeader String Authorization);
+    ApiResponse<ProfileResponse> getProfileByUserId(@PathVariable String userId);
 
     @PutMapping(value = "/avatar", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     ApiResponse<?> createImage(

@@ -1,11 +1,12 @@
 package com.property.entity;
 
 import jakarta.persistence.*;
+
+import org.springframework.context.annotation.Lazy;
+
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-
-import java.util.UUID;
 
 @Entity
 @Getter
@@ -15,18 +16,20 @@ import java.util.UUID;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Slf4j
-@Table(name = "room_types",
-        indexes = {
-                @Index(name = "room_type_id_index", columnList = "room_type_id"),
-                @Index(name = "apartment_id_index", columnList = "apartment_id")
-        })
+@Table(name = "room_type")
+@ToString
 public class RoomType extends BaseEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     String roomTypeId;
 
     @ManyToOne
-    @JoinColumn(name = "apartment_id", nullable = false)
+    @JoinTable(
+            name = "room_type_apartment",
+            joinColumns = @JoinColumn(name = "room_type_id"),
+            inverseJoinColumns = @JoinColumn(name = "apartment_id"))
+    @Lazy
     Apartment apartment;
 
     String name;
@@ -34,4 +37,5 @@ public class RoomType extends BaseEntity {
     String info;
     String utility;
     Boolean isAvailable;
+    int maxOccupancy;
 }

@@ -16,6 +16,8 @@
         <option value="$PROJECT_DIR$/post-service/pom.xml" />
         <option value="$PROJECT_DIR$/content-service/pom.xml" />
         <option value="$PROJECT_DIR$/property-service/pom.xml" />
+        <option value="$PROJECT_DIR$/landlord-management-service/pom.xml" />
+        <option value="$PROJECT_DIR$/interact-service/pom.xml" />
       </list>
     </option>
     <option name="ignoredFiles">

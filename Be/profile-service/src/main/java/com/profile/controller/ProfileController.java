@@ -36,10 +36,10 @@ public class ProfileController {
     }
 
     @GetMapping
-    ApiResponse<ProfileResponse> getProfile(@RequestHeader(value = "Authorization", defaultValue = "") String token) {
+    ApiResponse<ProfileResponse> getProfile() {
         return ApiResponse.<ProfileResponse>builder()
                 .code(0)
-                .result(profileService.getProfile(token.replace("Bearer ", "")))
+                .result(profileService.getProfile())
                 .build();
     }
 
@@ -52,12 +52,10 @@ public class ProfileController {
     }
 
     @PostMapping("/update")
-    ApiResponse<ProfileResponse> updateProfile(
-            @Valid @RequestBody ProfileUpdateRequest profileUpdateRequest,
-            @RequestHeader(value = "Authorization", defaultValue = "") String token) {
+    ApiResponse<ProfileResponse> updateProfile(@Valid @RequestBody ProfileUpdateRequest profileUpdateRequest) {
         return ApiResponse.<ProfileResponse>builder()
                 .code(0)
-                .result(profileService.updateProfile(profileUpdateRequest, token.replace("Bearer ", "")))
+                .result(profileService.updateProfile(profileUpdateRequest))
                 .build();
     }
 
