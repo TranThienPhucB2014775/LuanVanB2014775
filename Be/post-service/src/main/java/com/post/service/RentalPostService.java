@@ -1,5 +1,19 @@
 package com.post.service;
 
+import java.util.*;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
 import com.event.dto.ReportCreationEvent;
 import com.post.dto.request.RentalPostCreationRequest;
 import com.post.dto.request.RentalPostReportRequest;
@@ -17,23 +31,11 @@ import com.post.repository.RentalPostRepository;
 import com.post.repository.specification.RentalPostSpecification;
 import com.post.service.client.MediaClientService;
 import com.post.service.client.UserClient;
+
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.jpa.domain.Specification;
-import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -54,13 +56,11 @@ public class RentalPostService {
 
     @PreAuthorize("hasRole('ROLE_LANDLORD')")
     public RentalPostDetailResponse createRentalPost(
-            RentalPostCreationRequest request,
-            String token,
-            List<MultipartFile> fileList
-    ) {
+            RentalPostCreationRequest request, String token, List<MultipartFile> fileList) {
         var userId = SecurityContextHolder.getContext().getAuthentication().getName();
 
-        RentalPost rentalPost = rentalPostRepository.save(rentalPostMapper.rentalPostCreationRequestToRentalPost(request, userId));
+        RentalPost rentalPost =
+                rentalPostRepository.save(rentalPostMapper.rentalPostCreationRequestToRentalPost(request, userId));
 
         log.info("{}", rentalPost.getRentalPostId());
 
@@ -77,22 +77,18 @@ public class RentalPostService {
 
         mediaClientService.uploadMediaImg(fileList, uuidImages);
 
-        return rentalPostMapper.rentalPostDetailRequest(
-                rentalPost
-        );
+        return rentalPostMapper.rentalPostDetailRequest(rentalPost);
     }
 
-    public RentalPostDetailResponse updateRentalPost(
-            RentalPostUpdateRequest request,
-            String token
-    ) {
+    public RentalPostDetailResponse updateRentalPost(RentalPostUpdateRequest request, String token) {
         var userId = SecurityContextHolder.getContext().getAuthentication().getName();
 
-        RentalPost rentalPost = rentalPostRepository.findById(request.getRentalPostId()).orElseThrow(
-                () -> new AppException(ErrorCode.RENTAL_POST_NOT_FOUND)
-        );
+        RentalPost rentalPost = rentalPostRepository
+                .findById(request.getRentalPostId())
+                .orElseThrow(() -> new AppException(ErrorCode.RENTAL_POST_NOT_FOUND));
 
-        Collection<? extends GrantedAuthority> authorities = SecurityContextHolder.getContext().getAuthentication().getAuthorities();
+        Collection<? extends GrantedAuthority> authorities =
+                SecurityContextHolder.getContext().getAuthentication().getAuthorities();
 
         if (authorities.stream()
                 .noneMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("ROLE_ADMIN"))) {
@@ -113,18 +109,17 @@ public class RentalPostService {
         rentalPost.setTenantType(request.getTenantType());
         rentalPost.setAmenities(rentalPost.getAmenities());
 
-        return rentalPostMapper.rentalPostDetailRequest(
-                rentalPostRepository.save(rentalPost)
-        );
+        return rentalPostMapper.rentalPostDetailRequest(rentalPostRepository.save(rentalPost));
     }
 
     public void deleteRentalPost(String rentalPostId) {
 
-        RentalPost rentalPost = rentalPostRepository.findById(rentalPostId).orElseThrow(
-                () -> new AppException(ErrorCode.RENTAL_POST_NOT_FOUND)
-        );
+        RentalPost rentalPost = rentalPostRepository
+                .findById(rentalPostId)
+                .orElseThrow(() -> new AppException(ErrorCode.RENTAL_POST_NOT_FOUND));
 
-        Collection<? extends GrantedAuthority> authorities = SecurityContextHolder.getContext().getAuthentication().getAuthorities();
+        Collection<? extends GrantedAuthority> authorities =
+                SecurityContextHolder.getContext().getAuthentication().getAuthorities();
         var userId = SecurityContextHolder.getContext().getAuthentication().getName();
         if (authorities.stream()
                 .noneMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("ROLE_ADMIN"))) {
@@ -140,11 +135,12 @@ public class RentalPostService {
 
     public void updateRentalPostStatus(String rentalPostId) {
 
-        RentalPost rentalPost = rentalPostRepository.findById(rentalPostId).orElseThrow(
-                () -> new AppException(ErrorCode.RENTAL_POST_NOT_FOUND)
-        );
+        RentalPost rentalPost = rentalPostRepository
+                .findById(rentalPostId)
+                .orElseThrow(() -> new AppException(ErrorCode.RENTAL_POST_NOT_FOUND));
 
-        Collection<? extends GrantedAuthority> authorities = SecurityContextHolder.getContext().getAuthentication().getAuthorities();
+        Collection<? extends GrantedAuthority> authorities =
+                SecurityContextHolder.getContext().getAuthentication().getAuthorities();
         var userId = SecurityContextHolder.getContext().getAuthentication().getName();
         log.info("{}", userId);
         log.info("{}", rentalPost.getUserId());
@@ -160,17 +156,21 @@ public class RentalPostService {
 
     public RentalPostDetailResponse getRentalPost(String rentalPostId) {
 
-        RentalPost rentalPost = rentalPostRepository.findById(rentalPostId).orElseThrow(
-                () -> new AppException(ErrorCode.RENTAL_POST_NOT_FOUND)
-        );
+        RentalPost rentalPost = rentalPostRepository
+                .findById(rentalPostId)
+                .orElseThrow(() -> new AppException(ErrorCode.RENTAL_POST_NOT_FOUND));
 
         if (!rentalPost.getIsAvailable()) {
             log.info("{}", rentalPost.getIsAvailable());
             try {
-                Collection<? extends GrantedAuthority> authorities = SecurityContextHolder.getContext().getAuthentication().getAuthorities();
+                Collection<? extends GrantedAuthority> authorities =
+                        SecurityContextHolder.getContext().getAuthentication().getAuthorities();
                 if (authorities.stream()
-                        .noneMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("ROLE_ADMIN"))) {
-                    var userId = SecurityContextHolder.getContext().getAuthentication().getName();
+                        .noneMatch(grantedAuthority ->
+                                grantedAuthority.getAuthority().equals("ROLE_ADMIN"))) {
+                    var userId = SecurityContextHolder.getContext()
+                            .getAuthentication()
+                            .getName();
                     if (!rentalPost.getUserId().equals(userId)) {
                         throw new AppException(ErrorCode.RENTAL_POST_NOT_FOUND);
                     }
@@ -183,9 +183,7 @@ public class RentalPostService {
 
         List<Image> images = imageRepository.findByPostId(rentalPostId);
 
-        RentalPostDetailResponse rentalPostDetailResponse = rentalPostMapper.rentalPostDetailRequest(
-                rentalPost
-        );
+        RentalPostDetailResponse rentalPostDetailResponse = rentalPostMapper.rentalPostDetailRequest(rentalPost);
 
         rentalPostDetailResponse.setImages(imageMapper.toImageResponse(images));
 
@@ -209,9 +207,7 @@ public class RentalPostService {
             Integer areaMax,
             String city,
             String district,
-            String ward
-
-    ) {
+            String ward) {
 
         Sort sort = Sort.by(order.equals("asc") ? Sort.Direction.ASC : Sort.Direction.DESC, sortBy);
         Pageable pageable = PageRequest.of(pageNum, pageSize, sort);
@@ -219,10 +215,14 @@ public class RentalPostService {
         if (!isAvailable) {
             try {
                 log.info("1");
-                Collection<? extends GrantedAuthority> authorities = SecurityContextHolder.getContext().getAuthentication().getAuthorities();
+                Collection<? extends GrantedAuthority> authorities =
+                        SecurityContextHolder.getContext().getAuthentication().getAuthorities();
                 if (authorities.stream()
-                        .noneMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("ROLE_ADMIN"))) {
-                    var userIdAuth = SecurityContextHolder.getContext().getAuthentication().getName();
+                        .noneMatch(grantedAuthority ->
+                                grantedAuthority.getAuthority().equals("ROLE_ADMIN"))) {
+                    var userIdAuth = SecurityContextHolder.getContext()
+                            .getAuthentication()
+                            .getName();
                     if (!userId.equals(userIdAuth)) {
                         throw new AppException(ErrorCode.UNAUTHORIZED);
                     }
@@ -245,8 +245,7 @@ public class RentalPostService {
                 city,
                 district,
                 ward,
-                pageable
-        );
+                pageable);
 
         log.info("3");
 
@@ -255,13 +254,14 @@ public class RentalPostService {
         PriceRange priceRange = rentalPostRepository.getPriceRange();
 
         return ListPostResponse.<RentalPostListResponse>builder()
-                .data(rentalPosts.map(rentalPost -> {
-                    UserResponse userResponse = userResponseCache.computeIfAbsent(
-                            rentalPost.getUserId(),
-                            id -> userClient.getUserByUserId(id).getResult()
-                    );
-                    return rentalPostMapper.rentalPostListResponse(rentalPost, userResponse);
-                }).getContent())
+                .data(rentalPosts
+                        .map(rentalPost -> {
+                            UserResponse userResponse = userResponseCache.computeIfAbsent(
+                                    rentalPost.getUserId(),
+                                    id -> userClient.getUserByUserId(id).getResult());
+                            return rentalPostMapper.rentalPostListResponse(rentalPost, userResponse);
+                        })
+                        .getContent())
                 .totalElement(rentalPosts.getTotalElements())
                 .totalPage(rentalPosts.getTotalPages())
                 .minPrice(priceRange.getMinPrice() == null ? 0 : priceRange.getMinPrice())
@@ -271,9 +271,9 @@ public class RentalPostService {
 
     public void reportRentalPost(RentalPostReportRequest request) {
 
-        RentalPost rentalPost = rentalPostRepository.findById(request.getRentalPostId()).orElseThrow(
-                () -> new AppException(ErrorCode.RENTAL_POST_NOT_FOUND)
-        );
+        RentalPost rentalPost = rentalPostRepository
+                .findById(request.getRentalPostId())
+                .orElseThrow(() -> new AppException(ErrorCode.RENTAL_POST_NOT_FOUND));
 
         kafkaTemplate.send(
                 "create-report",
@@ -281,10 +281,10 @@ public class RentalPostService {
                         .reportType("RENTER_POST")
                         .message(request.getMessage())
                         .itemId(request.getRentalPostId())
-                        .userId(SecurityContextHolder.getContext().getAuthentication().getName())
-                        .build()
-        );
-
+                        .userId(SecurityContextHolder.getContext()
+                                .getAuthentication()
+                                .getName())
+                        .build());
     }
 
     private Page<RentalPost> getRentalPostListResponse(
@@ -299,11 +299,9 @@ public class RentalPostService {
             String city,
             String district,
             String ward,
-            Pageable pageable
-    ) {
-        Specification<RentalPost> specification = Specification.where(
-                        RentalPostSpecification.withSearch(search)
-                ).and(RentalPostSpecification.withAvailability(isAvailable))
+            Pageable pageable) {
+        Specification<RentalPost> specification = Specification.where(RentalPostSpecification.withSearch(search))
+                .and(RentalPostSpecification.withAvailability(isAvailable))
                 .and(RentalPostSpecification.withTenantType(tenantType))
                 .and(RentalPostSpecification.withUserId(userId))
                 .and(RentalPostSpecification.withMinPrice(priceMin))

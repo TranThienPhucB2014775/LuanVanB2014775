@@ -1,6 +1,6 @@
 package com.profile.entity;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;
@@ -24,7 +24,7 @@ public class BaseEntity {
     @CreatedDate
     @Column(updatable = false)
     @JsonIgnore
-    private LocalDateTime createdAt;
+    private Instant createdAt;
 
     @CreatedBy
     @Column(updatable = false)
@@ -34,7 +34,7 @@ public class BaseEntity {
     @LastModifiedDate
     @Column(insertable = false)
     @JsonIgnore
-    private LocalDateTime updatedAt;
+    private Instant updatedAt;
 
     @LastModifiedBy
     @Column(insertable = false)

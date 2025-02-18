@@ -9,7 +9,7 @@ import com.identity.entity.Permission;
 public class PermissionMapper {
     public static Set<PermissionResponse> permissionToPermissionResponse(Set<Permission> permissions) {
         Set<PermissionResponse> permissionResponse = permissions.stream()
-                .map(permission -> new PermissionResponse(permission.getName(), permission.getDescription()))
+                .map(permission -> new PermissionResponse(permission.getPermissionName(), permission.getDescription()))
                 .collect(Collectors.toSet());
 
         return permissionResponse;

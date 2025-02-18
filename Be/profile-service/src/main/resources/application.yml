@@ -2,7 +2,7 @@ spring:
   application:
     name: "profile-service"
   datasource:
-    url: "jdbc:postgresql://localhost:5432/luanvan"
+    url: "jdbc:postgresql://localhost:5432/profile_service"
     username: postgres
     password: root
     driver-class-name: org.postgresql.Driver

@@ -1,6 +1,5 @@
 package com.identity.controller;
 
-import com.identity.dto.Request.UserReportRequest;
 import jakarta.validation.Valid;
 
 import org.springframework.http.HttpStatus;
@@ -10,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import com.identity.dto.ApiResponse;
 import com.identity.dto.Request.UserCreateRequest;
+import com.identity.dto.Request.UserReportRequest;
 import com.identity.dto.Response.AllUserResponse;
 import com.identity.dto.Response.ListResponse;
 import com.identity.dto.Response.UserResponse;
@@ -82,25 +82,24 @@ public class UserController {
     }
 
     @GetMapping("/userId/{id}")
-    ApiResponse<UserResponse> getUserById(
-            @PathVariable String id) {
+    ApiResponse<UserResponse> getUserById(@PathVariable String id) {
         return ApiResponse.<UserResponse>builder()
                 .result(userService.getUserById(id))
                 .build();
     }
 
     @GetMapping("/email/{email}")
-    ApiResponse<UserResponse> getUserByEmail(
-            @PathVariable String email) {
+    ApiResponse<UserResponse> getUserByEmail(@PathVariable String email) {
         return ApiResponse.<UserResponse>builder()
                 .result(userService.getUserByEmail(email))
                 .build();
     }
 
     @DeleteMapping("/{userEmail}")
-    public ApiResponse<String> deleteUser(@PathVariable String userEmail) {
+    public ApiResponse<String> deleteUser(
+            @PathVariable String userEmail, @RequestHeader("Authorization") String token) {
         log.info("Delete user with email {}", userEmail);
-        userService.deleteUser(userEmail);
+        userService.deleteUser(userEmail, token);
         return ApiResponse.<String>builder().result(userEmail).build();
     }
 

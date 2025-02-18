@@ -17,7 +17,11 @@ import lombok.extern.slf4j.Slf4j;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Slf4j
-@Table(name = "apartments")
+@Table(name = "apartment", indexes = {
+        @Index(name = "idx_user_id_apartment", columnList = "userId"),
+        @Index(name = "idx_city_apartment", columnList = "city"),
+        @Index(name = "idx_is_available_apartment", columnList = "isAvailable")
+})
 public class Apartment extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -29,8 +33,11 @@ public class Apartment extends BaseEntity {
 
     String city;
     String address;
+    @Column(columnDefinition = "TEXT")
     String rule;
+    @Column(columnDefinition = "TEXT")
     String utility;
+    @Column(columnDefinition = "TEXT")
     String description;
     Boolean isAvailable;
 

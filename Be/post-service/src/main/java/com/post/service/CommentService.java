@@ -1,5 +1,20 @@
 package com.post.service;
 
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Service;
+
 import com.event.dto.CreateNotificationEvent;
 import com.event.dto.ReportCreationEvent;
 import com.post.dto.request.CommentCreationRequest;
@@ -16,23 +31,11 @@ import com.post.mapper.CommentMapper;
 import com.post.repository.CommentRepository;
 import com.post.repository.RentalPostRepository;
 import com.post.service.client.UserClient;
+
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Service;
-
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -51,16 +54,22 @@ public class CommentService {
 
     public CommentResponse createComment(CommentCreationRequest request) {
 
-        RentalPost rentalPost = rentalPostRepository.findById(request.getPostId())
+        RentalPost rentalPost = rentalPostRepository
+                .findById(request.getPostId())
                 .orElseThrow(() -> new AppException(ErrorCode.RENTAL_POST_NOT_FOUND));
 
-        kafkaTemplate.send("create-notification", CreateNotificationEvent.builder()
-                .recipient(rentalPost.getUserId())
-                .message("Ai đó đã bình luận bài viết \"" + rentalPost.getTitle() + "\" của bạn")
-                .build());
+        kafkaTemplate.send(
+                "create-notification",
+                CreateNotificationEvent.builder()
+                        .recipient(rentalPost.getUserId())
+                        .message("Ai đó đã bình luận bài viết \"" + rentalPost.getTitle() + "\" của bạn")
+                        .build());
+
+        long totalComment = commentRepository.countAllByPostId(request.getPostId());
 
         if (request.getParentId() != null) {
-            Comment parentComment = commentRepository.findById(request.getParentId())
+            Comment parentComment = commentRepository
+                    .findById(request.getParentId())
                     .orElseThrow(() -> new AppException(ErrorCode.COMMENT_NOT_FOUND));
             String content;
             if (parentComment.getContent().length() > 30) {
@@ -69,31 +78,46 @@ public class CommentService {
                 content = parentComment.getContent();
             }
 
-            kafkaTemplate.send("create-notification", CreateNotificationEvent.builder()
-                    .recipient(parentComment.getUserId())
-                    .message("Ai đó đã trả lời bình luận \"" + content + "\" của bạn")
-                    .build());
+            kafkaTemplate.send(
+                    "create-notification",
+                    CreateNotificationEvent.builder()
+                            .recipient(parentComment.getUserId())
+                            .message("Ai đó đã trả lời bình luận \"" + content + "\" của bạn")
+                            .build());
         }
 
-        return commentMapper.toCommentResponse(
-                commentRepository.save(
-                        commentMapper.toComment(
-                                request,
-                                SecurityContextHolder.getContext().getAuthentication().getName()
-                        )
-                ),
-                userClient.getUserByUserId(SecurityContextHolder.getContext().getAuthentication().getName()).getResult(),
-                null
-        );
+        log.info("Comment {}", request);
 
+        Comment comment = commentMapper.toComment(
+                request, SecurityContextHolder.getContext().getAuthentication().getName(), totalComment / 10);
+
+        Comment savedComment = commentRepository.save(comment);
+
+        log.info("Saved comment {}", savedComment);
+        log.info("Saved comment {}", comment);
+
+        return commentMapper.toCommentResponse(
+                savedComment,
+                userClient
+                        .getUserByUserId(SecurityContextHolder.getContext()
+                                .getAuthentication()
+                                .getName())
+                        .getResult(),
+                request.getParentId() == null
+                        ? null
+                        : commentMapper.toCommentResponse(
+                        Objects.requireNonNull(commentRepository.findById(request.getParentId()).orElse(null)),
+                        null, null));
     }
 
     public CommentResponse updateComment(CommentUpdateRequest request) {
 
-        Comment comment = commentRepository.findById(request.getCommentId())
+        Comment comment = commentRepository
+                .findById(request.getCommentId())
                 .orElseThrow(() -> new AppException(ErrorCode.COMMENT_NOT_FOUND));
 
-        Collection<? extends GrantedAuthority> authorities = SecurityContextHolder.getContext().getAuthentication().getAuthorities();
+        Collection<? extends GrantedAuthority> authorities =
+                SecurityContextHolder.getContext().getAuthentication().getAuthorities();
 
         var userId = SecurityContextHolder.getContext().getAuthentication().getName();
         if (authorities.stream()
@@ -105,18 +129,15 @@ public class CommentService {
 
         comment.setContent(request.getContent());
 
-        return commentMapper.toCommentResponse(
-                commentRepository.save(comment),
-                null,
-                null
-        );
+        return commentMapper.toCommentResponse(commentRepository.save(comment), null, null);
     }
 
     public void deleteComment(String commentId) {
-        Comment comment = commentRepository.findById(commentId)
-                .orElseThrow(() -> new AppException(ErrorCode.COMMENT_NOT_FOUND));
+        Comment comment =
+                commentRepository.findById(commentId).orElseThrow(() -> new AppException(ErrorCode.COMMENT_NOT_FOUND));
 
-        Collection<? extends GrantedAuthority> authorities = SecurityContextHolder.getContext().getAuthentication().getAuthorities();
+        Collection<? extends GrantedAuthority> authorities =
+                SecurityContextHolder.getContext().getAuthentication().getAuthorities();
 
         var userId = SecurityContextHolder.getContext().getAuthentication().getName();
         if (authorities.stream()
@@ -130,7 +151,8 @@ public class CommentService {
     }
 
     public void reportComment(CommentReportRequest request) {
-        Comment comment = commentRepository.findById(request.getCommentId())
+        Comment comment = commentRepository
+                .findById(request.getCommentId())
                 .orElseThrow(() -> new AppException(ErrorCode.COMMENT_NOT_FOUND));
 
         kafkaTemplate.send(
@@ -139,45 +161,41 @@ public class CommentService {
                         .reportType("RENTAL_COMMENT")
                         .message(request.getMessage())
                         .itemId(request.getCommentId())
-                        .userId(SecurityContextHolder.getContext().getAuthentication().getName())
-                        .build()
-        );
+                        .userId(SecurityContextHolder.getContext()
+                                .getAuthentication()
+                                .getName())
+                        .build());
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public CommentResponse getComment(String commentId) {
-        return commentRepository.findById(commentId)
+        return commentRepository
+                .findById(commentId)
                 .map(comment -> {
-                    UserResponse userResponse = userClient.getUserByUserId(comment.getUserId()).getResult();
+                    UserResponse userResponse =
+                            userClient.getUserByUserId(comment.getUserId()).getResult();
                     Comment parentComment = null;
                     if (comment.getParentId() != null) {
-                        parentComment = commentRepository.findById(comment.getParentId()).orElse(null);
+                        parentComment = commentRepository
+                                .findById(comment.getParentId())
+                                .orElse(null);
                     }
 
                     CommentResponse parentCommentResponse = null;
                     if (parentComment != null) {
-                        UserResponse parentUserResponse = userClient.getUserByUserId(parentComment.getUserId()).getResult();
-                        parentCommentResponse = commentMapper.toCommentResponse(
-                                parentComment,
-                                parentUserResponse,
-                                null
-                        );
+                        UserResponse parentUserResponse = userClient
+                                .getUserByUserId(parentComment.getUserId())
+                                .getResult();
+                        parentCommentResponse =
+                                commentMapper.toCommentResponse(parentComment, parentUserResponse, null);
                     }
 
-                    return commentMapper.toCommentResponse(
-                            comment,
-                            userResponse,
-                            parentCommentResponse
-                    );
+                    return commentMapper.toCommentResponse(comment, userResponse, parentCommentResponse);
                 })
                 .orElseThrow(() -> new AppException(ErrorCode.COMMENT_NOT_FOUND));
     }
 
-    public ListResponse<CommentResponse> getAllComments(
-            int pageNum,
-            int pageSize,
-            String postId
-    ) {
+    public ListResponse<CommentResponse> getAllComments(int pageNum, int pageSize, String postId) {
         Sort sort = Sort.by(Sort.Direction.ASC, "createdAt");
         Pageable pageable = PageRequest.of(pageNum, pageSize, sort);
 
@@ -186,39 +204,34 @@ public class CommentService {
         Map<String, UserResponse> userResponseCache = new HashMap<>();
 
         return ListResponse.<CommentResponse>builder()
-                .data(comments.stream().map(comment -> {
-                    Comment parentComment = null;
-                    if (comment.getParentId() != null) {
-                        parentComment = commentRepository.findById(comment.getParentId()).orElse(null);
-                    }
+                .data(comments.stream()
+                        .map(comment -> {
+                            Comment parentComment = null;
+                            if (comment.getParentId() != null) {
+                                parentComment = commentRepository
+                                        .findById(comment.getParentId())
+                                        .orElse(null);
+                            }
 
-                    UserResponse userResponse = userResponseCache.computeIfAbsent(
-                            comment.getUserId(),
-                            userId -> userClient.getUserByUserId(userId).getResult()
-                    );
+                            UserResponse userResponse = userResponseCache.computeIfAbsent(
+                                    comment.getUserId(),
+                                    userId -> userClient.getUserByUserId(userId).getResult());
 
-                    CommentResponse parentCommentResponse = null;
-                    if (parentComment != null) {
-                        UserResponse parentUserResponse = userResponseCache.computeIfAbsent(
-                                parentComment.getUserId(),
-                                userId -> userClient.getUserByUserId(userId).getResult()
-                        );
-                        parentCommentResponse = commentMapper.toCommentResponse(
-                                parentComment,
-                                parentUserResponse,
-                                null
-                        );
-                    }
+                            CommentResponse parentCommentResponse = null;
+                            if (parentComment != null) {
+                                UserResponse parentUserResponse = userResponseCache.computeIfAbsent(
+                                        parentComment.getUserId(), userId -> userClient
+                                                .getUserByUserId(userId)
+                                                .getResult());
+                                parentCommentResponse =
+                                        commentMapper.toCommentResponse(parentComment, parentUserResponse, null);
+                            }
 
-                    return commentMapper.toCommentResponse(
-                            comment,
-                            userResponse,
-                            parentCommentResponse
-                    );
-                }).toList())
+                            return commentMapper.toCommentResponse(comment, userResponse, parentCommentResponse);
+                        })
+                        .toList())
                 .totalPage(comments.getTotalPages())
                 .totalElement(comments.getTotalElements())
                 .build();
     }
-
 }

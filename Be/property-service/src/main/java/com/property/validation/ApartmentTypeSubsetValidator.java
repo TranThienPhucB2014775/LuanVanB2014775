@@ -31,7 +31,9 @@ public class ApartmentTypeSubsetValidator implements ConstraintValidator<Apartme
         try {
             ApartmentTypes apartmentType = ApartmentTypes.valueOf(value.toUpperCase());
             log.info("Validating apartment type: {}", apartmentType);
-            log.info("Validating apartment type subset: {}", Arrays.asList(subset).contains(apartmentType));
+            log.info(
+                    "Validating apartment type subset: {}",
+                    Arrays.asList(subset).contains(apartmentType));
             return Arrays.asList(subset).contains(apartmentType);
 
         } catch (IllegalArgumentException e) {

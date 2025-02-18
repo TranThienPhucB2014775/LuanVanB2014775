@@ -13,7 +13,7 @@ spring:
   config:
     import: "optional:configserver:http://localhost:8071/"
   datasource:
-    url: "jdbc:postgresql://localhost:5432/notification"
+    url: "jdbc:postgresql://localhost:5432/notification_service"
     username: postgres
     password: root
     driver-class-name: org.postgresql.Driver

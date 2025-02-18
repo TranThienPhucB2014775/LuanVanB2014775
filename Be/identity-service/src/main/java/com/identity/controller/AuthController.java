@@ -2,13 +2,14 @@ package com.identity.controller;
 
 import java.text.ParseException;
 
-import com.identity.dto.Request.*;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.identity.dto.ApiResponse;
+import com.identity.dto.Request.*;
 import com.identity.dto.Response.AuthenticationResponse;
 import com.identity.dto.Response.IntrospectResponse;
 import com.identity.service.AuthenticationService;
@@ -43,9 +44,7 @@ public class AuthController {
 
     @PostMapping("/token/admin")
     public ResponseEntity<ApiResponse<AuthenticationResponse>> loginAdmin(
-            @RequestBody AuthenticationRequest authenticationRequest,
-            HttpServletResponse response
-    ) {
+            @RequestBody AuthenticationRequest authenticationRequest, HttpServletResponse response) {
         log.info("Login authentication request: {}", authenticationRequest);
         var result = authenticationService.authenticateAdmin(authenticationRequest);
 
@@ -58,9 +57,10 @@ public class AuthController {
 
         response.addCookie(cookie);
 
-        return ResponseEntity
-                .status(200)
-                .body(ApiResponse.<AuthenticationResponse>builder().result(result).build());
+        return ResponseEntity.status(200)
+                .body(ApiResponse.<AuthenticationResponse>builder()
+                        .result(result)
+                        .build());
     }
 
     @PostMapping("/introspect")

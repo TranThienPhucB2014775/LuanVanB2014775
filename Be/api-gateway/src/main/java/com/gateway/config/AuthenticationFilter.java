@@ -38,33 +38,32 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
 
     @NonFinal
     private String[] publicEndpoints = {
-            "/identity/auth/.*",
-            "/identity/users/registration",
-            "/identity/users/userId/.*",
-            "/identity/swagger-ui/.*",
-            "/identity/v3/api-docs/.*",
-            "/identity/actuator/.*",
-            "/identity/email/.*",
-            "/actuator/.*",
-            "/profile/swagger-ui/.*",
-            "/profile/actuator/.*",
-            "/media/getImg/[^card-id].*",
-            //test
-            "/media/.*",
-
-            "/notification/.*",
-            "/feedback/\\d+/[a-f0-9\\-]+",
-            "/feedback/all/\\d+",
-            "/additional-cost/all",
-            "/apartment/all/\\d+",
-            "/apartment/\\d+",
-            "/rooms/all/\\d+",
-            "/rooms/\\d+",
-            "/room-types/all/\\d+",
-            "/room-types/\\d+",
-            "/interact/feedback/all/\\d+",
-            "/interact/feedback/\\d+/[a-f0-9\\-]+",
-            "/post/.*",
+        "/identity/auth/.*",
+        "/identity/users/registration",
+        "/identity/users/userId/.*",
+        "/identity/swagger-ui/.*",
+        "/identity/v3/api-docs/.*",
+        "/identity/actuator/.*",
+        "/identity/email/.*",
+        "/actuator/.*",
+        "/profile/swagger-ui/.*",
+        "/profile/actuator/.*",
+        "/media/getImg/[^card-id].*",
+        // test
+        "/media/.*",
+        "/notification/.*",
+        "/feedback/\\d+/[a-f0-9\\-]+",
+        "/feedback/all/\\d+",
+        "/additional-cost/all",
+        "/apartment/all/\\d+",
+        "/apartment/\\d+",
+        "/rooms/all/\\d+",
+        "/rooms/\\d+",
+        "/room-types/all/\\d+",
+        "/room-types/\\d+",
+        "/interact/feedback/all/\\d+",
+        "/interact/feedback/\\d+/[a-f0-9\\-]+",
+        "/post/.*",
     };
 
     @Value("${app.api-prefix}")
@@ -74,8 +73,6 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
 
-        log.info("Request: {}", isPublicEndpoint(exchange.getRequest()));
-
         if (isPublicEndpoint(exchange.getRequest())) {
             return chain.filter(exchange);
         }
@@ -83,7 +80,8 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
         List<String> authHeader = exchange.getRequest().getHeaders().get(HttpHeaders.AUTHORIZATION);
         if (CollectionUtils.isEmpty(authHeader)) {
             return unauthenticated(exchange.getResponse());
-        };
+        }
+        ;
 
         String token = authHeader.get(0).replace("Bearer ", "");
 

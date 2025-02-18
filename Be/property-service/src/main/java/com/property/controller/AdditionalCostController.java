@@ -1,6 +1,5 @@
 package com.property.controller;
 
-import com.property.dto.request.AdditionalCostUnrecordedRequest;
 import jakarta.validation.Valid;
 
 import org.springframework.http.HttpStatus;
@@ -9,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 import com.property.dto.ApiResponse;
 import com.property.dto.request.AdditionalCostCreationRequest;
+import com.property.dto.request.AdditionalCostUnrecordedRequest;
 import com.property.dto.request.AdditionalCostUpdateRequest;
 import com.property.dto.response.AdditionalCostResponse;
 import com.property.dto.response.ListResponse;
@@ -50,9 +50,7 @@ public class AdditionalCostController {
     }
 
     @DeleteMapping("/{additionalCostId}")
-    public ResponseEntity deleteAdditionalCost(
-            @PathVariable String additionalCostId
-    ) {
+    public ResponseEntity deleteAdditionalCost(@PathVariable String additionalCostId) {
         log.info("Deleting additional cost");
         additionalCostService.removeAdditionalCost(additionalCostId);
         return ResponseEntity.noContent().build();
@@ -68,9 +66,7 @@ public class AdditionalCostController {
 
     @PostMapping("/unrecorded/{roomId}")
     public ResponseEntity<ApiResponse<ListResponse<AdditionalCostResponse>>> getUnrecordedAdditionalCost(
-            @PathVariable String roomId,
-            @RequestBody @Valid AdditionalCostUnrecordedRequest request
-    ) {
+            @PathVariable String roomId, @RequestBody @Valid AdditionalCostUnrecordedRequest request) {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(ApiResponse.<ListResponse<AdditionalCostResponse>>builder()
                         .result(additionalCostService.getUnrecordedAdditionalCost(roomId, request))
@@ -86,7 +82,7 @@ public class AdditionalCostController {
             @RequestParam(defaultValue = "", required = false) String search,
             @RequestParam(defaultValue = "", required = false) String apartmentId,
             @RequestParam(defaultValue = "", required = false) String additionalCostType,
-            @RequestParam(defaultValue = "true", required = false) Boolean isAvailable){
+            @RequestParam(defaultValue = "true", required = false) Boolean isAvailable) {
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(ApiResponse.<ListResponse<AdditionalCostResponse>>builder()

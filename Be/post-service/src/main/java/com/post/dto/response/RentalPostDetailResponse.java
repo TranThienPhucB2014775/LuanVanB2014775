@@ -1,11 +1,11 @@
 package com.post.dto.response;
 
+import java.util.List;
+
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-
-import java.util.List;
 
 @Getter
 @Setter
@@ -42,5 +42,4 @@ public class RentalPostDetailResponse {
     String rentalType;
 
     List<ImageResponse> images;
-
 }

@@ -3,9 +3,6 @@ package com.identity.service;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import com.event.dto.ReportCreationEvent;
-import com.identity.dto.Request.UserReportRequest;
-import com.identity.repository.UserVerificationRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -17,12 +14,13 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.event.dto.NotificationEvent;
+import com.event.dto.ReportCreationEvent;
 import com.identity.config.CustomJwtDecoder;
+import com.identity.dto.Request.CreateNotificationToTenant;
 import com.identity.dto.Request.ProfileCreationRequest;
 import com.identity.dto.Request.UserCreateRequest;
-import com.identity.dto.Response.AllUserResponse;
-import com.identity.dto.Response.ListResponse;
-import com.identity.dto.Response.UserResponse;
+import com.identity.dto.Request.UserReportRequest;
+import com.identity.dto.Response.*;
 import com.identity.entity.Role;
 import com.identity.entity.User;
 import com.identity.exception.AppException;
@@ -31,7 +29,9 @@ import com.identity.mapper.ProfileMapper;
 import com.identity.mapper.UserMapper;
 import com.identity.repository.RoleRepository;
 import com.identity.repository.UserRepository;
+import com.identity.repository.UserVerificationRepository;
 import com.identity.service.client.ProfileClientService;
+import com.identity.service.client.PropertyClientService;
 
 import feign.FeignException;
 import lombok.AccessLevel;
@@ -52,6 +52,8 @@ public class UserService {
     ProfileClientService profileClientService;
     UserVerificationRepository userVerificationRepository;
     UserMapper UserMapper;
+
+    PropertyClientService propertyClientService;
 
     KafkaTemplate<String, Object> kafkaTemplate;
 
@@ -115,13 +117,33 @@ public class UserService {
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public void deleteUser(String userEmail) {
+    public void deleteUser(String userEmail, String token) {
         Optional<User> user = userRepository.findByEmail(userEmail);
         if (user.get().getRoles().equals("ROLE_ADMIN")) {
             throw new AppException(ErrorCode.CANNOT_DELETE_ADMIN);
         }
         user.get().setEnabled(false);
         userRepository.save(user.get());
+
+        try {
+            if (user.get().getRoles().stream().map(Role::getName).toList().contains("LANDLORD")) {
+                log.info(token);
+                ProfileResponse profileResponse = profileClientService
+                        .getProfileByUserId(user.get().getId())
+                        .getResult();
+                log.info(profileResponse.getUserName());
+                propertyClientService.pushNotification(
+                        CreateNotificationToTenant.builder()
+                                .message("Chủ trọ '" + profileResponse.getUserName()
+                                        + "' bạn đang thuê đã bị khóa tài khoản")
+                                .title("Thông báo")
+                                .build(),
+                        token,
+                        user.get().getId());
+            }
+        } catch (FeignException e) {
+            log.info("Error: {}", e.getMessage());
+        }
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -193,19 +215,27 @@ public class UserService {
     public void reportUser(UserReportRequest request) {
 
         User user = userRepository
-                .findById(request.getUserId()).orElseThrow(
-                        () -> new AppException(ErrorCode.USER_NOT_EXISTED));
+                .findById(request.getUserId())
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
 
         kafkaTemplate.send(
                 "create-report",
                 ReportCreationEvent.builder()
-                        .reportType("USERs")
+                        .reportType("USER")
                         .message(request.getMessage())
                         .itemId(request.getUserId())
-                        .userId(SecurityContextHolder.getContext().getAuthentication().getName())
-                        .build()
-        );
+                        .userId(SecurityContextHolder.getContext()
+                                .getAuthentication()
+                                .getName())
+                        .build());
+    }
 
+    public SummaryResponse getSummary() {
+        log.info("Get summary");
+        return SummaryResponse.builder()
+                .totalLandlord(userRepository.countLandlords())
+                .totalTenant(userRepository.countTenants())
+                .build();
     }
 
     public boolean isAdminScope(String token) {

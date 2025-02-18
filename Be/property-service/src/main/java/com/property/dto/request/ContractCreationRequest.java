@@ -1,10 +1,11 @@
 package com.property.dto.request;
 
-import jakarta.validation.constraints.NotNull;
-import lombok.Getter;
-
 import java.math.BigDecimal;
 import java.time.Instant;
+
+import jakarta.validation.constraints.NotNull;
+
+import lombok.Getter;
 
 @Getter
 public class ContractCreationRequest {
@@ -28,5 +29,4 @@ public class ContractCreationRequest {
 
     @NotNull(message = "INVALID_VALUE")
     BigDecimal depositAmount;
-
 }

@@ -1,16 +1,16 @@
 package com.property.mapper;
 
+import java.util.stream.Collectors;
+
 import com.property.dto.request.ApartmentCreationRequest;
 import com.property.dto.request.ApartmentUpdateRequest;
 import com.property.dto.response.ApartmentResponse;
 import com.property.entity.AdditionalCost;
 import com.property.entity.Apartment;
 
-import java.util.stream.Collectors;
-
 public class ApartmentMapper {
 
-    public static ApartmentResponse apartmentToApartmentResponse(Apartment apartment) {
+    public static ApartmentResponse apartmentToApartmentResponse(Apartment apartment, int currentOccupancy) {
         return ApartmentResponse.builder()
                 .name(apartment.getName())
                 .apartmentId(apartment.getApartmentId())
@@ -26,10 +26,10 @@ public class ApartmentMapper {
                         apartment.getAdditionalCosts() == null
                                 ? null
                                 : apartment.getAdditionalCosts().stream()
-                                .filter(AdditionalCost::getIsAvailable)
-                                .map(AdditionalCostMapper::additionalCostToAdditionalCostResponse)
-                                .collect(Collectors.toSet())
-                )
+                                        .filter(AdditionalCost::getIsAvailable)
+                                        .map(AdditionalCostMapper::additionalCostToAdditionalCostResponse)
+                                        .collect(Collectors.toSet()))
+                .currentOccupancy(currentOccupancy)
                 .build();
     }
 

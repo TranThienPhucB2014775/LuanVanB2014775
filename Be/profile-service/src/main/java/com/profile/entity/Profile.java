@@ -15,18 +15,18 @@ import lombok.extern.slf4j.Slf4j;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Slf4j
 @ToString
-@Table(
-        indexes = {
-            @Index(name = "profileId", columnList = "profileId", unique = true),
-            @Index(name = "userId", columnList = "userId", unique = true)
-        })
+@Table(name = "profile", indexes = {
+        @Index(name = "idx_user_id_profile", columnList = "userId")
+})
 public class Profile extends BaseEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "profile_id", unique = true)
     String id;
 
     String userId;
+    @Column(columnDefinition = "TEXT")
     String aboutMe;
 
     String userName;

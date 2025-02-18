@@ -1,13 +1,15 @@
 package com.property.dto.request;
 
-import com.property.validation.ValidUserIdOrEmail;
+import java.math.BigDecimal;
+import java.time.Instant;
+
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
-import lombok.Getter;
 
-import java.math.BigDecimal;
-import java.time.Instant;
+import com.property.validation.ValidUserIdOrEmail;
+
+import lombok.Getter;
 
 @Getter
 @ValidUserIdOrEmail

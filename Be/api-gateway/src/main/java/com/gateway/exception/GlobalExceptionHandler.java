@@ -1,21 +1,15 @@
 package com.gateway.exception;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.gateway.dto.ApiResponse;
-import feign.FeignException;
-import io.netty.channel.ConnectTimeoutException;
-import jakarta.validation.ConstraintViolation;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
-import java.util.Map;
-import java.util.Objects;
+import com.gateway.dto.ApiResponse;
+
+import io.netty.channel.ConnectTimeoutException;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @ControllerAdvice
 @Slf4j

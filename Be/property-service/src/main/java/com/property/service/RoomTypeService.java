@@ -2,32 +2,33 @@ package com.property.service;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 
-import com.property.entity.Contract;
-import com.property.entity.Room;
-import com.property.repository.RoomRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import com.event.dto.CreateNotificationEvent;
 import com.property.config.CustomJwtDecoder;
+import com.property.dto.request.CreateNotificationToTenant;
 import com.property.dto.request.RoomTypeCreationRequest;
 import com.property.dto.request.RoomTypeUpdateRequest;
 import com.property.dto.response.ListResponse;
 import com.property.dto.response.RoomTypeResponse;
-import com.property.entity.Apartment;
-import com.property.entity.RoomType;
+import com.property.entity.*;
 import com.property.exception.AppException;
 import com.property.exception.ErrorCode;
 import com.property.mapper.RoomTypeMapper;
 import com.property.repository.ApartmentRepository;
+import com.property.repository.RoomRepository;
 import com.property.repository.RoomTypeRepository;
+import com.property.repository.TenantRepository;
 import com.property.repository.specification.RoomTypeSpecifications;
 
 import lombok.AccessLevel;
@@ -45,6 +46,8 @@ public class RoomTypeService {
     RoomRepository roomRepository;
     ApartmentRepository apartmentRepository;
     CustomJwtDecoder customJwtDecoder;
+    TenantRepository tenantRepository;
+    KafkaTemplate<String, Object> kafkaTemplate;
 
     public RoomTypeResponse createRoomType(RoomTypeCreationRequest request) {
 
@@ -55,9 +58,7 @@ public class RoomTypeService {
         roomType.setApartment(apartment);
         roomType.setIsAvailable(true);
         roomTypeRepository.save(roomType);
-        log.info("Create room");
-
-        return RoomTypeMapper.mapToRoomTypeResponse(roomType);
+        return RoomTypeMapper.mapToRoomTypeResponse(roomType, 0);
     }
 
     public void deleteRoomType(String roomTypeId) {
@@ -95,7 +96,7 @@ public class RoomTypeService {
                 .findById(roomTypeId)
                 .orElseThrow(() -> new AppException(ErrorCode.ROOM_TYPE_NOT_FOUND));
 
-        if(!roomType.getApartment().getIsAvailable()){
+        if (!roomType.getApartment().getIsAvailable()) {
             throw new AppException(ErrorCode.APARTMENT_NOT_AVAILABLE);
         }
 
@@ -134,14 +135,17 @@ public class RoomTypeService {
         roomType.setUtility(request.getUtility());
         roomTypeRepository.save(roomType);
 
-        return RoomTypeMapper.mapToRoomTypeResponse(roomType);
+        return RoomTypeMapper.mapToRoomTypeResponse(roomType, 0);
     }
 
     public RoomTypeResponse getRoomType(String roomTypeId) {
         RoomType roomType = roomTypeRepository
                 .findById(roomTypeId)
                 .orElseThrow(() -> new AppException(ErrorCode.ROOM_TYPE_NOT_FOUND));
-        return RoomTypeMapper.mapToRoomTypeResponse(roomType);
+        return RoomTypeMapper.mapToRoomTypeResponse(
+                roomType,
+                tenantRepository.countTenantsByApartmentIdOrRoomTypeIdAndUserIdAndContractIsAvailable(
+                        null, roomType.getRoomTypeId(), null));
     }
 
     public ListResponse<RoomTypeResponse> getAllRoomTypes(
@@ -160,15 +164,6 @@ public class RoomTypeService {
         var authentication = SecurityContextHolder.getContext().getAuthentication();
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
 
-//        if (userId.isEmpty()) {
-//            if (!authorities.stream()
-//                    .anyMatch(
-//                            grantedAuthority -> grantedAuthority.getAuthority().equals("ROLE_ADMIN"))) {
-//                userId = authentication.getName();
-//                log.info(authentication.getName());
-//            }
-//        }
-
         Page<RoomType> roomTypePage = getAllRoomTypes(
                 search,
                 isAvailable,
@@ -179,9 +174,46 @@ public class RoomTypeService {
                 .totalElement(roomTypePage.getTotalElements())
                 .totalPage(roomTypePage.getTotalPages())
                 .data(roomTypePage.stream()
-                        .map(RoomTypeMapper::mapToRoomTypeResponse)
+                        .map(roomType -> {
+                            return RoomTypeMapper.mapToRoomTypeResponse(
+                                    roomType,
+                                    tenantRepository
+                                            .countTenantsByApartmentIdOrRoomTypeIdAndUserIdAndContractIsAvailable(
+                                                    null, roomType.getRoomTypeId(), userId.isEmpty() ? null : userId));
+                        })
                         .toList())
                 .build();
+    }
+
+    @PreAuthorize("hasRole('ROLE_LANDLORD')")
+    public void pushNotificationToTenant(CreateNotificationToTenant request, String roomTypeId) {
+        RoomType roomType = roomTypeRepository
+                .findById(roomTypeId)
+                .orElseThrow(() -> new AppException(ErrorCode.ROOM_TYPE_NOT_FOUND));
+
+        if (!roomType.getApartment().getIsAvailable()) {
+            throw new AppException(ErrorCode.APARTMENT_NOT_AVAILABLE);
+        }
+
+        var authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (!roomType.getApartment().getUserId().equals(authentication.getName())) {
+            throw new AppException(ErrorCode.UNAUTHORIZED);
+        }
+
+        List<String> tenants = tenantRepository.findByRoomTypeId(roomTypeId, true);
+
+        log.info("Tenants: {}", tenants);
+
+        for (String tenant : tenants) {
+            kafkaTemplate.send(
+                    "create-notification",
+                    CreateNotificationEvent.builder()
+                            .recipient(tenant)
+                            .message(request.getMessage())
+                            .title(request.getTitle())
+                            .build());
+        }
     }
 
     Page<RoomType> getAllRoomTypes(
@@ -194,6 +226,4 @@ public class RoomTypeService {
 
         return roomTypeRepository.findAll(spec, pageable);
     }
-
-
 }

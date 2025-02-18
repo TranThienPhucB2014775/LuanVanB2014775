@@ -3,7 +3,6 @@ package com.property.constant;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public enum AdditionalCostTypes {
-
     @JsonProperty("PERSONNEL_COST_PER_MONTH ")
     PERSONNEL_COST_PER_MONTH,
 

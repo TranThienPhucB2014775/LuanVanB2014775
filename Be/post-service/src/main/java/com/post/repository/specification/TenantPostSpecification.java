@@ -1,12 +1,12 @@
 package com.post.repository.specification;
 
-import com.post.entity.RentalPost;
-import com.post.entity.TenantPost;
+import static com.post.util.StringUtils.removeDiacritics;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.jpa.domain.Specification;
 
-import static com.post.util.StringUtils.removeDiacritics;
+import com.post.entity.TenantPost;
 
 public class TenantPostSpecification {
 
@@ -25,8 +25,7 @@ public class TenantPostSpecification {
                     cb.like(cb.lower(cb.function("unaccent", String.class, root.get("city"))), likePattern),
                     cb.like(cb.lower(cb.function("unaccent", String.class, root.get("address"))), likePattern),
                     cb.like(cb.lower(cb.function("unaccent", String.class, root.get("ward"))), likePattern),
-                    cb.like(cb.lower(cb.function("unaccent", String.class, root.get("district"))), likePattern)
-            );
+                    cb.like(cb.lower(cb.function("unaccent", String.class, root.get("district"))), likePattern));
         };
     }
 

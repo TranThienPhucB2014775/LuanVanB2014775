@@ -1,8 +1,8 @@
 package com.identity.dto.Request;
 
-import com.identity.entity.BaseEntity;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
+
 import lombok.*;
 
 @Getter

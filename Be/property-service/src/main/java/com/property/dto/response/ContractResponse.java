@@ -1,11 +1,11 @@
 package com.property.dto.response;
 
+import java.math.BigDecimal;
+import java.time.Instant;
+
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.math.BigDecimal;
-import java.time.Instant;
 
 @Getter
 @Setter
@@ -15,6 +15,8 @@ public class ContractResponse {
     String contractId;
 
     String roomId;
+
+    String roomName;
 
     String roomTypeId;
 
@@ -35,5 +37,4 @@ public class ContractResponse {
     BigDecimal depositAmount;
 
     Boolean isAvailable;
-
 }

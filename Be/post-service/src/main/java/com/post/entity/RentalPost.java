@@ -1,12 +1,10 @@
 package com.post.entity;
 
 import jakarta.persistence.*;
+
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-
-import java.util.Set;
-import java.util.UUID;
 
 @Entity
 @Getter
@@ -16,7 +14,13 @@ import java.util.UUID;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Slf4j
-@Table(name = "rental_posts")
+@Table(name = "rental_post", indexes = {
+        @Index(name = "idx_user_id_rental_post", columnList = "userId"),
+        @Index(name = "idx_city_rental_post", columnList = "city"),
+        @Index(name = "idx_district_rental_post", columnList = "district"),
+        @Index(name = "idx_ward_rental_post", columnList = "ward"),
+        @Index(name = "idx_is_available_rental_post", columnList = "isAvailable")
+})
 public class RentalPost extends BaseEntity {
 
     /**
@@ -59,11 +63,13 @@ public class RentalPost extends BaseEntity {
     /**
      * Mô tả chi tiết về chỗ ở cho thuê.
      */
+    @Column(columnDefinition = "TEXT")
     String description;
 
     /**
      * Các tiện nghi có sẵn trong chỗ ở (ví dụ: điều hòa, wifi, bếp, v.v.).
      */
+    @Column(columnDefinition = "TEXT")
     String amenities;
 
     /**
@@ -84,7 +90,6 @@ public class RentalPost extends BaseEntity {
     /**
      * Trạng thái có sẵn của chỗ ở (có thể là "có sẵn" hoặc "không có sẵn").
      */
-
     String rentalType;
 
     Boolean isAvailable;

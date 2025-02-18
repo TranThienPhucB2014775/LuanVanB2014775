@@ -1,11 +1,11 @@
 package com.property.dto.request;
 
-import com.property.validation.ApartmentTypeSubset;
+import static com.property.constant.ApartmentTypes.*;
+
 import jakarta.validation.constraints.*;
+
 import lombok.Getter;
 import lombok.Setter;
-
-import static com.property.constant.ApartmentTypes.*;
 
 @Getter
 @Setter

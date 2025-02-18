@@ -1,11 +1,10 @@
 package com.post.dto.request;
 
-import com.post.constant.TenantPostType;
-import com.validation.TenantPostTypeSubset;
+import com.post.validation.TenantPostTypeSubset;
 import jakarta.validation.constraints.NotNull;
-import lombok.Getter;
 
-import java.math.BigDecimal;
+import com.post.constant.TenantPostType;
+import lombok.Getter;
 
 @Getter
 public class TenantPostCreationRequest {
@@ -31,11 +30,12 @@ public class TenantPostCreationRequest {
     @NotNull(message = "INVALID_VALUE")
     String ward;
 
-    @TenantPostTypeSubset(anyOf = {
-            TenantPostType.LOOKING_FOR_ROOM_TO_RENT,
-            TenantPostType.LOOKING_FOR_ROOM_TO_RENT,
-            TenantPostType.ROOM_SUBLET
-    },
+    @TenantPostTypeSubset(
+            anyOf = {
+                TenantPostType.LOOKING_FOR_ROOM_TO_RENT,
+                TenantPostType.LOOKING_FOR_ROOMMATE,
+                TenantPostType.ROOM_SUBLET
+            },
             message = "INVALID_VALUE")
     String tenantPostType;
 }

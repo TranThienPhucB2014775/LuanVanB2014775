@@ -4,24 +4,22 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
-import com.property.dto.request.AdditionalCostUnrecordedRequest;
-import com.property.entity.*;
-import com.property.repository.*;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import com.event.dto.CreateNotificationEvent;
 import com.property.dto.request.AdditionalCostCreationRequest;
+import com.property.dto.request.AdditionalCostUnrecordedRequest;
 import com.property.dto.request.AdditionalCostUpdateRequest;
 import com.property.dto.response.AdditionalCostResponse;
 import com.property.dto.response.ListResponse;
+import com.property.entity.*;
 import com.property.exception.AppException;
 import com.property.exception.ErrorCode;
 import com.property.mapper.AdditionalCostMapper;
+import com.property.repository.*;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -39,7 +37,8 @@ public class AdditionalCostService {
     AdditionalCostTypeRepository additionalCostTypeRepository;
     RoomRepository roomRepository;
     TenantRepository tenantRepository;
-    InvoiceRepositoty invoiceRepositoty;
+    InvoiceRepository invoiceRepository;
+    KafkaTemplate<String, Object> kafkaTemplate;
 
     public AdditionalCostResponse createAdditionalCost(AdditionalCostCreationRequest request) {
 
@@ -48,7 +47,8 @@ public class AdditionalCostService {
                 .orElseThrow(() -> new AppException(ErrorCode.APARTMENT_NOT_FOUND));
 
         AdditionalCost additionalCost = AdditionalCostMapper.additionalCostCreationRequestToAdditionalCost(request);
-        AdditionalCostType additionalCostType = additionalCostTypeRepository.findById(request.getAdditionalCostType())
+        AdditionalCostType additionalCostType = additionalCostTypeRepository
+                .findById(request.getAdditionalCostType())
                 .orElseThrow(() -> new AppException(ErrorCode.ADDITIONAL_COST_TYPE_NOT_FOUND));
         additionalCost.setApartment(apartment);
         additionalCost.setAdditionalCostType(additionalCostType);
@@ -79,18 +79,12 @@ public class AdditionalCostService {
     }
 
     public ListResponse<AdditionalCostResponse> getUnrecordedAdditionalCost(
-            String roomId,
-            AdditionalCostUnrecordedRequest request
-    ) {
+            String roomId, AdditionalCostUnrecordedRequest request) {
 
-        Room room = roomRepository.findById(roomId)
-                .orElseThrow(() -> new AppException(ErrorCode.ROOM_NOT_FOUND));
+        Room room = roomRepository.findById(roomId).orElseThrow(() -> new AppException(ErrorCode.ROOM_NOT_FOUND));
 
-        Optional<Invoice> invoiceOptional = invoiceRepositoty.findByMonthAndYearAndRoom(
-                request.getMonth(),
-                request.getYear(),
-                room
-        );
+        Optional<Invoice> invoiceOptional =
+                invoiceRepository.findByMonthAndYearAndRoom(request.getMonth(), request.getYear(), room);
 
         if (invoiceOptional.isPresent()) {
             if (!invoiceOptional.get().getPendingInvoice()) {
@@ -105,11 +99,7 @@ public class AdditionalCostService {
         }
 
         List<AdditionalCost> additionalCosts = additionalCostRepository.findUnrecordedAdditionalCosts(
-                room.getRoomType().getApartment(),
-                roomId,
-                request.getMonth(),
-                request.getYear()
-        );
+                room.getRoomType().getApartment(), roomId, request.getMonth(), request.getYear());
 
         return ListResponse.<AdditionalCostResponse>builder()
                 .data(additionalCosts.stream()
@@ -136,7 +126,8 @@ public class AdditionalCostService {
             }
         }
 
-        AdditionalCostType additionalCostType = additionalCostTypeRepository.findById(request.getAdditionalCostType())
+        AdditionalCostType additionalCostType = additionalCostTypeRepository
+                .findById(request.getAdditionalCostType())
                 .orElseThrow(() -> new AppException(ErrorCode.ADDITIONAL_COST_TYPE_NOT_FOUND));
 
         additionalCost.setCost(request.getCost());
@@ -144,8 +135,20 @@ public class AdditionalCostService {
         additionalCost.setAdditionalCostType(additionalCostType);
         additionalCost.setUnit(request.getUnit());
 
-
         additionalCostRepository.save(additionalCost);
+
+        List<Tenant> tenants =
+                tenantRepository.findByApartmentId(additionalCost.getApartment().getApartmentId());
+
+        for (Tenant tenant : tenants) {
+            kafkaTemplate.send(
+                    "create-notification",
+                    CreateNotificationEvent.builder()
+                            .recipient(tenant.getTenantId())
+                            .message("Chi phí " + additionalCost.getName() + " vừa được chủ trọ cập nhật!")
+                            .title("Cập nhật chi phí")
+                            .build());
+        }
 
         return AdditionalCostMapper.additionalCostToAdditionalCostResponse(additionalCost);
     }
@@ -159,21 +162,28 @@ public class AdditionalCostService {
     }
 
     public ListResponse<AdditionalCostResponse> getAllAdditionalCost(
-            int pageNum, int pageSize, String sortBy, String order, String search, String apartmentId, String additionalCostType) {
+            int pageNum,
+            int pageSize,
+            String sortBy,
+            String order,
+            String search,
+            String apartmentId,
+            String additionalCostType) {
 
-//        Sort sort = Sort.by(order.equals("asc") ? Sort.Direction.ASC : Sort.Direction.DESC, sortBy);
-//        Pageable pageable = PageRequest.of(pageNum, pageSize, sort);
-//
-//        Page<AdditionalCost> additionalCosts =
-//                additionalCostRepository.findAllAdditionalCost(search, additionalCostType, apartmentId, pageable);
-//
-//        return ListResponse.<AdditionalCostResponse>builder()
-//                .totalPage(additionalCosts.getTotalPages())
-//                .totalElement(additionalCosts.getTotalElements())
-//                .data(additionalCosts.stream()
-//                        .map(AdditionalCostMapper::additionalCostToAdditionalCostResponse)
-//                        .toList())
-//                .build();
+        //        Sort sort = Sort.by(order.equals("asc") ? Sort.Direction.ASC : Sort.Direction.DESC, sortBy);
+        //        Pageable pageable = PageRequest.of(pageNum, pageSize, sort);
+        //
+        //        Page<AdditionalCost> additionalCosts =
+        //                additionalCostRepository.findAllAdditionalCost(search, additionalCostType, apartmentId,
+        // pageable);
+        //
+        //        return ListResponse.<AdditionalCostResponse>builder()
+        //                .totalPage(additionalCosts.getTotalPages())
+        //                .totalElement(additionalCosts.getTotalElements())
+        //                .data(additionalCosts.stream()
+        //                        .map(AdditionalCostMapper::additionalCostToAdditionalCostResponse)
+        //                        .toList())
+        //                .build();
         return null;
     }
 }

@@ -1,11 +1,12 @@
 package com.post.mapper;
 
-import com.post.dto.response.ImageResponse;
-import com.post.entity.Image;
-import org.springframework.stereotype.Component;
-
 import java.util.List;
 import java.util.stream.Collectors;
+
+import org.springframework.stereotype.Component;
+
+import com.post.dto.response.ImageResponse;
+import com.post.entity.Image;
 
 @Component
 public class ImageMapper {
@@ -18,5 +19,4 @@ public class ImageMapper {
                         .build())
                 .collect(Collectors.toList());
     }
-
 }

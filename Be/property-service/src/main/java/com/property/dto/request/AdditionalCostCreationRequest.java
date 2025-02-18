@@ -2,10 +2,11 @@ package com.property.dto.request;
 
 import java.math.BigDecimal;
 
-import com.property.constant.AdditionalCostTypes;
-import com.property.validation.AdditionalCostTypeSubset;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
+
+import com.property.constant.AdditionalCostTypes;
+import com.property.validation.AdditionalCostTypeSubset;
 
 import lombok.Getter;
 
@@ -21,11 +22,13 @@ public class AdditionalCostCreationRequest {
     @NotNull(message = "INVALID_VALUE")
     BigDecimal cost;
 
-    @AdditionalCostTypeSubset(anyOf = {
-            AdditionalCostTypes.ROOM_COST_PER_MONTH,
-            AdditionalCostTypes.UNIT_COST_PER_MONTH,
-            AdditionalCostTypes.PERSONNEL_COST_PER_MONTH
-    }, message = "INVALID_ADDITIONAL_COST_TYPE")
+    @AdditionalCostTypeSubset(
+            anyOf = {
+                AdditionalCostTypes.ROOM_COST_PER_MONTH,
+                AdditionalCostTypes.UNIT_COST_PER_MONTH,
+                AdditionalCostTypes.PERSONNEL_COST_PER_MONTH
+            },
+            message = "INVALID_ADDITIONAL_COST_TYPE")
     String additionalCostType;
 
     @NotNull(message = "INVALID_VALUE")

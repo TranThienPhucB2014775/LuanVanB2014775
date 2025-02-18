@@ -1,10 +1,10 @@
 package com.notification.Repository.specification;
 
-import com.notification.entity.Notification;
 import org.springframework.data.jpa.domain.Specification;
 
-public class NotificationSpecification {
+import com.notification.entity.Notification;
 
+public class NotificationSpecification {
 
     public static Specification<Notification> withIsRead(Boolean isRead) {
         return (root, query, cb) -> {
@@ -23,5 +23,4 @@ public class NotificationSpecification {
             return cb.equal(root.get("userId"), userId);
         };
     }
-
 }

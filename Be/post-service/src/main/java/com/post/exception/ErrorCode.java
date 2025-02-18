@@ -1,8 +1,9 @@
 package com.post.exception;
 
-import lombok.Getter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
+
+import lombok.Getter;
 
 @Getter
 public enum ErrorCode {
@@ -19,7 +20,6 @@ public enum ErrorCode {
     COMMENT_NOT_FOUND(7, "Comment not found", HttpStatus.NOT_FOUND),
     INVALID_RENTAL_POST_TYPE(8, "Invalid rental post type", HttpStatus.BAD_REQUEST),
     TENANT_POST_NOT_FOUND(9, "Tenant post not found", HttpStatus.NOT_FOUND),
-
     ;
 
     ErrorCode(int code, String message, HttpStatusCode statusCode) {

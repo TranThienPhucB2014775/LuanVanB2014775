@@ -2,8 +2,6 @@ package com.property.controller;
 
 import java.util.List;
 
-import com.property.dto.request.AcceptInviteRequest;
-import com.property.dto.request.InviteTenantToRoomRequest;
 import jakarta.validation.Valid;
 
 import org.springframework.http.HttpStatus;
@@ -11,8 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.property.dto.ApiResponse;
-import com.property.dto.request.RoomCreationRequest;
-import com.property.dto.request.RoomUpdateRequest;
+import com.property.dto.request.*;
 import com.property.dto.response.ListResponse;
 import com.property.dto.response.RoomResponse;
 import com.property.repository.RoomRepository;
@@ -42,6 +39,15 @@ public class RoomController {
                 .body(ApiResponse.<List<RoomResponse>>builder()
                         .result(roomService.createRoom(request))
                         .build());
+    }
+
+    @PostMapping("/notification/{roomId}")
+    public ApiResponse<?> rateApartment(
+            @RequestBody @Valid CreateNotificationToTenant request, @PathVariable String roomId) {
+        roomService.pushNotificationToTenant(request, roomId);
+        return ApiResponse.<String>builder()
+                .result("Notification sent successfully")
+                .build();
     }
 
     @PutMapping
@@ -75,7 +81,7 @@ public class RoomController {
     @GetMapping("/all/{pageNum}")
     public ApiResponse<ListResponse<RoomResponse>> getAllRoomTypes(
             @PathVariable int pageNum,
-            @RequestParam(defaultValue = "10", required = false) int pageSize,
+            @RequestParam(defaultValue = "12", required = false) int pageSize,
             @RequestParam(defaultValue = "name", required = false) String sortBy,
             @RequestParam(defaultValue = "asc", required = false) String order,
             @RequestParam(defaultValue = "", required = false) String search,

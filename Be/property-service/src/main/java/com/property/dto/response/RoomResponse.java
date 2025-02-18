@@ -1,6 +1,6 @@
 package com.property.dto.response;
 
-import java.util.Set;
+import java.util.List;
 
 import lombok.*;
 
@@ -20,4 +20,6 @@ public class RoomResponse {
     int currentOccupancy;
     String roomTypeId;
     String apartmentId;
+
+    List<InvoiceResponse> invoiceResponse;
 }

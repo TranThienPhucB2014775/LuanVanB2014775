@@ -1,10 +1,13 @@
 package com.property.controller;
 
+import jakarta.validation.Valid;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.property.dto.ApiResponse;
+import com.property.dto.request.CreateNotificationToTenant;
 import com.property.dto.request.RoomTypeCreationRequest;
 import com.property.dto.request.RoomTypeUpdateRequest;
 import com.property.dto.response.ListResponse;
@@ -33,6 +36,15 @@ public class RoomTypeController {
                 .body(ApiResponse.<RoomTypeResponse>builder()
                         .result(roomTypeService.createRoomType(request))
                         .build());
+    }
+
+    @PostMapping("/notification/{roomTypeId}")
+    public ApiResponse<?> pushNotificationToTenant(
+            @RequestBody @Valid CreateNotificationToTenant request, @PathVariable String roomTypeId) {
+        roomTypeService.pushNotificationToTenant(request, roomTypeId);
+        return ApiResponse.<String>builder()
+                .result("Notification sent successfully")
+                .build();
     }
 
     @PutMapping
@@ -70,7 +82,7 @@ public class RoomTypeController {
     @GetMapping("/all/{pageNum}")
     public ApiResponse<ListResponse<RoomTypeResponse>> getAllRooms(
             @PathVariable int pageNum,
-            @RequestParam(defaultValue = "10", required = false) int pageSize,
+            @RequestParam(defaultValue = "12", required = false) int pageSize,
             @RequestParam(defaultValue = "createdAt", required = false) String sortBy,
             @RequestParam(defaultValue = "desc", required = false) String order,
             @RequestParam(defaultValue = "", required = false) String search,

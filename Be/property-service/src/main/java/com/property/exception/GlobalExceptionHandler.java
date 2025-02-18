@@ -3,24 +3,23 @@ package com.property.exception;
 import java.util.Map;
 import java.util.Objects;
 
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import feign.FeignException;
 import jakarta.validation.ConstraintViolation;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.property.dto.ApiResponse;
 
+import feign.FeignException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
 @ControllerAdvice
 @Slf4j

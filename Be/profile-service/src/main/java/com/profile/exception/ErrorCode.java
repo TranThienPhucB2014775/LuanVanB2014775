@@ -19,7 +19,11 @@ public enum ErrorCode {
     PROFILE_NOT_FOUND(8, "Profile not found", HttpStatus.BAD_REQUEST),
     MEDIA_SERVICE_ERROR(9, "Media service error", HttpStatus.BAD_REQUEST),
     MAX_UPLOAD_SIZE_EXCEEDED(10, "Max upload size exceeded", HttpStatus.BAD_REQUEST),
-    ;;
+    INVALID_USER_ID(11, "Invalid user id", HttpStatus.BAD_REQUEST),
+    INVALID_FACEBOOK_URL(12, "Invalid facebook url", HttpStatus.BAD_REQUEST),
+    INVALID_PHONE_NUMBER(13, "Invalid phone number", HttpStatus.BAD_REQUEST),
+    ;
+    ;
 
     ErrorCode(int code, String message, HttpStatusCode statusCode) {
         this.code = code;

@@ -1,17 +1,16 @@
 package com.property.annotation;
 
-import com.property.dto.request.MonthlyUsageCreationRequest;
+import java.time.YearMonth;
+
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 
-import java.time.LocalDate;
-import java.time.YearMonth;
+import com.property.dto.request.MonthlyUsageCreationRequest;
 
 public class PastYearMonthValidator implements ConstraintValidator<PastYearMonth, MonthlyUsageCreationRequest> {
 
     @Override
-    public void initialize(PastYearMonth constraintAnnotation) {
-    }
+    public void initialize(PastYearMonth constraintAnnotation) {}
 
     @Override
     public boolean isValid(MonthlyUsageCreationRequest request, ConstraintValidatorContext context) {

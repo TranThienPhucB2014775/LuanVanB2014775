@@ -1,10 +1,10 @@
 package com.property.dto.response;
 
+import java.util.Set;
+
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.util.Set;
 
 @Setter
 @Getter
@@ -22,4 +22,5 @@ public class ApartmentResponse {
     Boolean isAvailable;
     String apartmentType;
     Set<AdditionalCostResponse> additionalCostResponses;
+    int currentOccupancy;
 }

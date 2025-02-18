@@ -1,11 +1,11 @@
 package com.interact.mapper;
 
-import com.event.dto.ReportCreationEvent;
-import com.interact.dto.request.ReportCreationRequest;
-import com.interact.dto.response.ReportResponse;
-import com.interact.entity.Report;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.event.dto.ReportCreationEvent;
+import com.interact.dto.response.ReportResponse;
+import com.interact.entity.Report;
 
 public class ReportMapper {
 

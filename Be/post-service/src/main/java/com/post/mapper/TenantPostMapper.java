@@ -37,5 +37,4 @@ public class TenantPostMapper {
                 .tenantPostType(tenantPost.getTenantPostType())
                 .build();
     }
-
 }

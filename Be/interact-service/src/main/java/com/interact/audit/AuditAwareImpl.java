@@ -25,6 +25,5 @@ public class AuditAwareImpl implements AuditorAware<String> {
         } catch (Exception e) {
             return Optional.of("ADMIN");
         }
-
     }
 }

@@ -16,7 +16,9 @@ import lombok.extern.slf4j.Slf4j;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Slf4j
-@Table(name = "room_type")
+@Table(name = "room_type", indexes = {
+        @Index(name = "idx_is_available_room_type", columnList = "isAvailable")
+})
 @ToString
 public class RoomType extends BaseEntity {
 
@@ -25,16 +27,15 @@ public class RoomType extends BaseEntity {
     String roomTypeId;
 
     @ManyToOne
-    @JoinTable(
-            name = "room_type_apartment",
-            joinColumns = @JoinColumn(name = "room_type_id"),
-            inverseJoinColumns = @JoinColumn(name = "apartment_id"))
-    @Lazy
+    @JoinColumn(name = "apartment_id")
     Apartment apartment;
 
     String name;
+    @Column(columnDefinition = "TEXT")
     String description;
+    @Column(columnDefinition = "TEXT")
     String info;
+    @Column(columnDefinition = "TEXT")
     String utility;
     Boolean isAvailable;
     int maxOccupancy;

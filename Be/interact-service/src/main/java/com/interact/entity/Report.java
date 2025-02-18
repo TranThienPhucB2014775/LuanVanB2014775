@@ -14,7 +14,11 @@ import lombok.extern.slf4j.Slf4j;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Slf4j
-@Table(name = "report")
+@Table(name = "report", indexes = {
+        @Index(name = "idx_is_handled_report", columnList = "isHandled"),
+        @Index(name = "idx_report_type_report", columnList = "reportType"),
+        @Index(name = "idx_user_id_report", columnList = "userId") // New index
+})
 public class Report extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -25,7 +29,7 @@ public class Report extends BaseEntity {
     String userId;
 
     String reportType;
-
+    @Column(columnDefinition = "TEXT")
     String message;
 
     Boolean isHandled;

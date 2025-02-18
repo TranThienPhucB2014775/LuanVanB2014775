@@ -3,9 +3,6 @@ package com.profile.exception;
 import java.util.Map;
 import java.util.Objects;
 
-import com.nimbusds.jose.shaded.gson.JsonObject;
-import com.nimbusds.jose.shaded.gson.JsonParser;
-import feign.FeignException;
 import jakarta.validation.ConstraintViolation;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -15,12 +12,15 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
+import com.nimbusds.jose.shaded.gson.JsonObject;
+import com.nimbusds.jose.shaded.gson.JsonParser;
 import com.profile.dto.ApiResponse;
 
+import feign.FeignException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
 @ControllerAdvice
 @Slf4j
@@ -57,7 +57,6 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(value = FeignException.class)
     ResponseEntity<ApiResponse> handlingFeignException(FeignException exception) {
-
 
         JsonObject jsonObject = JsonParser.parseString(exception.contentUTF8()).getAsJsonObject();
 

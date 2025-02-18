@@ -1,12 +1,13 @@
 package com.property.validation;
 
-import com.property.constant.AdditionalCostTypes;
-import com.property.constant.ReportIssueStatus;
+import java.util.Arrays;
+
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
-import lombok.extern.slf4j.Slf4j;
 
-import java.util.Arrays;
+import com.property.constant.ReportIssueStatus;
+
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class ReportIssueSubsetValidator implements ConstraintValidator<ReportIssueTypeSubset, String> {

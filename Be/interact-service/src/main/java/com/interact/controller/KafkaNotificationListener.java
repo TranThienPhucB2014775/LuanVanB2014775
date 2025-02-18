@@ -1,10 +1,9 @@
 package com.interact.controller;
 
-import com.event.dto.ReportCreationEvent;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
-import com.interact.dto.request.ReportCreationRequest;
+import com.event.dto.ReportCreationEvent;
 import com.interact.service.ReportService;
 
 import lombok.AccessLevel;

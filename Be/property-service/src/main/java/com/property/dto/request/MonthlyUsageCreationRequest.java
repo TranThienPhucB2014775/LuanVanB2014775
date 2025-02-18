@@ -1,15 +1,17 @@
 package com.property.dto.request;
 
-import com.property.annotation.PastYearMonth;
+import java.math.BigDecimal;
+
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
+
+import com.property.annotation.PastYearMonth;
+
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-
-import java.math.BigDecimal;
 
 @PastYearMonth
 @Getter

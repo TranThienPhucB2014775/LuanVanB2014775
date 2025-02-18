@@ -1,12 +1,10 @@
 package com.post.entity;
 
 import jakarta.persistence.*;
+
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-
-import java.util.UUID;
-
 
 @Entity
 @Getter
@@ -16,7 +14,10 @@ import java.util.UUID;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Slf4j
-@Table(name = "image")
+@Table(name = "image", indexes = {
+        @Index(name = "idx_post_id_image", columnList = "postId"),
+        @Index(name = "idx_user_id_image", columnList = "userId")
+})
 public class Image extends BaseEntity {
 
     @Id

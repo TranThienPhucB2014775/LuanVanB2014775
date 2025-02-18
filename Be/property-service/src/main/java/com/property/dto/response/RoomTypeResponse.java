@@ -16,4 +16,5 @@ public class RoomTypeResponse {
     String roomTypeId;
     Boolean isAvailable;
     int maxOccupancy;
+    int currentOccupancy;
 }

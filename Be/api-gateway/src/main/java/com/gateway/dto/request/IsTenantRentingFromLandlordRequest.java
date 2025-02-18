@@ -1,6 +1,5 @@
 package com.gateway.dto.request;
 
-import jakarta.validation.constraints.Pattern;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;

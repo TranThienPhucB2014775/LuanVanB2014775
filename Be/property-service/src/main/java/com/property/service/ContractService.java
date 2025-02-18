@@ -1,5 +1,20 @@
 package com.property.service;
 
+import java.time.Instant;
+import java.util.List;
+import java.util.Optional;
+
+import com.property.dto.request.MoveContractRequest;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Service;
+
 import com.event.dto.CreateNotificationEvent;
 import com.property.constant.RentStatus;
 import com.property.dto.request.ContractCreationRequest;
@@ -14,25 +29,13 @@ import com.property.mapper.ContractMapper;
 import com.property.repository.ContractRepository;
 import com.property.repository.RoomRepository;
 import com.property.repository.TenantRepository;
-import io.swagger.v3.oas.models.info.Contact;
+
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.NonFinal;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Service;
-import org.springframework.beans.factory.annotation.Value;
-
-import java.time.Instant;
-import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -45,6 +48,7 @@ public class ContractService {
     RoomRepository roomRepository;
     TenantRepository tenantRepository;
     KafkaTemplate<String, Object> kafkaTemplate;
+    private final InvoiceService invoiceService;
 
     @NonFinal
     @Value("${contract.expiration.duration}")
@@ -52,11 +56,11 @@ public class ContractService {
 
     public ContractResponse createContract(ContractCreationRequest request) {
 
-        Room room = roomRepository.findById(request.getRoomId())
+        Room room = roomRepository
+                .findById(request.getRoomId())
                 .orElseThrow(() -> new AppException((ErrorCode.ROOM_NOT_FOUND)));
 
         var authentication = SecurityContextHolder.getContext().getAuthentication();
-
 
         if (room.getRoomType().getApartment().getUserId().equals(authentication.getName())) {
             throw new AppException(ErrorCode.UNAUTHORIZED);
@@ -68,21 +72,19 @@ public class ContractService {
             throw new AppException(ErrorCode.CONTRACT_ALREADY_EXISTS);
         }
 
-        ContractResponse contractResponse = ContractMapper.toContractResponse(
-                contractRepository.save(ContractMapper.toContract(request, room))
-        );
+        ContractResponse contractResponse =
+                ContractMapper.toContractResponse(contractRepository.save(ContractMapper.toContract(request, room)));
         contractResponse.setApartmentId(room.getRoomType().getApartment().getApartmentId());
         contractResponse.setRoomTypeId(room.getRoomType().getRoomTypeId());
 
         return contractResponse;
     }
 
-    public void disableContract(
-            String contractId
-    ) {
+    public void disableContract(String contractId) {
         var authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        Contract contract = contractRepository.findById(contractId)
+        Contract contract = contractRepository
+                .findById(contractId)
                 .orElseThrow(() -> new AppException(ErrorCode.CONTRACT_NOT_FOUND));
 
         if (!authentication.getName().equals(contract.getLandlordId())) {
@@ -98,33 +100,138 @@ public class ContractService {
             tenant.setIsAvailable(false);
             tenantRepository.save(tenant);
 
-            kafkaTemplate.send("create-notification", CreateNotificationEvent.builder()
-                    .recipient(tenant.getTenantId())
-                    .message("Hợp đồng thuê phòng " + tenant.getContract().getRoom().getName() + " đã bị chủ trọ hủy")
-                    .build());
-
-
+            kafkaTemplate.send(
+                    "create-notification",
+                    CreateNotificationEvent.builder()
+                            .recipient(tenant.getTenantId())
+                            .message("Hợp đồng thuê phòng "
+                                    + tenant.getContract().getRoom().getName() + " đã bị chủ trọ hủy")
+                            .build());
         }
 
-        Room room = roomRepository.findById(contract.getRoom().getRoomId())
+        Room room = roomRepository
+                .findById(contract.getRoom().getRoomId())
                 .orElseThrow(() -> new AppException(ErrorCode.ROOM_NOT_FOUND));
 
         room.setRentStatus(RentStatus.AVAILABLE.toString());
         room.setCurrentOccupancy(0);
         roomRepository.save(room);
-
-
+        invoiceService.completeInvoices(contractId);
     }
 
-    public ContractResponse getContract(
-            String roomId
-    ) {
+    @PreAuthorize("hasRole('ROLE_LANDLORD')")
+    public void moveContract(MoveContractRequest request) {
+        var authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        Contract contract = contractRepository
+                .findById(request.getContractId()).orElseThrow(() -> new AppException(ErrorCode.CONTRACT_NOT_FOUND));
+
+        if (!contract.getIsAvailable()) {
+            throw new AppException(ErrorCode.CONTRACT_NOT_AVAILABLE);
+        }
+
+        if (!contract.getRoom().getRoomType().getApartment().getUserId().equals(authentication.getName())) {
+            throw new AppException(ErrorCode.UNAUTHORIZED);
+        }
+
+        Room newRoom = roomRepository
+                .findById(request.getNewRoomId()).orElseThrow(() -> new AppException(ErrorCode.ROOM_NOT_FOUND));
+
+        Room oldRoom = roomRepository
+                .findById(request.getRoomId()).orElseThrow(() -> new AppException(ErrorCode.ROOM_NOT_FOUND));
+
+        if (!newRoom.getRoomType().getRoomTypeId().equals(oldRoom.getRoomType().getRoomTypeId())) {
+            throw new AppException(
+                    ErrorCode.CAN_NOT_MOVE_TO_ANOTHER_ROOM_TYPE
+            );
+        }
+
+        if (!newRoom.getRentStatus().equals(RentStatus.AVAILABLE.toString()) || newRoom.getCurrentOccupancy() != 0) {
+            throw new AppException(ErrorCode.ROOM_RENTED);
+        } else {
+            contract.setRoom(newRoom);
+            contractRepository.save(contract);
+
+
+            newRoom.setRentStatus(RentStatus.RENTED.toString());
+            newRoom.setCurrentOccupancy(oldRoom.getCurrentOccupancy());
+
+            oldRoom.setRentStatus(RentStatus.AVAILABLE.toString());
+            oldRoom.setCurrentOccupancy(0);
+
+            roomRepository.save(newRoom);
+            roomRepository.save(oldRoom);
+
+            List<Tenant> tenants = tenantRepository.findByContractAndIsAvailable(contract, true);
+            log.info(String.valueOf(tenants.size()));
+            for (Tenant tenant : tenants) {
+                kafkaTemplate.send(
+                        "create-notification",
+                        CreateNotificationEvent.builder()
+                                .recipient(tenant.getTenantId())
+                                .message("Hợp đồng thuê phòng "
+                                        + tenant.getContract().getRoom().getRoomType().getApartment().getName() +
+                                        " - " +
+                                        tenant.getContract().getRoom().getName() +
+                                        " - " +
+                                        tenant.getContract().getRoom().getRoomType().getName() +
+                                        " - " +
+                                        tenant.getContract().getRoom().getName() +
+                                        " đã được di chuyển đến " +
+                                        tenant.getContract().getRoom().getRoomType().getApartment().getName() +
+                                        " - " +
+                                        tenant.getContract().getRoom().getName() +
+                                        " - " +
+                                        tenant.getContract().getRoom().getRoomType().getName() +
+                                        " - " +
+                                        tenant.getContract().getRoom().getName()
+                                )
+                                .title("Hợp đồng thuê phòng đã được di chuyển")
+                                .build());
+            }
+        }
+    }
+
+    public void disableContractFromSystem(String contractId) {
+
+        Contract contract = contractRepository
+                .findById(contractId)
+                .orElseThrow(() -> new AppException(ErrorCode.CONTRACT_NOT_FOUND));
+
+        contract.setIsAvailable(false);
+        contractRepository.save(contract);
+
+        List<Tenant> rooms = tenantRepository.findByContractAndIsAvailable(contract, true);
+
+        for (Tenant tenant : rooms) {
+            tenant.setIsAvailable(false);
+            tenantRepository.save(tenant);
+
+            kafkaTemplate.send(
+                    "create-notification",
+                    CreateNotificationEvent.builder()
+                            .recipient(tenant.getTenantId())
+                            .message("Hợp đồng thuê phòng "
+                                    + tenant.getContract().getRoom().getName() + " đã bị chủ trọ hủy")
+                            .build());
+        }
+
+        Room room = roomRepository
+                .findById(contract.getRoom().getRoomId())
+                .orElseThrow(() -> new AppException(ErrorCode.ROOM_NOT_FOUND));
+
+        room.setRentStatus(RentStatus.AVAILABLE.toString());
+        room.setCurrentOccupancy(0);
+        roomRepository.save(room);
+    }
+
+    public ContractResponse getContract(String roomId) {
 
         var authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        Contract contract = contractRepository.findByRoomIdAndIsAvailable(roomId, true)
+        Contract contract = contractRepository
+                .findByRoomIdAndIsAvailable(roomId, true)
                 .orElseThrow(() -> new AppException(ErrorCode.CONTRACT_NOT_FOUND));
-
 
         if (!authentication.getName().equals(contract.getLandlordId())) {
             log.info(authentication.getName());
@@ -148,50 +255,53 @@ public class ContractService {
         return contractResponse;
     }
 
-    public ContractResponse getContractById(
-            String contractId
-    ) {
-        return ContractMapper.toContractResponse(contractRepository.findById(contractId)
-                .orElseThrow(() -> new AppException(ErrorCode.CONTRACT_NOT_FOUND)));
-    }
+    public ContractResponse getContractById(String contractId) {
 
-    public ContractResponse getContractByRoom(
-            String roomId
-    ) {
-
-        Contract contract = contractRepository.findByRoomIdAndIsAvailable(roomId, true)
+        Contract contract = contractRepository
+                .findById(contractId)
                 .orElseThrow(() -> new AppException(ErrorCode.CONTRACT_NOT_FOUND));
 
         var authentication = SecurityContextHolder.getContext().getAuthentication();
 
+        Boolean isRenting = false;
+
         if (!authentication.getName().equals(contract.getLandlordId())) {
-            List<Tenant> tenants = tenantRepository.findByContractAndIsAvailable(contract, true);
-            if (tenants.stream().noneMatch(tenant -> tenant.getTenantId().equals(authentication.getName()))) {
-                throw new AppException(ErrorCode.UNAUTHORIZED);
+            List<Tenant> tenants = tenantRepository.findByContractAndTenantId(contract, authentication.getName());
+            for (Tenant tenant : tenants) {
+                if (tenant.getIsAvailable()) {
+                    isRenting = true;
+                    break;
+                }
             }
         } else {
-            throw new AppException(ErrorCode.UNAUTHORIZED);
+            isRenting = true;
         }
 
-        return ContractMapper.toContractResponse(contractRepository.findByRoomIdAndIsAvailable(roomId, true)
-                .orElseThrow(() -> new AppException(ErrorCode.CONTRACT_NOT_FOUND)));
+        ContractResponse contractResponse = ContractMapper.toContractResponse(contract);
+        Room room = roomRepository
+                .findById(contract.getRoom().getRoomId())
+                .orElseThrow(() -> new AppException(ErrorCode.ROOM_NOT_FOUND));
+        contractResponse.setApartmentId(room.getRoomType().getApartment().getApartmentId());
+        contractResponse.setRoomTypeId(room.getRoomType().getRoomTypeId());
+
+        if (!isRenting) {
+            contractResponse.setExpectedEndDate(null);
+        }
+
+        return contractResponse;
     }
 
     public ListResponse<ContractResponse> getContracts(
-            int pageNum,
-            int pageSize,
-            String order,
-            String sortBy,
-            Boolean isAvailable
-    ) {
+            int pageNum, int pageSize, String order, String sortBy, Boolean isAvailable) {
         Sort sort = Sort.by(order.equals("asc") ? Sort.Direction.ASC : Sort.Direction.DESC, sortBy);
         Pageable pageable = PageRequest.of(pageNum, pageSize, sort);
         var authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        Page<Tenant> tenants = tenantRepository.findTenantByTenantIdAndIsAvailable(authentication.getName(), isAvailable, pageable);
+        Page<Tenant> tenants =
+                tenantRepository.findTenantByTenantIdAndIsAvailable(authentication.getName(), isAvailable, pageable);
 
-        List<ContractResponse> contractResponseList = tenants.stream().map(
-                tenant -> {
+        List<ContractResponse> contractResponseList = tenants.stream()
+                .map(tenant -> {
                     ContractResponse contractResponse = ContractResponse.builder()
                             .contractId(tenant.getContract().getContractId())
                             .roomId(tenant.getContract().getRoom().getRoomId())
@@ -201,21 +311,28 @@ public class ContractService {
                             .depositAmount(tenant.getContract().getDepositAmount())
                             .landlordId(tenant.getContract().getLandlordId())
                             .isAvailable(tenant.getContract().getIsAvailable())
-                            .apartmentId(tenant.getContract().getRoom().getRoomType().getApartment().getApartmentId())
+                            .apartmentId(tenant.getContract()
+                                    .getRoom()
+                                    .getRoomType()
+                                    .getApartment()
+                                    .getApartmentId())
                             .build();
 
                     if (isAvailable) {
                         if (tenant.getContract().getIsAvailable()) {
-                            contractResponse.setExpectedEndDate(tenant.getContract().getExpectedEndDate());
+                            contractResponse.setExpectedEndDate(
+                                    tenant.getContract().getExpectedEndDate());
                         }
                     } else {
                         if (!tenant.getContract().getIsAvailable()) {
-                            contractResponse.setActualEndDate(tenant.getContract().getActualEndDate());
+                            contractResponse.setActualEndDate(
+                                    tenant.getContract().getActualEndDate());
                         }
                     }
 
                     return contractResponse;
-                }).toList();
+                })
+                .toList();
 
         return ListResponse.<ContractResponse>builder()
                 .totalPage(tenants.getTotalPages())
@@ -226,9 +343,6 @@ public class ContractService {
 
     public List<Contract> getUpcomingContracts() {
         return contractRepository.getUpcomingContracts(
-                Instant.now(),
-                Instant.now().plusSeconds(contractDuration * 60 * 60 * 24 * 30)
-        );
+                Instant.now(), Instant.now().plusSeconds(contractDuration * 60 * 60 * 24 * 30));
     }
-
 }

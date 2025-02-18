@@ -1,7 +1,6 @@
 package com.property.mapper;
 
 import com.property.dto.response.MonthlyUsageCreationResponse;
-import com.property.dto.response.MonthlyUsageResponse;
 import com.property.entity.MonthlyUsage;
 
 public class MonthlyUsageMapper {
@@ -13,7 +12,8 @@ public class MonthlyUsageMapper {
                 .additionalCostId(monthlyUsage.getAdditionalCost().getAdditionalCostId())
                 .cost(monthlyUsage.getCost())
                 .usage(monthlyUsage.getUsage())
-                .additionalCostResponse(AdditionalCostMapper.additionalCostToAdditionalCostResponse(monthlyUsage.getAdditionalCost()))
+                .additionalCostResponse(
+                        AdditionalCostMapper.additionalCostToAdditionalCostResponse(monthlyUsage.getAdditionalCost()))
                 .build();
     }
 }

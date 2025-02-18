@@ -1,11 +1,10 @@
 package com.identity.dto.Response;
 
+import java.time.Instant;
+
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.time.Instant;
-import java.time.LocalDateTime;
 
 @Setter
 @Getter
@@ -26,5 +25,5 @@ public class UserVerificationRequestResponse {
 
     String message;
 
-    LocalDateTime createdAt;
+    Instant createdAt;
 }

@@ -15,11 +15,12 @@ public class AuditAwareImpl implements AuditorAware<String> {
 
     @Override
     public Optional<String> getCurrentAuditor() {
-        log.info("Getting the current auditor");
-        log.info(
-                "Current auditor: {}",
-                SecurityContextHolder.getContext().getAuthentication().getName());
-        return Optional.ofNullable(
-                SecurityContextHolder.getContext().getAuthentication().getName());
+        try {
+            return Optional.ofNullable(
+                    SecurityContextHolder.getContext().getAuthentication().getName());
+        } catch (Exception e) {
+
+            return Optional.of("system");
+        }
     }
 }

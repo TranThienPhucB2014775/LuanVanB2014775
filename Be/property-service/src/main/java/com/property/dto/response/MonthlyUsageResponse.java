@@ -1,12 +1,10 @@
 package com.property.dto.response;
 
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
+import java.math.BigDecimal;
+
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.math.BigDecimal;
 
 @Getter
 @Setter
@@ -20,6 +18,7 @@ public class MonthlyUsageResponse {
     String name;
 
     String costType;
+
     String unit;
 
     BigDecimal price;

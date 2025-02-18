@@ -1,5 +1,12 @@
 package com.post.controller;
 
+import java.util.List;
+
+import jakarta.validation.Valid;
+
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
 import com.post.dto.ApiResponse;
 import com.post.dto.request.RentalPostCreationRequest;
 import com.post.dto.request.RentalPostReportRequest;
@@ -8,15 +15,11 @@ import com.post.dto.response.ListPostResponse;
 import com.post.dto.response.RentalPostDetailResponse;
 import com.post.dto.response.RentalPostListResponse;
 import com.post.service.RentalPostService;
-import jakarta.validation.Valid;
+
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/rental-post")
@@ -40,8 +43,7 @@ public class RentalPostController {
             @RequestParam(required = false) String tenantType,
             @RequestParam long price,
             @RequestParam String rentalType,
-            @RequestHeader("Authorization") String token
-    ) {
+            @RequestHeader("Authorization") String token) {
         RentalPostCreationRequest request = RentalPostCreationRequest.builder()
                 .city(city)
                 .district(district)
@@ -62,23 +64,17 @@ public class RentalPostController {
     }
 
     @PostMapping("/report")
-    public ApiResponse<String> reportRentalPost(
-            @RequestBody @Valid RentalPostReportRequest request
-    ) {
+    public ApiResponse<String> reportRentalPost(@RequestBody @Valid RentalPostReportRequest request) {
         log.info("Reporting rental post");
 
         rentalPostService.reportRentalPost(request);
 
-        return ApiResponse.<String>builder()
-                .result("Reported")
-                .build();
+        return ApiResponse.<String>builder().result("Reported").build();
     }
 
     @PutMapping
     public ApiResponse<RentalPostDetailResponse> updateRentalPost(
-            @RequestBody @Valid RentalPostUpdateRequest request,
-            @RequestHeader("Authorization") String token
-    ) {
+            @RequestBody @Valid RentalPostUpdateRequest request, @RequestHeader("Authorization") String token) {
         log.info("Updating rental post");
         return ApiResponse.<RentalPostDetailResponse>builder()
                 .result(rentalPostService.updateRentalPost(request, token))
@@ -86,32 +82,22 @@ public class RentalPostController {
     }
 
     @PutMapping("/{rentalPostId}")
-    public ApiResponse<String> updateRentalPostStatus(
-            @PathVariable String rentalPostId
-    ) {
+    public ApiResponse<String> updateRentalPostStatus(@PathVariable String rentalPostId) {
         log.info("Updating rental post status");
         rentalPostService.updateRentalPostStatus(rentalPostId);
-        return ApiResponse.<String>builder()
-                .result("Updated")
-                .build();
+        return ApiResponse.<String>builder().result("Updated").build();
     }
 
     @DeleteMapping("/{rentalPostId}")
-    public ApiResponse<String> deleteRentalPost(
-            @PathVariable String rentalPostId
-    ) {
+    public ApiResponse<String> deleteRentalPost(@PathVariable String rentalPostId) {
         log.info("Deleting rental post");
         rentalPostService.deleteRentalPost(rentalPostId);
 
-        return ApiResponse.<String>builder()
-                .result("Deleted")
-                .build();
+        return ApiResponse.<String>builder().result("Deleted").build();
     }
 
     @GetMapping("/{rentalPostId}")
-    public ApiResponse<RentalPostDetailResponse> getRentalPost(
-            @PathVariable String rentalPostId
-    ) {
+    public ApiResponse<RentalPostDetailResponse> getRentalPost(@PathVariable String rentalPostId) {
         log.info("Getting rental post");
         return ApiResponse.<RentalPostDetailResponse>builder()
                 .result(rentalPostService.getRentalPost(rentalPostId))
@@ -134,8 +120,7 @@ public class RentalPostController {
             @RequestParam(required = false) Integer maxArea,
             @RequestParam(required = false) String city,
             @RequestParam(required = false) String district,
-            @RequestParam(required = false) String ward
-    ) {
+            @RequestParam(required = false) String ward) {
 
         log.info("Getting all rental posts");
 
@@ -163,8 +148,7 @@ public class RentalPostController {
                         maxArea,
                         city,
                         district,
-                        ward
-                ))
+                        ward))
                 .build();
     }
 

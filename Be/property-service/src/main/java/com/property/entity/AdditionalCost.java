@@ -17,7 +17,10 @@ import lombok.extern.slf4j.Slf4j;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Slf4j
-@Table(name = "additional_cost")
+@Table(name = "additional_cost", indexes = {
+        @Index(name = "idx_apartment_id_additional_cost", columnList = "apartment_id"),
+        @Index(name = "idx_is_available_additional_cost", columnList = "isAvailable")
+})
 public class AdditionalCost extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -39,9 +42,6 @@ public class AdditionalCost extends BaseEntity {
     Set<MonthlyUsage> monthlyUsages;
 
     @ManyToOne
-    @JoinTable(
-            name = "additional_cost_additional_cost_type",
-            joinColumns = @JoinColumn(name = "additional_cost_id"),
-            inverseJoinColumns = @JoinColumn(name = "additional_cost_type_id"))
+    @JoinColumn(name = "additional_cost_type_id")
     AdditionalCostType additionalCostType;
 }

@@ -1,6 +1,7 @@
 package com.property.repository;
 
-import com.property.entity.Apartment;
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -9,9 +10,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import com.property.entity.Apartment;
 import com.property.entity.RoomType;
-
-import java.util.List;
 
 @Repository
 public interface RoomTypeRepository extends JpaRepository<RoomType, String>, JpaSpecificationExecutor<RoomType> {
@@ -33,4 +33,7 @@ public interface RoomTypeRepository extends JpaRepository<RoomType, String>, Jpa
             Pageable pageable);
 
     List<RoomType> findAllByApartment(Apartment apartment);
+
+    @Query("SELECT COUNT(r) FROM RoomType r WHERE r.apartment.userId = :userId")
+    long countAllByUserId(String userId);
 }

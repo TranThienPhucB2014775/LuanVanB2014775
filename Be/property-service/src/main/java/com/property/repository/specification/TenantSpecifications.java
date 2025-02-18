@@ -1,10 +1,8 @@
 package com.property.repository.specification;
 
-import com.property.entity.Apartment;
-import com.property.entity.Tenant;
 import org.springframework.data.jpa.domain.Specification;
 
-import static com.property.util.StringUtils.removeDiacritics;
+import com.property.entity.Tenant;
 
 public class TenantSpecifications {
 

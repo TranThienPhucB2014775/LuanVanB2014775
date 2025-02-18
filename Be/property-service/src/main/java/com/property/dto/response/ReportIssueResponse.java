@@ -1,9 +1,5 @@
 package com.property.dto.response;
 
-import com.property.constant.ReportIssueStatus;
-import com.property.validation.ReportIssueTypeSubset;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;

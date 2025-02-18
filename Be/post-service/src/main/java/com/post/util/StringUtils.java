@@ -7,7 +7,7 @@ public class StringUtils {
     private static final Pattern NON_ASCII = Pattern.compile("[^\\p{ASCII}]");
 
     public static String removeDiacritics(String input) {
-        if(input == null) {
+        if (input == null) {
             return null;
         }
         String normalized = Normalizer.normalize(input, Normalizer.Form.NFD);

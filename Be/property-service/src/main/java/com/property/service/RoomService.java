@@ -1,50 +1,31 @@
 package com.property.service;
 
-import java.text.ParseException;
-import java.time.temporal.ChronoUnit;
 import java.util.*;
 
-import com.nimbusds.jose.*;
-import com.nimbusds.jose.crypto.MACSigner;
-import com.nimbusds.jose.crypto.MACVerifier;
-import com.nimbusds.jwt.JWTClaimsSet;
-import com.nimbusds.jwt.SignedJWT;
-import com.property.constant.InvitationStatus;
-import com.property.dto.request.AcceptInviteRequest;
-import com.property.dto.request.InviteTenantToRoomRequest;
-import com.property.dto.response.InvitationResponse;
-import com.property.dto.response.UserResponse;
-import com.property.entity.Contract;
-import com.property.entity.Invitation;
-import com.property.mapper.InvitationMapper;
-import com.property.repository.ContractRepository;
-import com.property.service.client.UserClient;
-import feign.FeignException;
-import lombok.experimental.NonFinal;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import com.event.dto.CreateNotificationEvent;
+import com.nimbusds.jose.*;
 import com.property.config.CustomJwtDecoder;
 import com.property.constant.RentStatus;
-import com.property.dto.request.RoomCreationRequest;
-import com.property.dto.request.RoomUpdateRequest;
-import com.property.dto.response.ListResponse;
-import com.property.dto.response.RoomResponse;
-import com.property.entity.Room;
-import com.property.entity.RoomType;
+import com.property.dto.request.*;
+import com.property.dto.response.*;
+import com.property.entity.*;
 import com.property.exception.AppException;
 import com.property.exception.ErrorCode;
 import com.property.mapper.RoomMapper;
+import com.property.repository.ContractRepository;
 import com.property.repository.RoomRepository;
 import com.property.repository.RoomTypeRepository;
+import com.property.repository.TenantRepository;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -61,6 +42,10 @@ public class RoomService {
     RoomRepository roomRepository;
     CustomJwtDecoder customJwtDecoder;
     private final ContractRepository contractRepository;
+    TenantRepository tenantRepository;
+    KafkaTemplate<String, Object> kafkaTemplate;
+
+    InvoiceService invoiceService;
 
     public List<RoomResponse> createRoom(RoomCreationRequest request) {
 
@@ -73,7 +58,8 @@ public class RoomService {
         //        List<RoomResponse> roomResponses = room.stream().map(RoomMapper::roomToRoomResponse).toList();
         return room.stream()
                 .map(roomRepository::save)
-                .map(RoomMapper::roomToRoomResponse)
+                .map(room1 ->
+                        RoomMapper.roomToRoomResponse(room1, invoiceService.paidInvoiceResponse(room1.getRoomId())))
                 .toList();
     }
 
@@ -97,14 +83,12 @@ public class RoomService {
             }
         }
 
-
-
         if (room.getRoomType().getApartment().getUserId().equals(authentication.getName())) {
             room.setName(request.getName());
             room.setRoomType(roomType);
             roomRepository.save(room);
 
-            return RoomMapper.roomToRoomResponse(room);
+            return RoomMapper.roomToRoomResponse(room, null);
         } else {
             throw new AppException(ErrorCode.UNAUTHENTICATED);
         }
@@ -143,8 +127,8 @@ public class RoomService {
         var authentication = SecurityContextHolder.getContext().getAuthentication();
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
 
-        if (!authorities.stream()
-                .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("ROLE_ADMIN"))) {
+        if (authorities.stream()
+                .noneMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("ROLE_ADMIN"))) {
             if (!room.getRoomType().getApartment().getUserId().equals(authentication.getName())) {
                 throw new AppException(ErrorCode.UNAUTHORIZED);
             }
@@ -156,7 +140,37 @@ public class RoomService {
     public RoomResponse getRoom(String roomId) {
         Room room = roomRepository.findById(roomId).orElseThrow(() -> new AppException(ErrorCode.ROOM_NOT_FOUND));
 
-        return RoomMapper.roomToRoomResponse(room);
+        return RoomMapper.roomToRoomResponse(room, invoiceService.paidInvoiceResponse(roomId));
+    }
+
+    @PreAuthorize("hasRole('ROLE_LANDLORD')")
+    public void pushNotificationToTenant(CreateNotificationToTenant request, String roomId) {
+
+        Room room = roomRepository.findById(roomId).orElseThrow(() -> new AppException(ErrorCode.ROOM_NOT_FOUND));
+
+        if (!room.getIsAvailable()) {
+            throw new AppException(ErrorCode.ROOM_NOT_AVAILABLE);
+        }
+        if (!room.getRoomType()
+                .getApartment()
+                .getUserId()
+                .equals(SecurityContextHolder.getContext().getAuthentication().getName())) {
+            throw new AppException(ErrorCode.UNAUTHORIZED);
+        }
+
+        List<String> tenants = tenantRepository.findByRoomId(roomId);
+
+        log.info("Tenants: {}", tenants);
+
+        tenants.forEach(tenant -> {
+            kafkaTemplate.send(
+                    "create-notification",
+                    CreateNotificationEvent.builder()
+                            .recipient(tenant)
+                            .message(request.getMessage())
+                            .title(request.getTitle())
+                            .build());
+        });
     }
 
     public ListResponse<RoomResponse> getRooms(
@@ -196,7 +210,10 @@ public class RoomService {
             return ListResponse.<RoomResponse>builder()
                     .totalElement(rooms.getTotalElements())
                     .totalPage(rooms.getTotalPages())
-                    .data(rooms.stream().map(RoomMapper::roomToRoomResponse).toList())
+                    .data(rooms.stream()
+                            .map(room -> RoomMapper.roomToRoomResponse(
+                                    room, invoiceService.paidInvoiceResponse(room.getRoomId())))
+                            .toList())
                     .build();
         } catch (IllegalArgumentException e) {
             throw new AppException(ErrorCode.RENT_STATUS_INVALID);

@@ -1,5 +1,6 @@
 package com.identity.dto.Response;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 
 import lombok.*;
@@ -16,5 +17,5 @@ public class AllUserResponse {
     Boolean Enable;
     String Role;
     Boolean isVerified;
-    LocalDateTime createdDate;
+    Instant createdDate;
 }

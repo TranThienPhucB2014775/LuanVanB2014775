@@ -25,4 +25,10 @@ public interface UserRepository extends JpaRepository<User, String> {
             "SELECT u FROM User u WHERE (:search IS NULL OR u.email LIKE %:search%) AND (:isEnable IS NULL OR u.enabled = :isEnable)")
     Page<User> findByEmailContainingAndEnabled(
             @Param("search") String search, @Param("isEnable") Boolean isEnable, Pageable pageable);
+
+    @Query("SELECT COUNT(u.id) FROM User u JOIN u.roles r WHERE r.name = 'LANDLORD'")
+    long countLandlords();
+
+    @Query("SELECT COUNT(u.id) FROM User u JOIN u.roles r WHERE r.name = 'TENANT'")
+    long countTenants();
 }

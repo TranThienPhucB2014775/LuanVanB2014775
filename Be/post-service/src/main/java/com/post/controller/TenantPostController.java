@@ -1,20 +1,23 @@
 package com.post.controller;
 
+import com.post.dto.request.TenantPostReportRequest;
+import jakarta.validation.Valid;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
 import com.post.dto.ApiResponse;
 import com.post.dto.request.TenantPostCreationRequest;
 import com.post.dto.request.TenantPostUpdateRequest;
 import com.post.dto.response.ListPostResponse;
-import com.post.dto.response.ListResponse;
 import com.post.dto.response.TenantPostResponse;
 import com.post.service.TenantPostService;
-import jakarta.validation.Valid;
+
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/tenant-post")
@@ -27,22 +30,27 @@ public class TenantPostController {
 
     @PostMapping
     public ResponseEntity<ApiResponse<TenantPostResponse>> createTenantPost(
-            @RequestBody @Valid TenantPostCreationRequest request
-    ) {
+            @RequestBody @Valid TenantPostCreationRequest request) {
         log.info("Creating search post");
 
-        return ResponseEntity
-                .status(HttpStatus.CREATED)
-                .body(
-                        ApiResponse.<TenantPostResponse>builder()
-                                .result(searchPostService.createTenantPost(request))
-                                .build());
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(ApiResponse.<TenantPostResponse>builder()
+                        .result(searchPostService.createTenantPost(request))
+                        .build());
+    }
+
+    @PostMapping("/report")
+    public ApiResponse<String> reportTenantPost(
+            @RequestBody @Valid TenantPostReportRequest request) {
+        log.info("Creating search post");
+        searchPostService.reportTenantPost(request);
+        return ApiResponse.<String>builder()
+                .result("Reported")
+                .build();
     }
 
     @PutMapping
-    public ApiResponse<TenantPostResponse> updateTenantPost(
-            @RequestBody @Valid TenantPostUpdateRequest request
-    ) {
+    public ApiResponse<TenantPostResponse> updateTenantPost(@RequestBody @Valid TenantPostUpdateRequest request) {
         log.info("Updating search post");
         return ApiResponse.<TenantPostResponse>builder()
                 .result(searchPostService.updateTenantPost(request))
@@ -50,23 +58,17 @@ public class TenantPostController {
     }
 
     @DeleteMapping("/{tenantPostId}")
-    public ApiResponse<String> deleteTenantPost(
-            @PathVariable String tenantPostId
-    ) {
+    public ApiResponse<String> deleteTenantPost(@PathVariable String tenantPostId) {
         log.info("Deleting search post");
         searchPostService.deleteTenantPost(tenantPostId);
-        return ApiResponse.<String>builder()
-                .result("Deleted")
-                .build();
+        return ApiResponse.<String>builder().result("Deleted").build();
     }
 
     @PutMapping("/{tenantPostId}")
     public ApiResponse getTenantPost(@PathVariable String tenantPostId) {
         log.info("Getting search post");
         searchPostService.enableTenantPost(tenantPostId);
-        return ApiResponse.builder()
-                .result("Enabled")
-                .build();
+        return ApiResponse.builder().result("Enabled").build();
     }
 
     @GetMapping("/{tenantPostId}")
@@ -89,20 +91,21 @@ public class TenantPostController {
             @RequestParam(required = false) Integer maxPrice,
             @RequestParam(required = false) String city,
             @RequestParam(required = false) String district,
-            @RequestParam(required = false) String ward
-    ) {
+            @RequestParam(required = false) String ward) {
 
         return ApiResponse.<ListPostResponse<TenantPostResponse>>builder()
-                .result(
-                        searchPostService.getTenantPost(
-                                pageNum, pageSize, search,
-                                tenantPostType, userId,
-                                minPrice, maxPrice,
-                                city, district, ward,
-                                isAvailable
-                        )
-                )
+                .result(searchPostService.getTenantPost(
+                        pageNum,
+                        pageSize,
+                        search,
+                        tenantPostType,
+                        userId,
+                        minPrice,
+                        maxPrice,
+                        city,
+                        district,
+                        ward,
+                        isAvailable))
                 .build();
-
     }
 }

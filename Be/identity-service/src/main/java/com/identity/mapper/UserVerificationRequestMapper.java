@@ -14,7 +14,7 @@ public class UserVerificationRequestMapper {
                 .isChecked(request.getIsChecked())
                 .isSuccessful(request.getIsSuccessful())
                 .message(request.getMessage())
-                .id(request.getId())
+                .id(request.getUserVerificationRequestId())
                 .createdAt(request.getCreatedAt())
                 .build();
     }

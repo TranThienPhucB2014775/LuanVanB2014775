@@ -1,13 +1,15 @@
 package com.identity.controller;
 
+import org.springframework.web.bind.annotation.*;
+
 import com.identity.dto.ApiResponse;
 import com.identity.dto.Response.UserVerificationResponse;
 import com.identity.service.UserVerificationService;
+
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/verification")
@@ -20,12 +22,9 @@ public class UserVerificationController {
 
     @GetMapping("/{userId}")
     public ApiResponse<UserVerificationResponse> getUserVerification(
-            @PathVariable String userId,
-            @RequestHeader("Authorization") String token
-    ) {
+            @PathVariable String userId, @RequestHeader("Authorization") String token) {
         return ApiResponse.<UserVerificationResponse>builder()
                 .result(userVerificationService.findByUserId(userId, token))
                 .build();
     }
-
 }

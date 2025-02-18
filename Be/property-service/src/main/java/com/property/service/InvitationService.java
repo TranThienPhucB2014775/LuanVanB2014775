@@ -1,40 +1,10 @@
 package com.property.service;
 
-import com.event.dto.CreateNotificationEvent;
-import com.nimbusds.jose.*;
-import com.nimbusds.jose.crypto.MACSigner;
-import com.nimbusds.jose.crypto.MACVerifier;
-import com.nimbusds.jwt.JWTClaimsSet;
-import com.nimbusds.jwt.SignedJWT;
-import com.property.config.CustomJwtDecoder;
-import com.property.constant.InvitationStatus;
-import com.property.constant.RentStatus;
-import com.property.dto.request.AcceptInviteRequest;
-import com.property.dto.request.DisableInviteRequest;
-import com.property.dto.request.InviteTenantToRoomRequest;
-import com.property.dto.request.RefuseInviteRequest;
-import com.property.dto.response.ApartmentResponse;
-import com.property.dto.response.InvitationResponse;
-import com.property.dto.response.ListResponse;
-import com.property.dto.response.UserResponse;
-import com.property.entity.*;
-import com.property.exception.AppException;
-import com.property.exception.ErrorCode;
-import com.property.mapper.InvitationMapper;
-import com.property.mapper.RoomTypeMapper;
-import com.property.repository.ContractRepository;
-import com.property.repository.InvitationRepository;
-import com.property.repository.RoomRepository;
-import com.property.repository.TenantRepository;
-import com.property.repository.specification.InvitationSpecifications;
-import com.property.service.client.UserClient;
-import feign.FeignException;
-import lombok.AccessLevel;
-import lombok.RequiredArgsConstructor;
-import lombok.ToString;
-import lombok.experimental.FieldDefaults;
-import lombok.experimental.NonFinal;
-import lombok.extern.slf4j.Slf4j;
+import java.text.ParseException;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.util.*;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -46,10 +16,39 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
-import java.text.ParseException;
-import java.time.Instant;
-import java.util.*;
+import com.event.dto.CreateNotificationEvent;
+import com.nimbusds.jose.*;
+import com.nimbusds.jose.crypto.MACSigner;
+import com.nimbusds.jose.crypto.MACVerifier;
+import com.nimbusds.jwt.JWTClaimsSet;
+import com.property.config.CustomJwtDecoder;
+import com.property.constant.InvitationStatus;
+import com.property.constant.RentStatus;
+import com.property.dto.request.AcceptInviteRequest;
+import com.property.dto.request.DisableInviteRequest;
+import com.property.dto.request.InviteTenantToRoomRequest;
+import com.property.dto.request.RefuseInviteRequest;
+import com.property.dto.response.InvitationResponse;
+import com.property.dto.response.ListResponse;
+import com.property.dto.response.UserResponse;
+import com.property.entity.*;
+import com.property.exception.AppException;
+import com.property.exception.ErrorCode;
+import com.property.mapper.InvitationMapper;
+import com.property.repository.ContractRepository;
+import com.property.repository.InvitationRepository;
+import com.property.repository.RoomRepository;
+import com.property.repository.TenantRepository;
+import com.property.repository.specification.InvitationSpecifications;
+import com.property.service.client.UserClient;
+
+import feign.FeignException;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.ToString;
+import lombok.experimental.FieldDefaults;
+import lombok.experimental.NonFinal;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
@@ -73,7 +72,6 @@ public class InvitationService {
     @Value("${jwt.inviteRoom.signerKey}")
     protected String SIGNER_KEY;
 
-
     @NonFinal
     @Value("${jwt.inviteRoom.valid-duration}")
     protected long VALID_DURATION;
@@ -92,31 +90,34 @@ public class InvitationService {
         UserResponse userResponse = null;
 
         try {
-            Room room = roomRepository.findById(request.getRoomId()).orElseThrow(() -> new AppException(ErrorCode.ROOM_NOT_FOUND));
+            Room room = roomRepository
+                    .findById(request.getRoomId())
+                    .orElseThrow(() -> new AppException(ErrorCode.ROOM_NOT_FOUND));
 
             if (!room.getIsAvailable()) {
                 throw new AppException(ErrorCode.ROOM_NOT_AVAILABLE);
             }
 
-
-            log.info("email: {}", request.getEmail());
-            UserResponse landlord = userClient.getUserByUserId(authentication.getName(), "Bearer " + token).getResult();
-            log.info("landlord: {}", landlord.toString());
+            UserResponse landlord = userClient
+                    .getUserByUserId(authentication.getName(), "Bearer " + token)
+                    .getResult();
             if (!landlord.getIsVerified()) {
                 throw new AppException(ErrorCode.LANDLORD_NOT_VERIFIED);
             }
 
             if (request.getEmail() == null) {
-                log.info("userId: {}", request.getUserId());
-                userResponse = userClient.getUserByUserId(request.getUserId(), "Bearer " + token).getResult();
+                userResponse = userClient
+                        .getUserByUserId(request.getUserId(), "Bearer " + token)
+                        .getResult();
             } else {
-                userResponse = userClient.getUserByEmail(request.getEmail(), "Bearer " + token).getResult();
+                userResponse = userClient
+                        .getUserByEmail(request.getEmail(), "Bearer " + token)
+                        .getResult();
             }
 
             if (!userResponse.getIsVerified()) {
                 throw new AppException(ErrorCode.USER_NOT_VERIFIED);
             }
-
 
             if (room.getCurrentOccupancy() == room.getRoomType().getMaxOccupancy()) {
                 throw new AppException(ErrorCode.ROOM_FULL);
@@ -126,25 +127,42 @@ public class InvitationService {
                 throw new AppException(ErrorCode.UNAUTHORIZED);
             }
 
-            Invitation invitation = createInvitation(
-                    Invitation.builder()
-                            .invitationStatus(InvitationStatus.PENDING.toString())
-                            .inviteToken(generateTokenInvite(
-                                    request.getRoomId(),
-                                    authentication.getName(),
-                                    request.getStartDate(),
-                                    request.getEndDate(),
-                                    new Date(System.currentTimeMillis() + VALID_DURATION)
-                            ))
-                            .message(request.getMessage())
-                            .room(room)
-                            .tenantId(userResponse.getId())
-                            .landlordId(authentication.getName())
-                            .price(request.getPrice())
-                            .depositAmount(request.getDepositAmount())
-                            .build());
-            return InvitationMapper
-                    .mapToInvitationResponse(invitation);
+            //            Instant newInstant = request.getEndDate().atZone(ZoneId.of("UTC"))
+            //                    .toLocalDate()
+            //                    .atStartOfDay(ZoneId.of("UTC"))
+            //                    .toInstant();
+
+            //            Instant newInstant = LocalDate.ofInstant(request.getEndDate(), ZoneId.systemDefault())
+            //                    .atStartOfDay(ZoneId.systemDefault())
+            //                    .toInstant();
+
+            Instant newInstant = request.getEndDate()
+                    .atZone(ZoneId.of("UTC"))
+                    .withZoneSameInstant(ZoneId.of("Asia/Ho_Chi_Minh"))
+                    .toLocalDate()
+                    .atTime(23, 59, 59)
+                    .atZone(ZoneId.of("Asia/Ho_Chi_Minh"))
+                    .toInstant();
+
+            log.info("newInstant: {}", newInstant);
+            log.info("startDate: {}", request.getEndDate());
+
+            Invitation invitation = createInvitation(Invitation.builder()
+                    .invitationStatus(InvitationStatus.PENDING.toString())
+                    .inviteToken(generateTokenInvite(
+                            request.getRoomId(),
+                            authentication.getName(),
+                            request.getStartDate(),
+                            newInstant,
+                            new Date(System.currentTimeMillis() + VALID_DURATION)))
+                    .message(request.getMessage())
+                    .room(room)
+                    .tenantId(userResponse.getId())
+                    .landlordId(authentication.getName())
+                    .price(request.getPrice())
+                    .depositAmount(request.getDepositAmount())
+                    .build());
+            return InvitationMapper.mapToInvitationResponse(invitation, request.getStartDate(), request.getEndDate());
 
         } catch (FeignException e) {
             log.error("Cannot get user {}", e.toString());
@@ -155,9 +173,9 @@ public class InvitationService {
     public void refuseInvite(RefuseInviteRequest request) {
         log.info(request.getInviteToken());
 
-        Invitation invitation =
-                invitationRepository.findByInviteToken(request.getInviteToken())
-                        .orElseThrow(() -> new AppException(ErrorCode.INVITATION_NOT_FOUND));
+        Invitation invitation = invitationRepository
+                .findByInviteToken(request.getInviteToken())
+                .orElseThrow(() -> new AppException(ErrorCode.INVITATION_NOT_FOUND));
 
         if (!invitation.getInvitationStatus().equals(InvitationStatus.PENDING.toString())) {
             throw new AppException(ErrorCode.INVITATION_NOT_PENDING);
@@ -176,19 +194,21 @@ public class InvitationService {
         invitation.setInvitationStatus(InvitationStatus.REFUSED.toString());
         invitationRepository.save(invitation);
 
-        kafkaTemplate.send("create-notification", CreateNotificationEvent.builder()
-                .recipient(invitation.getLandlordId())
-                .message("Người thuê " + tenantId + " đã từ chối lời mời của bạn")
-                .title("Người thuê đã từ chối lời mời")
-                .build());
+        kafkaTemplate.send(
+                "create-notification",
+                CreateNotificationEvent.builder()
+                        .recipient(invitation.getLandlordId())
+                        .message("Người thuê " + tenantId + " đã từ chối lời mời của bạn")
+                        .title("Người thuê đã từ chối lời mời")
+                        .build());
     }
 
     @PreAuthorize("hasRole('ROLE_LANDLORD')")
     public void disableInvite(DisableInviteRequest request) {
         log.info(request.getInviteToken());
-        Invitation invitation =
-                invitationRepository.findByInviteToken(request.getInviteToken())
-                        .orElseThrow(() -> new AppException(ErrorCode.INVITATION_NOT_FOUND));
+        Invitation invitation = invitationRepository
+                .findByInviteToken(request.getInviteToken())
+                .orElseThrow(() -> new AppException(ErrorCode.INVITATION_NOT_FOUND));
 
         if (!invitation.getInvitationStatus().equals(InvitationStatus.PENDING.toString())) {
             throw new AppException(ErrorCode.INVITATION_NOT_PENDING);
@@ -209,9 +229,9 @@ public class InvitationService {
     }
 
     public void acceptInvite(AcceptInviteRequest request) {
-        Invitation invitation =
-                invitationRepository.findByInviteToken(request.getInviteToken())
-                        .orElseThrow(() -> new AppException(ErrorCode.INVITATION_NOT_FOUND));
+        Invitation invitation = invitationRepository
+                .findByInviteToken(request.getInviteToken())
+                .orElseThrow(() -> new AppException(ErrorCode.INVITATION_NOT_FOUND));
 
         if (!invitation.getInvitationStatus().equals(InvitationStatus.PENDING.toString())) {
             throw new AppException(ErrorCode.INVITATION_NOT_PENDING);
@@ -225,7 +245,9 @@ public class InvitationService {
 
         Map<String, Object> claims = authentication.getClaims();
 
-        Room room = roomRepository.findById(claims.get("roomId").toString()).orElseThrow(() -> new AppException(ErrorCode.ROOM_NOT_FOUND));
+        Room room = roomRepository
+                .findById(claims.get("roomId").toString())
+                .orElseThrow(() -> new AppException(ErrorCode.ROOM_NOT_FOUND));
 
         if (room.getCurrentOccupancy() == room.getRoomType().getMaxOccupancy()) {
             throw new AppException(ErrorCode.ROOM_FULL);
@@ -240,24 +262,21 @@ public class InvitationService {
         invitation.setInvitationStatus(InvitationStatus.ACCEPTED.toString());
 
         Optional<Contract> contractOptional = contractRepository.findByLandlordIdAndRoomIdAndIsAvailable(
-                invitation.getLandlordId(),
-                claims.get("roomId").toString(),
-                true
-        );
+                invitation.getLandlordId(), claims.get("roomId").toString(), true);
         Contract contract;
-        Tenant tenant = Tenant.builder()
-                .isAvailable(true)
-                .tenantId(tenantId)
-                .build();
+        Tenant tenant = Tenant.builder().isAvailable(true).tenantId(tenantId).build();
+
+        log.info("contractOptional: {}", Instant.parse(claims.get("endDate").toString()));
 
         if (contractOptional.isPresent()) {
             contract = contractOptional.get();
             tenant.setContract(contract);
-
         } else {
             contract = Contract.builder()
                     .landlordId(invitation.getLandlordId())
-                    .room(roomRepository.findById(claims.get("roomId").toString()).orElseThrow(() -> new AppException(ErrorCode.ROOM_NOT_FOUND)))
+                    .room(roomRepository
+                            .findById(claims.get("roomId").toString())
+                            .orElseThrow(() -> new AppException(ErrorCode.ROOM_NOT_FOUND)))
                     .startDate(Instant.parse(claims.get("startDate").toString()))
                     .expectedEndDate(Instant.parse(claims.get("endDate").toString()))
                     .price(invitation.getPrice())
@@ -268,23 +287,25 @@ public class InvitationService {
 
             tenant.setContract(contract);
         }
-        tenantRepository.save(tenant);
         contractRepository.save(contract);
+        tenantRepository.save(tenant);
 
         room.setCurrentOccupancy(room.getCurrentOccupancy() + 1);
         room.setRentStatus(RentStatus.RENTED.toString());
         roomRepository.save(room);
 
-        kafkaTemplate.send("create-notification", CreateNotificationEvent.builder()
-                .recipient(invitation.getLandlordId())
-                .message("Người thuê đã chấp nhận lời mời vào "
-                        + room.getRoomType().getApartment().getName()
-                        + " -  "
-                        + room.getRoomType().getName()
-                        + " - "
-                        + room.getName() + " của bạn")
-                .title("Người thuê đã chấp nhận lời mời")
-                .build());
+        kafkaTemplate.send(
+                "create-notification",
+                CreateNotificationEvent.builder()
+                        .recipient(invitation.getLandlordId())
+                        .message("Người thuê đã chấp nhận lời mời vào "
+                                + room.getRoomType().getApartment().getName()
+                                + " -  "
+                                + room.getRoomType().getName()
+                                + " - "
+                                + room.getName() + " của bạn")
+                        .title("Người thuê đã chấp nhận lời mời")
+                        .build());
     }
 
     public ListResponse<InvitationResponse> getInvitationsByUserId(int pageNum, int pageSize) {
@@ -298,7 +319,16 @@ public class InvitationService {
         Page<Invitation> invitationPage = invitationRepository.findByTenantId(authentication.getName(), pageable);
 
         return ListResponse.<InvitationResponse>builder()
-                .data(invitationPage.stream().map(InvitationMapper::mapToInvitationResponse).toList())
+                .data(invitationPage.stream()
+                        .map(invitation -> {
+                            var decoded = customJwtDecoder.decode(invitation.getInviteToken());
+                            Map<String, Object> claims = decoded.getClaims();
+                            return InvitationMapper.mapToInvitationResponse(
+                                    invitation,
+                                    Instant.parse(claims.get("startDate").toString()),
+                                    Instant.parse(claims.get("endDate").toString()));
+                        })
+                        .toList())
                 .totalPage(invitationPage.getTotalPages())
                 .totalElement(invitationPage.getTotalElements())
                 .build();
@@ -314,15 +344,15 @@ public class InvitationService {
             String userId,
             String apartmentId,
             String roomTypeId,
-            String roomId
-    ) {
+            String roomId) {
         Sort sort = Sort.by(Sort.Direction.fromString(order), sortBy);
         Pageable pageable = PageRequest.of(pageNum, pageSize, sort);
 
         var auth = SecurityContextHolder.getContext().getAuthentication();
         if (!roomId.isEmpty() || !roomTypeId.isEmpty() || !apartmentId.isEmpty()) {
             if (auth.getAuthorities().stream().noneMatch(a -> a.getAuthority().equals("ROLE_ADMIN"))) {
-                Room room = roomRepository.findById(roomId).orElseThrow(() -> new AppException(ErrorCode.ROOM_NOT_FOUND));
+                Room room =
+                        roomRepository.findById(roomId).orElseThrow(() -> new AppException(ErrorCode.ROOM_NOT_FOUND));
                 if (!roomId.isEmpty()) {
                     log.info("1");
                     if (!room.getRoomType().getApartment().getUserId().equals(auth.getName())) {
@@ -349,22 +379,26 @@ public class InvitationService {
             }
         }
 
-        Page<Invitation> invitationPage = searchApartments(
-                search,
-                invitationStatus,
-                userId,
-                apartmentId,
-                roomTypeId,
-                roomId,
-                pageable
-        );
+        Page<Invitation> invitationPage =
+                searchApartments(search, invitationStatus, userId, apartmentId, roomTypeId, roomId, pageable);
 
         for (Invitation invitation : invitationPage) {
             log.info("invitation: {}", invitation.toString());
         }
 
         return ListResponse.<InvitationResponse>builder()
-                .data(invitationPage.stream().map(InvitationMapper::mapToInvitationResponse).toList())
+                .data(invitationPage.stream()
+                        .map(invitation -> {
+                            var decoded = customJwtDecoder.decode(invitation.getInviteToken());
+
+                            Map<String, Object> claims = decoded.getClaims();
+
+                            return InvitationMapper.mapToInvitationResponse(
+                                    invitation,
+                                    Instant.parse(claims.get("startDate").toString()),
+                                    Instant.parse(claims.get("endDate").toString()));
+                        })
+                        .toList())
                 .totalPage(invitationPage.getTotalPages())
                 .totalElement(invitationPage.getTotalElements())
                 .build();
@@ -377,8 +411,7 @@ public class InvitationService {
             String apartmentId,
             String roomTypeId,
             String roomId,
-            Pageable pageable
-    ) {
+            Pageable pageable) {
 
         Specification<Invitation> specification = Specification.where(InvitationSpecifications.withSearch(search))
                 .and(InvitationSpecifications.withInvitationStatus(invitationStatus))
@@ -390,14 +423,8 @@ public class InvitationService {
         return invitationRepository.findAll(specification, pageable);
     }
 
-
     private String generateTokenInvite(
-            String roomId,
-            String landLordId,
-            Instant startDate,
-            Instant endDate,
-            Date date
-    ) {
+            String roomId, String landLordId, Instant startDate, Instant endDate, Date date) {
         JWSHeader header = new JWSHeader(JWSAlgorithm.HS512);
 
         log.info("startDate: {}", date);

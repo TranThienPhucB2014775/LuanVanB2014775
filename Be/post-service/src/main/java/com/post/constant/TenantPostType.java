@@ -3,7 +3,6 @@ package com.post.constant;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public enum TenantPostType {
-
     @JsonProperty("ROOM_SUBLET")
     ROOM_SUBLET,
     @JsonProperty("LOOKING_FOR_ROOMMATE")

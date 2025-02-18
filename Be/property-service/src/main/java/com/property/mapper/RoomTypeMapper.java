@@ -15,7 +15,7 @@ public class RoomTypeMapper {
                 .build();
     }
 
-    public static RoomTypeResponse mapToRoomTypeResponse(RoomType roomType) {
+    public static RoomTypeResponse mapToRoomTypeResponse(RoomType roomType, int currentOccupancy) {
         return RoomTypeResponse.builder()
                 .roomTypeId(roomType.getRoomTypeId())
                 .name(roomType.getName())
@@ -25,6 +25,7 @@ public class RoomTypeMapper {
                 .apartmentId(roomType.getApartment().getApartmentId())
                 .isAvailable(roomType.getIsAvailable())
                 .maxOccupancy(roomType.getMaxOccupancy())
+                .currentOccupancy(currentOccupancy)
                 .build();
     }
 }

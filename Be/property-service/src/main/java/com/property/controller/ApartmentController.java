@@ -1,8 +1,5 @@
 package com.property.controller;
 
-import com.property.dto.request.ApartmentRatingCreationRequest;
-import com.property.dto.request.ApartmentReportRequest;
-import com.property.dto.response.FeedBackResponse;
 import jakarta.validation.Valid;
 
 import org.springframework.http.HttpStatus;
@@ -10,9 +7,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.property.dto.ApiResponse;
-import com.property.dto.request.ApartmentCreationRequest;
-import com.property.dto.request.ApartmentUpdateRequest;
+import com.property.dto.request.*;
 import com.property.dto.response.ApartmentResponse;
+import com.property.dto.response.FeedBackResponse;
 import com.property.dto.response.ListResponse;
 import com.property.service.ApartmentService;
 
@@ -40,9 +37,7 @@ public class ApartmentController {
     }
 
     @PostMapping("/report")
-    public ApiResponse<String> reportApartment(
-            @RequestBody ApartmentReportRequest request
-    ) {
+    public ApiResponse<String> reportApartment(@RequestBody ApartmentReportRequest request) {
         apartmentService.reportApartment(request);
         return ApiResponse.<String>builder()
                 .result("Apartment reported successfully")
@@ -51,11 +46,18 @@ public class ApartmentController {
 
     @PostMapping("/rating")
     public ResponseEntity<ApiResponse<FeedBackResponse>> rateApartment(
-            @Valid @RequestBody ApartmentRatingCreationRequest request,
-            @RequestHeader("Authorization") String token
-    ) {
-        return ResponseEntity.status(201)
-                .body(apartmentService.createRating(request, token.replace("Bearer ", "")));
+            @Valid @RequestBody ApartmentRatingCreationRequest request, @RequestHeader("Authorization") String token) {
+        return ResponseEntity.status(201).body(apartmentService.createRating(request, token.replace("Bearer ", "")));
+    }
+
+    @PostMapping("/notification/{apartmentId}")
+    public ApiResponse<?> rateApartment(
+            @RequestBody @Valid CreateNotificationToTenant request, @PathVariable String apartmentId) {
+        log.info("Sending notification to tenant");
+        apartmentService.pushNotificationToTenant(request, apartmentId);
+        return ApiResponse.<String>builder()
+                .result("Notification sent successfully")
+                .build();
     }
 
     @PutMapping

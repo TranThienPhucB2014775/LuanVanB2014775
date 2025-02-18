@@ -1,8 +1,9 @@
 package com.property.validation;
 
-import com.property.dto.request.InviteTenantToRoomRequest;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
+
+import com.property.dto.request.InviteTenantToRoomRequest;
 
 public class UserIdOrEmailValidator implements ConstraintValidator<ValidUserIdOrEmail, InviteTenantToRoomRequest> {
 

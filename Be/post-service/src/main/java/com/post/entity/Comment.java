@@ -1,11 +1,10 @@
 package com.post.entity;
 
 import jakarta.persistence.*;
+
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-
-import java.util.UUID;
 
 @Entity
 @Getter
@@ -15,7 +14,12 @@ import java.util.UUID;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Slf4j
-@Table(name = "comment", indexes = {})
+@Table(name = "comment", indexes = {
+        @Index(name = "idx_post_id", columnList = "postId"),
+        @Index(name = "idx_user_id_comment", columnList = "userId"),
+        @Index(name = "idx_is_available_comment", columnList = "isAvailable")
+})
+@ToString
 public class Comment extends BaseEntity {
 
     @Id
@@ -25,10 +29,12 @@ public class Comment extends BaseEntity {
     String postId;
 
     String userId;
-
+    @Column(columnDefinition = "TEXT")
     String content;
 
     String parentId;
 
     Boolean isAvailable;
+
+    long page;
 }

@@ -1,9 +1,9 @@
 package com.profile.dto.Response;
 
-import java.time.LocalDateTime;
-
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+
+import java.time.Instant;
 
 @Data
 @NoArgsConstructor
@@ -17,5 +17,5 @@ public class UserResponse {
     Boolean Enable;
     String city;
     String address;
-    LocalDateTime createdDate;
+    Instant createdDate;
 }

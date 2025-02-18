@@ -1,10 +1,10 @@
 package com.identity.repository.specification;
 
-import com.identity.entity.UserVerificationRequest;
-import org.springframework.data.jpa.domain.Specification;
-
 import static com.identity.util.StringUtils.removeDiacritics;
 
+import org.springframework.data.jpa.domain.Specification;
+
+import com.identity.entity.UserVerificationRequest;
 
 public class UserVerificationRequestSpecification {
 
@@ -15,8 +15,7 @@ public class UserVerificationRequestSpecification {
                 return cb.conjunction();
             }
             String likePattern = "%" + finalSearch.toLowerCase() + "%";
-            return cb.or(
-                    cb.like(cb.lower(cb.function("unaccent", String.class, root.get("message"))), likePattern));
+            return cb.or(cb.like(cb.lower(cb.function("unaccent", String.class, root.get("message"))), likePattern));
         };
     }
 
@@ -55,5 +54,4 @@ public class UserVerificationRequestSpecification {
             return cb.equal(root.get("isSuccessful"), isSuccessful);
         };
     }
-
 }

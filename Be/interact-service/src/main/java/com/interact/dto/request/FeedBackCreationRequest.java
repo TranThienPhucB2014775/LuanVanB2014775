@@ -20,7 +20,7 @@ public class FeedBackCreationRequest {
     @Max(value = 5, message = "RATING_INCORRECT")
     int rating;
 
-    @Size(min = 20, max = 200, message = "FEEDBACK_INCORRECT")
+    @Size(min = 7, max = 200, message = "FEEDBACK_INCORRECT")
     String feedBack;
 
     @FeedBackTypeSubset(anyOf = {FeedBackTypes.APARTMENT, FeedBackTypes.LANDLORD, FeedBackTypes.RENTAL_POST})

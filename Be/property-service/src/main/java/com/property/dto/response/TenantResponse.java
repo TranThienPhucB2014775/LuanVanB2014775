@@ -5,8 +5,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.Instant;
-
 @Setter
 @Getter
 @Builder
@@ -20,6 +18,4 @@ public class TenantResponse {
     String endDate;
     Boolean isAvailable;
 
-    public TenantResponse(String userId, String rentalDuration) {
-    }
 }

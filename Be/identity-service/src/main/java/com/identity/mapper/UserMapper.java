@@ -1,14 +1,16 @@
 package com.identity.mapper;
 
+import org.springframework.stereotype.Component;
+
 import com.identity.dto.Request.UserCreateRequest;
 import com.identity.dto.Response.AllUserResponse;
 import com.identity.dto.Response.UserResponse;
 import com.identity.entity.User;
 import com.identity.repository.UserVerificationRepository;
+
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor

@@ -60,7 +60,8 @@ public class FeedBackService {
 
         var authentication = SecurityContextHolder.getContext().getAuthentication();
         String userId = authentication.getName();
-        log.info(userId);
+        log.info("{}", request);
+        log.info("{}", request.getFeedBack());
 
         try {
             if (request.getFeedBackType().equals(FeedBackTypes.LANDLORD.toString())) {
@@ -164,8 +165,7 @@ public class FeedBackService {
         feedBackRepository.save(feedBack);
     }
 
-    public void getFeedBackByItemId(String itemId) {
-    }
+    public void getFeedBackByItemId(String itemId) {}
 
     public FeedBackResponses getAllFeedBacks(
             int pageNum,
@@ -284,5 +284,11 @@ public class FeedBackService {
         }
 
         return feedBackResponses;
+    }
+
+    public SummaryResponse getSummary() {
+        return SummaryResponse.builder()
+                .totalFeedBack(feedBackRepository.count())
+                .build();
     }
 }

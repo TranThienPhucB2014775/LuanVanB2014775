@@ -1,17 +1,17 @@
 package com.property.validation;
 
-import com.property.constant.AdditionalCostTypes;
-import com.property.constant.ReportIssueStatus;
-import jakarta.validation.Constraint;
-import jakarta.validation.Payload;
+import static java.lang.annotation.ElementType.FIELD;
+import static java.lang.annotation.ElementType.METHOD;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
-import static java.lang.annotation.ElementType.FIELD;
-import static java.lang.annotation.ElementType.METHOD;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
+import jakarta.validation.Constraint;
+import jakarta.validation.Payload;
+
+import com.property.constant.ReportIssueStatus;
 
 @Documented
 @Target({METHOD, FIELD})

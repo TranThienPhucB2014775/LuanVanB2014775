@@ -1,6 +1,7 @@
 package com.interact.service;
 
-import com.event.dto.ReportCreationEvent;
+import java.util.Collection;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -11,7 +12,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import com.interact.dto.request.ReportCreationRequest;
+import com.event.dto.ReportCreationEvent;
 import com.interact.dto.response.ListResponse;
 import com.interact.dto.response.ReportResponse;
 import com.interact.entity.Report;
@@ -25,8 +26,6 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-
-import java.util.Collection;
 
 @Service
 @RequiredArgsConstructor
@@ -47,7 +46,7 @@ public class ReportService {
         } catch (Exception e) {
             log.error("Error creating report {}", e.toString());
         }
-//        reportRepository.save(report);
+        //        reportRepository.save(report);
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -77,7 +76,8 @@ public class ReportService {
 
             Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
             if (authorities.stream()
-                    .noneMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("ROLE_ADMIN"))) {
+                    .noneMatch(
+                            grantedAuthority -> grantedAuthority.getAuthority().equals("ROLE_ADMIN"))) {
                 throw new AppException(ErrorCode.UNAUTHORIZED);
             }
         }

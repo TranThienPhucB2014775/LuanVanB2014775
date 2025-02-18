@@ -1,6 +1,7 @@
 package com.gateway;
 
-import com.gateway.constant.ServiceDetail;
+import java.util.List;
+
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.gateway.route.RouteLocator;
@@ -8,8 +9,7 @@ import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.Bean;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.gateway.constant.ServiceDetail;
 
 @SpringBootApplication
 @EnableFeignClients
@@ -32,8 +32,7 @@ public class ApiGatewayApplication {
                 new ServiceDetail("property", "PROPERTY-SERVICE"),
                 new ServiceDetail("interact", "INTERACT-SERVICE"),
                 new ServiceDetail("notification", "NOTIFICATION-SERVICE"),
-                new ServiceDetail("post", "POST-SERVICE")
-        );
+                new ServiceDetail("post", "POST-SERVICE"));
 
         RouteLocatorBuilder.Builder builder = routeLocatorBuilder.routes();
 

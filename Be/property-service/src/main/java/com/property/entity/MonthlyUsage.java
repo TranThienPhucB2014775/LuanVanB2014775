@@ -1,13 +1,15 @@
 // MonthlyUsage.java
 package com.property.entity;
 
+import java.math.BigDecimal;
+
 import jakarta.persistence.*;
+
+import org.springframework.context.annotation.Lazy;
+
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.annotation.Lazy;
-
-import java.math.BigDecimal;
 
 @Entity
 @Getter
@@ -17,7 +19,10 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Slf4j
-@Table(name = "monthly_usage")
+@Table(name = "monthly_usage", indexes = {
+        @Index(name = "idx_room_id_monthly_usage", columnList = "room_id"),
+        @Index(name = "idx_invoice_id_monthly_usage", columnList = "invoice_id")
+})
 public class MonthlyUsage extends BaseEntity {
 
     @Id
@@ -34,12 +39,10 @@ public class MonthlyUsage extends BaseEntity {
 
     BigDecimal cost;
 
+    BigDecimal price;
+
     @ManyToOne
-    @JoinTable(
-            name = "monthly_usage_additional_cost",
-            joinColumns = @JoinColumn(name = "monthly_usage_id"),
-            inverseJoinColumns = @JoinColumn(name = "additional_cost_id"))
-    @Lazy
+    @JoinColumn(name = "additional_cost_id")
     AdditionalCost additionalCost;
 
     @ManyToOne

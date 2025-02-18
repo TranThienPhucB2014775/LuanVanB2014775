@@ -1,10 +1,12 @@
 package com.property.repository.specification;
 
-import com.property.entity.ReportIssue;
+import static com.property.util.StringUtils.removeDiacritics;
+
 import jakarta.persistence.criteria.Join;
+
 import org.springframework.data.jpa.domain.Specification;
 
-import static com.property.util.StringUtils.removeDiacritics;
+import com.property.entity.ReportIssue;
 
 public class ReportedIssueSpecifications {
 

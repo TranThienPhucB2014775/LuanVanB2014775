@@ -3,8 +3,8 @@ package com.post.dto.request;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
+
 import lombok.Getter;
-import lombok.Setter;
 
 @Getter
 public class RentalPostUpdateRequest {
@@ -42,5 +42,4 @@ public class RentalPostUpdateRequest {
 
     @NotBlank(message = "INVALID_VALUE")
     String rentalType;
-
 }

@@ -31,4 +31,6 @@ public interface ApartmentRepository extends JpaRepository<Apartment, String>, J
     //            Pageable pageable);
 
     List<Apartment> findByUserId(String userId);
+
+    long countAllByUserId(String userId);
 }

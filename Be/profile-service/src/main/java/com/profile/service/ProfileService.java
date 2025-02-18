@@ -59,25 +59,25 @@ public class ProfileService {
                 .findByUserId(authentication.getName())
                 .orElseThrow(() -> new AppException(ErrorCode.PROFILE_NOT_FOUND));
 
-        if (!request.getCity().isEmpty()) {
+        if (request.getCity() != null) {
             profile.setCity(request.getCity());
         }
-        if (!request.getFacebook().isEmpty()) {
+        if (request.getFacebook() != null) {
             profile.setFacebook(request.getFacebook());
         }
-        if (!request.getAddress().isEmpty()) {
+        if (request.getAddress() != null){
             profile.setAddress(request.getAddress());
         }
-        if (!request.getPhoneNumber().isEmpty()) {
+        if (request.getPhoneNumber() != null) {
             profile.setPhoneNumber(request.getPhoneNumber());
         }
-        if (!request.getPhoneNumber().isEmpty()) {
+        if (request.getPhoneNumber() != null) {
             profile.setPhoneNumber(request.getPhoneNumber());
         }
-        if (!request.getAboutMe().isEmpty()) {
+        if (request.getAboutMe() != null) {
             profile.setAboutMe(request.getAboutMe());
         }
-        if (!request.getZaloPhoneNumber().isEmpty()) {
+        if (request.getZaloPhoneNumber() != null) {
             profile.setZaloPhoneNumber(request.getZaloPhoneNumber());
         }
 

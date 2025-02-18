@@ -7,8 +7,6 @@ import java.util.List;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 
-import com.property.validation.RentStatusSubset;
-
 import lombok.Getter;
 
 @Getter

@@ -16,14 +16,16 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfig {
 
     private static final String[] PUBLIC_ENDPOINTS = {
-            "/actuator/**",
-            "/swagger-ui/**",
-            "/v3/api-docs/**",
-            "/additional-cost/all",
-            "/apartment/all/{pageNum}", "/apartment/{apartmentId}",
-            "/rooms/all/{pageNum}", "/rooms/{roomId}",
-            "/room-types/all/{pageNum}", "/room-types/{roomTypeId}",
-
+        "/actuator/**",
+        "/swagger-ui/**",
+        "/v3/api-docs/**",
+        "/additional-cost/all",
+        "/apartment/all/{pageNum}",
+        "/apartment/{apartmentId}",
+        "/rooms/all/{pageNum}",
+        "/rooms/{roomId}",
+        "/room-types/all/{pageNum}",
+        "/room-types/{roomTypeId}",
     };
 
     private final CustomJwtDecoder customJwtDecoder;
@@ -34,8 +36,8 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
-        httpSecurity.authorizeHttpRequests(request -> request
-                .requestMatchers(PUBLIC_ENDPOINTS).permitAll()
+        httpSecurity.authorizeHttpRequests(request -> request.requestMatchers(PUBLIC_ENDPOINTS)
+                .permitAll()
                 .anyRequest()
                 .authenticated());
 

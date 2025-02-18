@@ -15,5 +15,4 @@ public class NotificationMapper {
                 .createdAt(notification.getCreatedAt())
                 .build();
     }
-
 }

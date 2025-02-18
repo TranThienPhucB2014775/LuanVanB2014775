@@ -1,18 +1,27 @@
 package com.property.dto.response;
 
-import lombok.*;
+import java.util.List;
 
-import java.time.Instant;
+import lombok.*;
 
 @Getter
 @Setter
 public class TenantRoomResponse extends RoomResponse {
     String rentalDuration;
+    String contractId;
 
-    public TenantRoomResponse(String name, Boolean isAvailable, String rentStatus, String roomId,
-                              int currentOccupancy, String landlordId, String roomTypeId, String apartmentId,
-                              String rentalDuration)
-    {
+    public TenantRoomResponse(
+            String name,
+            Boolean isAvailable,
+            String rentStatus,
+            String roomId,
+            int currentOccupancy,
+            String landlordId,
+            String roomTypeId,
+            String apartmentId,
+            List<InvoiceResponse> invoiceResponse,
+            String rentalDuration,
+            String contractId) {
         super(
                 name,
                 isAvailable,
@@ -21,9 +30,10 @@ public class TenantRoomResponse extends RoomResponse {
                 landlordId,
                 currentOccupancy,
                 roomTypeId,
-                apartmentId
-                );
+                apartmentId,
+                invoiceResponse);
         this.rentalDuration = rentalDuration;
+        this.contractId = contractId;
     }
 
     public TenantRoomResponse() {

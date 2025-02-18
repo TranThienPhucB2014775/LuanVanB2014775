@@ -13,5 +13,4 @@ public class FileConverter {
     public MultipartFile convertToMultipartFile(byte[] bytes, String fileName, String contentType) {
         return new CustomMultipartFile(bytes, fileName, contentType);
     }
-
 }

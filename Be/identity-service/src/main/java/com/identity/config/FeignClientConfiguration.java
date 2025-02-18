@@ -1,14 +1,11 @@
 package com.identity.config;
 
-import feign.FeignException;
-import feign.Response;
-import feign.codec.Encoder;
-import feign.codec.ErrorDecoder;
-import feign.form.spring.SpringFormEncoder;
-import org.apache.http.annotation.Contract;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import feign.FeignException;
+import feign.Response;
+import feign.codec.ErrorDecoder;
 
 @Configuration
 public class FeignClientConfiguration {
@@ -26,5 +23,4 @@ public class FeignClientConfiguration {
             }
         };
     }
-
 }

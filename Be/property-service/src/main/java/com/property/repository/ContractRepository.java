@@ -1,13 +1,14 @@
 package com.property.repository;
 
-import com.property.entity.Contract;
+import java.time.Instant;
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import java.time.Instant;
-import java.util.List;
-import java.util.Optional;
+import com.property.entity.Contract;
 
 public interface ContractRepository extends JpaRepository<Contract, String> {
 
@@ -23,8 +24,12 @@ public interface ContractRepository extends JpaRepository<Contract, String> {
     Optional<Contract> findByLandlordId(String landlordId);
 
     @Query("SELECT c FROM Contract c WHERE c.expectedEndDate BETWEEN :startDate AND :endDate and c.isAvailable = true")
-    List<Contract> getUpcomingContracts(
-            @Param("startDate") Instant startDate,
-            @Param("endDate") Instant endDate
-    );
+    List<Contract> getUpcomingContracts(@Param("startDate") Instant startDate, @Param("endDate") Instant endDate);
+
+    @Query(
+            value = "SELECT * " + "FROM contract "
+                    + "WHERE expected_end_date < CURRENT_DATE "
+                    + "AND is_available = true",
+            nativeQuery = true)
+    List<Contract> findExpiredContracts(@Param("currentDate") Instant currentDate);
 }

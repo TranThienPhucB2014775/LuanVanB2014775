@@ -16,5 +16,4 @@ public class FeedBackCreationRequest {
     String feedBack;
 
     String feedBackType;
-
 }

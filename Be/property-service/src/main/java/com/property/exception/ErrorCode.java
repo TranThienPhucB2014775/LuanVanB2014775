@@ -50,6 +50,12 @@ public enum ErrorCode {
     ROOM_NOT_AVAILABLE(26, "Room not available", HttpStatus.BAD_REQUEST),
     APARTMENT_NOT_AVAILABLE(27, "Apartment not available", HttpStatus.BAD_REQUEST),
     FUTURE_INVOICE_EXISTS(28, "Future invoice exists", HttpStatus.BAD_REQUEST),
+    MISSING_REQUIRED_ID(29, "Missing required id", HttpStatus.BAD_REQUEST),
+    INVALID_REQUEST(30, "Invalid request", HttpStatus.BAD_REQUEST),
+    INVALID_USAGE(31, "Invalid usage", HttpStatus.BAD_REQUEST),
+    CONTRACT_NOT_AVAILABLE(32, "Contract not available", HttpStatus.BAD_REQUEST),
+    CAN_NOT_MOVE_TO_ANOTHER_ROOM_TYPE(33, "Can not move to another room type", HttpStatus.BAD_REQUEST),
+    ROOM_RENTED(34, "Room rented", HttpStatus.BAD_REQUEST),
     ;
 
     ErrorCode(int code, String message, HttpStatusCode statusCode) {

@@ -1,11 +1,11 @@
 package com.property.repository.specification;
 
-import com.property.entity.Apartment;
-import com.property.entity.Invitation;
+import static com.property.util.StringUtils.removeDiacritics;
+
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
 
-import static com.property.util.StringUtils.removeDiacritics;
+import com.property.entity.Invitation;
 
 @Component
 public class InvitationSpecifications {
@@ -17,9 +17,7 @@ public class InvitationSpecifications {
                 return cb.conjunction();
             }
             String likePattern = "%" + finalSearch.toLowerCase() + "%";
-            return cb.or(
-                    cb.like(cb.lower(cb.function("unaccent", String.class, root.get("message"))), likePattern)
-            );
+            return cb.or(cb.like(cb.lower(cb.function("unaccent", String.class, root.get("message"))), likePattern));
         };
     }
 

@@ -1,9 +1,9 @@
 package com.property.dto.response;
 
+import java.time.Instant;
+
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-
-import java.time.LocalDateTime;
 
 @Data
 @NoArgsConstructor
@@ -17,7 +17,7 @@ public class UserResponse {
     Boolean Enable;
     String city;
     String address;
-    LocalDateTime createdDate;
+    Instant createdDate;
     String imgAvatar;
     String facebook;
     String phoneNumber;

@@ -2,7 +2,7 @@ spring:
   application:
     name: "identity-service"
   datasource:
-    url: "jdbc:postgresql://localhost:5432/luanvan"
+    url: "jdbc:postgresql://localhost:5432/identity_service"
     username: postgres
     password: root
     driver-class-name: org.postgresql.Driver

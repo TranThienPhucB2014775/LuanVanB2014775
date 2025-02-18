@@ -1,10 +1,10 @@
 package com.property.dto.response;
 
+import java.util.Set;
+
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.util.Set;
 
 @Getter
 @Setter
@@ -22,5 +22,4 @@ public class RoomDetailResponse {
     Set<TenantResponse> tenants;
 
     Set<InvoiceResponse> invoices;
-
 }

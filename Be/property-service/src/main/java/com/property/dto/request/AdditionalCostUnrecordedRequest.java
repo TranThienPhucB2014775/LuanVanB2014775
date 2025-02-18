@@ -1,8 +1,10 @@
 package com.property.dto.request;
 
-import com.property.annotation.PastYearMonth;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
+
+import com.property.annotation.PastYearMonth;
+
 import lombok.Getter;
 
 @Getter

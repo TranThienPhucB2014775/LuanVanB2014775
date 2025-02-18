@@ -1,11 +1,12 @@
 package com.property.entity;
 
+import java.math.BigDecimal;
+
 import jakarta.persistence.*;
+
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-
-import java.math.BigDecimal;
 
 @Entity
 @Getter
@@ -15,20 +16,23 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Slf4j
-@Table(name = "discount")
+@Table(name = "discount", indexes = {
+        @Index(name = "idx_name_discount", columnList = "name"),
+        @Index(name = "idx_active_discount", columnList = "active")
+})
 public class Discount {
 
-        @Id
-        @GeneratedValue(strategy = GenerationType.UUID)
-        String discountId;
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+    String discountId;
 
-        String name;
+    String name;
 
-        String description;
+    String description;
 
-        BigDecimal discount;
+    BigDecimal discount;
 
-        String unit;
+    String unit;
 
-        boolean active;
+    boolean active;
 }
